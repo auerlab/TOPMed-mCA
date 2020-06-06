@@ -1,0 +1,49 @@
+vcf_read_static_fields(): Got EOF reading CHROM.
+This is where we should reach EOF.
+vcf-split: split_line(): No more VCF calls.
+Processed 19282282 multi-sample VCF calls.
+Max info_len = 162737.
+vcf-split completed successfully.
+vcf_read_static_fields(): Got EOF reading CHROM.
+This is where we should reach EOF.
+vcf-split: split_line(): No more VCF calls.
+Processed 19282282 multi-sample VCF calls.
+Max info_len = 162737.
+vcf-split completed successfully.
+vcf_read_static_fields(): Got EOF reading CHROM.
+This is where we should reach EOF.
+vcf-split: split_line(): No more VCF calls.
+Processed 19282282 multi-sample VCF calls.
+Max info_len = 162737.
+vcf-split completed successfully.
+vcf_read_static_fields(): Got EOF reading CHROM.
+This is where we should reach EOF.
+vcf-split: split_line(): No more VCF calls.
+Processed 19282282 multi-sample VCF calls.
+Max info_len = 162737.
+vcf-split completed successfully.
+vcf_read_static_fields(): Got EOF reading CHROM.
+This is where we should reach EOF.
+vcf-split: split_line(): No more VCF calls.
+Processed 19282282 multi-sample VCF calls.
+Max info_len = 162737.
+vcf-split completed successfully.
+vcf_read_static_fields(): Got EOF reading CHROM.
+This is where we should reach EOF.
+vcf-split: split_line(): No more VCF calls.
+Processed 19282282 multi-sample VCF calls.
+Max info_len = 162737.
+vcf-split completed successfully.
+vcf_read_static_fields(): Got EOF reading CHROM.
+This is where we should reach EOF.
+vcf-split: split_line(): No more VCF calls.
+Processed 19282282 multi-sample VCF calls.
+Max info_len = 162737.
+vcf-split completed successfully.
+vcf_read_static_fields(): Got EOF reading CHROM.
+This is where we should reach EOF.
+vcf-split: split_line(): No more VCF calls.
+Processed 19282282 multi-sample VCF calls.
+Max info_len = 162737.
+vcf-split completed successfully.
+slurmstepd: error: *** JOB 26488 ON compute-009 CANCELLED AT 2020-06-05T21:15:52 ***
