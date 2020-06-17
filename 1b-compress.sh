@@ -33,27 +33,25 @@ max_jobs=$2
 
 cd Split-vcfs
 mkdir -p SLURM-compress-outputs
-find . -name '*.vcf' | head -n $max_jobs > vcf-list.txt
-wc vcf-list.txt
+find . -name '*.vcf' | head -n $total_jobs > vcf-list.txt
+wc -l vcf-list.txt
 
-vcf_count=$(cat vcf-list.txt | wc -l)
-vcfs=$(cat vcf-list.txt | tr '\n' ' ')
 batch_file=compress-tmp.sbatch
-
 cat << EOM > $batch_file
 #!/usr/bin/env bash
 
-#SBATCH --array=${total_jobs}%$max_jobs
+#SBATCH --array=1-${total_jobs}%$max_jobs
 #SBATCH --output=SLURM-compress-outputs/compress-%A_%a.out
 #SBATCH --error=SLURM-compress-outputs/compress-%A_%a.err
 
-vcfs=($vcfs)
-my_vcf=\${vcfs[\$SLURM_ARRAY_TASK_ID]}
+vcfs=(\`cat vcf-list.txt\`)
+subscript=\$((\$SLURM_ARRAY_TASK_ID - 1))
+my_vcf=\${vcfs[\$subscript]}
 printf "Compressing \$my_vcf...\n"
 xz \$my_vcf
 EOM
 
-more $batch_file
+cat $batch_file
 read -p 'Submit? y/[n] ' submit
 if [ 0$submit = 0y ]; then
     sbatch $batch_file
