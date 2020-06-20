@@ -34,10 +34,9 @@
 # to get past this limit.
 
 ##SBATCH --array=1-23 --cpus-per-task=2
+# Need to rerun 1-13, 14-X are done
 #SBATCH --array=1-13 --cpus-per-task=2
-# Depends how many samples are split at once
-# 2300 is based on 17,248
-#SBATCH --mem=2300
+#SBATCH --mem=300
 #SBATCH --output=SLURM-outputs/vcf-split-%A_%a.out
 #SBATCH --error=SLURM-outputs/vcf-split-%A_%a.err
 #SBATCH --exclude=compute-[001-008,012]
@@ -79,7 +78,8 @@ total_samples=137977
 # 5 did not do well on Mortimer either
 # Mortimer might do better with NFS over Infiniband
 # < 5 segments: "Too many open files" error on Peregrine:
-segments=8
+# Minimum for running all 23 chromosomes without being I/O-bound at once is 15
+segments=10
 
 # Integer division truncates, add 1 to round up segment size so the sum
 # doesn't fall short of total_samples
@@ -93,11 +93,9 @@ while [ $first -le $total_samples ]; do
     fi
     
     printf "Processing columns $first through $last...\n"
-    date
     bcftools view --min-ac 2 --exclude-types indels \
 	../../phased/$bcf \
 	| vcf-split --het-only $output_dir/chr$chromosome. $first $last
     
     first=$(($first + $segment_size))
 done
-date
