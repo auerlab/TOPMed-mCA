@@ -1,6 +1,4 @@
-#!/usr/bin/env bash
-
-set -e
+#!/bin/sh -e
 
 ##########################################################################
 #   Script description:
@@ -31,22 +29,50 @@ fi
 total_jobs=$1
 max_jobs=$2
 
+vcf_list=vcf-list-all
 cd Split-vcfs
+
+# Make sure not to clobber the files being used by current jobs!
+if [ -e $vcf_list ]; then
+    cat << EOM
+
+$vcf_list already exists.  Is a job already running?
+
+Remove it to start again.
+
+EOM
+    exit 1
+fi
 mkdir -p SLURM-compress-outputs
-find . -name '*.vcf' | head -n $total_jobs > vcf-list.txt
-wc -l vcf-list.txt
+printf "Finding VCFs...\n"
+if [ $total_jobs = all ]; then
+    find chr* -name '*.vcf' > $vcf_list
+    tj=$(cat $vcf_list | wc -l)
+    total_jobs=$(echo $tj)   # Get rid of leading whitespace from wc
+else
+    find chr* -name '*.vcf' | head -n $total_jobs > $vcf_list
+fi
+
+# Split the find output into small chunks so each job has a quick awk search
+# There could be more than a million lines total
+max_lines=10000
+printf "Splitting...\n"
+split -l $max_lines -a 4 -d $vcf_list vcf-list-
+wc -l vcf-list-[0-9]*
 
 batch_file=compress-tmp.sbatch
 cat << EOM > $batch_file
-#!/usr/bin/env bash
+#!/bin/sh -e
 
 #SBATCH --array=1-${total_jobs}%$max_jobs
 #SBATCH --output=SLURM-compress-outputs/compress-%A_%a.out
 #SBATCH --error=SLURM-compress-outputs/compress-%A_%a.err
 
-vcfs=(\`cat vcf-list.txt\`)
-subscript=\$((\$SLURM_ARRAY_TASK_ID - 1))
-my_vcf=\${vcfs[\$subscript]}
+split_file_num=\$(( (SLURM_ARRAY_TASK_ID - 1) / $max_lines ))
+split_file=\$(printf "vcf-list-%04d" \$split_file_num)
+line=\$(( (SLURM_ARRAY_TASK_ID - 1) % $max_lines + 1 ))
+my_vcf=\$(awk -v line=\$line 'NR == line { print \$1 }' \$split_file)
+
 printf "Compressing \$my_vcf...\n"
 xz \$my_vcf
 EOM
