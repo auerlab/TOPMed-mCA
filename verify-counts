@@ -1,0 +1,9 @@
+#!/bin/sh -e
+
+raw=$(find Split-vcfs -name '*.vcf' | wc -l)
+printf "Raw = $raw\n"
+compressed=$(find Split-vcfs -name '*.vcf.xz' | wc -l)
+printf "Compressed = $compressed\n"
+printf "Raw + compressed = %d\n" $((raw + compressed))
+printf "Done files = "
+find Split-vcfs -name '*.done' | wc -l

@@ -1,0 +1,39 @@
+#!/bin/sh -e
+
+##########################################################################
+#   Script description:
+#       Determine the column of a given sample ID
+#       
+#   History:
+#   Date        Name        Modification
+#   2020-06-05  Jason Bacon Begin
+##########################################################################
+
+usage()
+{
+    printf "Usage: $0 sample-id\n"
+    exit 1
+}
+
+
+##########################################################################
+#   Main
+##########################################################################
+
+if [ $# != 1 ]; then
+    usage
+fi
+sample=$1
+
+bcftools view phased/freeze.8.chr4.pass_only.phased.bcf \
+    | fgrep $sample \
+    | awk -v sample=$sample '{
+	for (c = 1; c < NF; ++c) {
+	    print c;
+	    if ( $c == sample ) {
+		print c;
+		exit;
+	    }
+	}
+    }'
+      
