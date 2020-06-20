@@ -54,7 +54,9 @@ else
 fi
 
 # Split the find output into small chunks so each job has a quick awk search
-# There could be more than a million lines total
+# It takes a few seconds to search a file with 1 million lines whereas
+# 10k lines is instantaneous.  This cut the compression of 1 million files
+# from 25 hours to 12.
 max_lines=10000
 printf "Splitting...\n"
 split -l $max_lines -a 4 -d $vcf_list vcf-list-
@@ -74,7 +76,7 @@ line=\$(( (SLURM_ARRAY_TASK_ID - 1) % $max_lines + 1 ))
 my_vcf=\$(awk -v line=\$line 'NR == line { print \$1 }' \$split_file)
 
 printf "Compressing \$my_vcf...\n"
-xz \$my_vcf
+xz -f \$my_vcf
 EOM
 
 cat $batch_file
