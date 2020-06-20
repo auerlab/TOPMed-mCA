@@ -3,5 +3,5 @@
 cd Split-vcfs
 for chr in 14 15 16 17 18 19 20 21 22 X; do
     printf "chr$chr: "
-    find chr$chr -name '*.done' | wc
+    find chr$chr -name '*.done' | wc -l
 done
