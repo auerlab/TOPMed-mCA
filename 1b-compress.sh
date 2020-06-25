@@ -13,7 +13,7 @@
 
 usage()
 {
-    printf "Usage: $0 total-jobs max-jobs\n"
+    printf "Usage: $0 total-jobs max-parallel-jobs\n"
     exit 1
 }
 
@@ -28,9 +28,11 @@ fi
 
 total_jobs=$1
 max_jobs=$2
+dir=Split-vcfs-1st
 
 vcf_list=vcf-list-all
-cd Split-vcfs
+cd $dir
+pwd
 
 # Make sure not to clobber the files being used by current jobs!
 if [ -e $vcf_list ]; then
