@@ -4,7 +4,9 @@
 #   Script description:
 #       Generate and launch a batch script to compress vcf-split outputs
 #       in parallel.
-#       May need to increase MaxJobCount and MaxArraySize
+#       May need to increase SLURM MaxJobCount and MaxArraySize
+#       Also see SLURM high throughput tuning guide to avoid scheduler
+#       timeouts
 #
 #   History:
 #   Date        Name        Modification
@@ -28,7 +30,7 @@ fi
 
 total_jobs=$1
 max_jobs=$2
-dir=Split-vcfs-1st
+dir=Split-vcfs
 
 vcf_list=vcf-list-all
 cd $dir
@@ -71,6 +73,7 @@ cat << EOM > $batch_file
 #SBATCH --array=1-${total_jobs}%$max_jobs
 #SBATCH --output=SLURM-compress-outputs/compress-%A_%a.out
 #SBATCH --error=SLURM-compress-outputs/compress-%A_%a.err
+#SBATCH --exclude=compute-[001-008,012]
 
 split_file_num=\$(( (SLURM_ARRAY_TASK_ID - 1) / $max_lines ))
 split_file=\$(printf "vcf-list-%04d" \$split_file_num)

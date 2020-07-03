@@ -1,7 +1,11 @@
 #!/bin/sh -e
 
-cd Split-vcfs-1st
-for chr in 14 15 16 17 18 19 20 21 22 X; do
-    printf "chr$chr: "
-    find chr$chr -name '*.done' | wc -l
+cd Split-vcfs
+for chr in $(seq -w 1 22) X; do
+    printf "chr%2s: " $chr
+    done=$(find chr$chr -name '*.done' | wc -l)
+    uncomp=$(find chr$chr -name '*.vcf' | wc -l)
+    comp=$(find chr$chr -name '*.vcf.xz' | wc -l)
+    printf "done=%6u uncompressed=%6u compressed=%6u total=%6u\n" \
+	$done $uncomp $comp $((uncomp + comp))
 done
