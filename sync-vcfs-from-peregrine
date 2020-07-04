@@ -1,0 +1,4 @@
+#!/bin/sh -e
+
+rsync -av --size-only --exclude '*.vcf' --exclude SLURM-compress-outputs \
+    peregrine.hpc:Data/TOPMed/Jobs/Haplohseq-analysis/Split-vcfs .
