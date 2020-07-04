@@ -1,4 +1,6 @@
 #!/bin/sh -e
 
-rsync -av --size-only --exclude '*.vcf' --exclude SLURM-compress-outputs \
-    peregrine.hpc.uwm.edu:Data/TOPMed/Jobs/Haplohseq-analysis/Split-vcfs .
+nohup rsync -av --size-only \
+    --exclude '*.vcf' --exclude SLURM-compress-outputs \
+    peregrine.hpc.uwm.edu:Data/TOPMed/Jobs/Haplohseq-analysis/Split-vcfs . \
+    > sync.log 2>&1 &
