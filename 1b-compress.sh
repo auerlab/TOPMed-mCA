@@ -61,7 +61,7 @@ fi
 # It takes a few seconds to search a file with 1 million lines whereas
 # 10k lines is instantaneous.  This cut the compression of 1 million files
 # from 25 hours to 12.
-max_lines=10000
+max_lines=1000
 printf "Splitting...\n"
 split -l $max_lines -a 4 -d $vcf_list vcf-list-
 wc -l vcf-list-[0-9]*
@@ -73,7 +73,7 @@ cat << EOM > $batch_file
 #SBATCH --array=1-${total_jobs}%$max_jobs
 #SBATCH --output=SLURM-compress-outputs/compress-%A_%a.out
 #SBATCH --error=SLURM-compress-outputs/compress-%A_%a.err
-#SBATCH --exclude=compute-[001-008,012]
+##SBATCH --exclude=compute-[001-008,012]
 
 split_file_num=\$(( (SLURM_ARRAY_TASK_ID - 1) / $max_lines ))
 split_file=\$(printf "vcf-list-%04d" \$split_file_num)

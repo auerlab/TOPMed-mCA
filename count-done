@@ -2,10 +2,15 @@
 
 cd Split-vcfs
 for chr in $(seq -w 1 22) X; do
-    printf "chr%2s: " $chr
     done=$(find chr$chr -name '*.done' | wc -l)
     uncomp=$(find chr$chr -name '*.vcf' | wc -l)
     comp=$(find chr$chr -name '*.vcf.xz' | wc -l)
-    printf "done=%6u uncompressed=%6u compressed=%6u total=%6u\n" \
-	$done $uncomp $comp $((uncomp + comp))
+    printf "chr%2s: done=%7u uncompressed=%7u compressed=%7u total=%7u\n" \
+	$chr $done $uncomp $comp $((uncomp + comp))
+    total_comp=$((total_comp + comp))
+    total_uncomp=$((total_uncomp + uncomp))
+    total_done=$((total_done + done))
 done
+printf "Total: done=%7u uncompressed=%7u compressed=%7u total=%7u\n" \
+    $total_done $total_uncomp $total_comp $((total_uncomp + total_comp))
+
