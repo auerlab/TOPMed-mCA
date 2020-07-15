@@ -2,21 +2,20 @@
 
 ##########################################################################
 #   Script description:
-#       Concatenate single-chromosome VCFs into a full-genome VCF for
-#       each sample.  Run this only after all vcf-split jobs have
-#       finished.
+#       Generate and launch a batch script to combine vcf-split outputs
+#       in parallel.
+#       May need to increase SLURM MaxJobCount and MaxArraySize
+#       Also see SLURM high throughput tuning guide to avoid scheduler
+#       timeouts
 #
-#   Arguments:
-#       Directory containing uncompressed VCF outputs
-#       
 #   History:
 #   Date        Name        Modification
-#   2020-02-24  Jason Bacon Begin
+#   2020-06-16  Jason Bacon Begin
 ##########################################################################
 
 usage()
 {
-    printf "Usage: $0 vcf-directory\n"
+    printf "Usage: $0 total-jobs max-parallel-jobs\n"
     exit 1
 }
 
@@ -25,27 +24,69 @@ usage()
 #   Main
 ##########################################################################
 
-if [ $# != 1 ]; then
+if [ $# != 2 ]; then
     usage
 fi
 
-vcf_dir=$1
-cd $vcf_dir
-samples=$(ls | cut -d . -f 2|sort|uniq)
+total_jobs=$1
+max_jobs=$2
+dir=Split-vcfs
 
-for sample in $samples; do
-    # Assumes files list in order of chromosomes.
-    # vcf-split generates filenames with chr01, chr02, ... chr10, etc.
-    # to ensure this.  If using VCFs from another tool that ouputs
-    # chr1, chr2, chr10, ..., this will put 10 before 2
-    files="chr*$sample*.vcf.xz"
-    
-    # bcftools requires headers in VCF inputs
-    # outfile=combined.$sample.vcf
-    # bcftools concat $files --output-type=v --output=$outfile
-    
-    outfile=combined.$sample.vcf.xz
-    printf "Concatenating $files to $outfile...\n"
-    rm -f $outfile
-    xzcat $files | xz -c > $outfile
-done
+sample_list=sample-list-all
+mkdir -p $dir
+cd $dir
+pwd
+
+# Make sure not to clobber the files being used by current jobs!
+if [ -e $sample_list ]; then
+    cat << EOM
+
+$sample_list already exists.  Is a job already running?
+
+Remove it to start again.
+
+EOM
+    exit 1
+fi
+mkdir -p SLURM-combine-outputs Combined
+printf "Finding samples...\n"
+if [ $total_jobs = all ]; then
+    find chr01 -name '*.vcf.xz' | cut -d . -f 2 > $sample_list
+    tj=$(cat $sample_list | wc -l)
+    total_jobs=$(echo $tj)   # Get rid of leading whitespace from wc
+else
+    find chr01 -name '*.vcf.xz' | cut -d . -f 2 | head -n $total_jobs > $sample_list
+fi
+
+# Split the find output into small chunks so each job has a quick awk search
+# It takes a few seconds to search a file with 1 million lines whereas
+# 10k lines is instantaneous.  This cut the compression of 1 million files
+# from 25 hours to 12.
+max_lines=1000
+printf "Splitting...\n"
+split -l $max_lines -a 4 -d $sample_list sample-list-
+wc -l sample-list-[0-9]*
+
+batch_file=combine-tmp.sbatch
+cat << EOM > $batch_file
+#!/bin/sh -e
+
+#SBATCH --array=1-${total_jobs}%$max_jobs
+#SBATCH --output=SLURM-combine-outputs/combine-%A_%a.out
+#SBATCH --error=SLURM-combine-outputs/combine-%A_%a.err
+
+split_file_num=\$(( (SLURM_ARRAY_TASK_ID - 1) / $max_lines ))
+split_file=\$(printf "sample-list-%04d" \$split_file_num)
+line=\$(( (SLURM_ARRAY_TASK_ID - 1) % $max_lines + 1 ))
+my_sample=\$(awk -v line=\$line 'NR == line { print \$1 }' \$split_file)
+
+sources=\$(ls chr*/chr*.\$my_sample.vcf.xz)
+printf "Combining \$sources...\n"
+xzcat \$sources | xz -cf > Combined/combined.\$my_sample.vcf.xz
+EOM
+
+cat $batch_file
+read -p 'Submit? y/[n] ' submit
+if [ 0$submit = 0y ]; then
+    sbatch $batch_file
+fi
