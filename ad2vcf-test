@@ -1,0 +1,15 @@
+#!/bin/sh -e
+
+# Main copy is in Grad-school repo
+
+export PATH=../../local/bin:${PATH}
+which ad2vcf
+
+# https://github.com/samtools/htslib/issues/950
+
+for sample in NWD103371; do # $(ls GCP-test | cut -d . -f 2 | cut -d - -f 1 | sort | uniq); do
+    echo $sample
+    time samtools view -@ 2 --input-fmt-option required_fields=0x208 \
+	../../SRR6990379/$sample.b38.irc.v1.cram \
+	| ad2vcf Split-vcfs/Combined/combined.$sample.vcf.xz
+done
