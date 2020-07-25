@@ -1,15 +1,21 @@
 #!/bin/sh -e
 
-# Main copy is in Grad-school repo
-
+# Uncomment to use latest test build, otherwise use ad2vcf in PATH
 export PATH=../../local/bin:${PATH}
 which ad2vcf
 
-# https://github.com/samtools/htslib/issues/950
-
-for sample in NWD103371; do # $(ls GCP-test | cut -d . -f 2 | cut -d - -f 1 | sort | uniq); do
+for sample in NWD102903; do
     echo $sample
-    time samtools view -@ 2 --input-fmt-option required_fields=0x208 \
-	../../SRR6990379/$sample.b38.irc.v1.cram \
-	| ad2vcf Split-vcfs/Combined/combined.$sample.vcf.xz
+    # 2 threads brings a significant gain over 1
+    # 3, 4 or 5 threads use much more CPU time but do not help
+    # the wall time at all.
+    for threads in 2; do
+	echo $threads
+	# Use 0x608 to include PHRED scores for stats, 0x208 to exclude
+	# PHRED code in ad2vcf is currently disabled
+	/usr/bin/time samtools view -@ $threads \
+	    --input-fmt-option required_fields=0x208 \
+	    ../../SRR6990379/$sample.b38.irc.v1.cram \
+	    | ad2vcf Split-vcfs/Combined/combined.$sample.vcf.xz
+    done
 done

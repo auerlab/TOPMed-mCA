@@ -1,0 +1,187 @@
+
+4
+      573.68 real      1128.87 user        89.89 sys
+3
+      557.66 real      1130.61 user        89.57 sys
+2
+      565.29 real      1118.67 user        86.78 sys
+1
+     1214.31 real       840.89 user       169.72 sys
+2
+      571.52 real      1119.87 user        84.54 sys
+
+FreeBSD barracuda.uits  bacon ~/Data/TOPMed/Jobs/Haplohseq-analysis 1079: /usr/bin/time samtools view -@ 2 --input-fmt-option required_fields=0x608 ../../SRR6990379/NWD102903.b38.irc.v1.cram | cat > /dev/null
+     1038.77 real      2116.32 user       117.22 sys
+
+With phred stats, 0x608
+     1681.08 real      2198.26 user       134.36 sys
+
+Without phred stats, 0x208
+     1039.49 real      1108.03 user        85.69 sys
+     
+PHRED code disabled:
+
+NWD102903
+Starting VCF chromosome chr1.
+Starting VCF chromosome chr2.
+Starting VCF chromosome chr3.
+Starting VCF chromosome chr4.
+Starting VCF chromosome chr5.
+Starting VCF chromosome chr6.
+Starting VCF chromosome chr7.
+Starting VCF chromosome chr8.
+Starting VCF chromosome chr9.
+Starting VCF chromosome chr10.
+Starting VCF chromosome chr11.
+Starting VCF chromosome chr12.
+Starting VCF chromosome chr13.
+Starting VCF chromosome chr14.
+Starting VCF chromosome chr15.
+Starting VCF chromosome chr16.
+Starting VCF chromosome chr17.
+Starting VCF chromosome chr18.
+Starting VCF chromosome chr19.
+Starting VCF chromosome chr20.
+Starting VCF chromosome chr21.
+Starting VCF chromosome chr22.
+Starting VCF chromosome chrX.
+vcf_read_static_fields(): Info: Got EOF reading CHROM, as expected.
+Max buffered alignments: 2485
+2814254 VCF calls processed.
+940493095 SAM alignments processed.
+142366 SAM alignments discarded (0%).
+65219584 total REF alleles (49%).
+63788441 total ALT alleles (48%).
+2648674 total OTHER alleles (2%).
+time: command terminated abnormally
+     1034.70 real      1095.36 user        86.90 sys
+
+With phreds:
+
+FreeBSD barracuda.uits  bacon ~/Data/TOPMed/Jobs/Haplohseq-analysis 1046: ./ad2vcf-test
+../../local/bin/ad2vcf
+NWD102903
+Starting VCF chromosome chr1.
+Starting VCF chromosome chr2.
+Starting VCF chromosome chr3.
+Starting VCF chromosome chr4.
+Starting VCF chromosome chr5.
+Starting VCF chromosome chr6.
+Starting VCF chromosome chr7.
+Starting VCF chromosome chr8.
+Starting VCF chromosome chr9.
+Starting VCF chromosome chr10.
+Starting VCF chromosome chr11.
+Starting VCF chromosome chr12.
+Starting VCF chromosome chr13.
+Starting VCF chromosome chr14.
+Starting VCF chromosome chr15.
+Starting VCF chromosome chr16.
+Starting VCF chromosome chr17.
+Starting VCF chromosome chr18.
+Starting VCF chromosome chr19.
+Starting VCF chromosome chr20.
+Starting VCF chromosome chr21.
+Starting VCF chromosome chr22.
+Starting VCF chromosome chrX.
+vcf_read_static_fields(): Info: Got EOF reading CHROM, as expected.
+Max buffered alignments: 2485
+time: command terminated abnormally
+     1567.46 real      2105.59 user       131.19 sys
+NWD103371
+Starting VCF chromosome chr1.
+Starting VCF chromosome chr2.
+Starting VCF chromosome chr3.
+Starting VCF chromosome chr4.
+Starting VCF chromosome chr5.
+Starting VCF chromosome chr6.
+Starting VCF chromosome chr7.
+Starting VCF chromosome chr8.
+Starting VCF chromosome chr9.
+Starting VCF chromosome chr10.
+Starting VCF chromosome chr11.
+Starting VCF chromosome chr12.
+Starting VCF chromosome chr13.
+Starting VCF chromosome chr14.
+Starting VCF chromosome chr15.
+Starting VCF chromosome chr16.
+Starting VCF chromosome chr17.
+Starting VCF chromosome chr18.
+Starting VCF chromosome chr19.
+Starting VCF chromosome chr20.
+Starting VCF chromosome chr21.
+Starting VCF chromosome chr22.
+Starting VCF chromosome chrX.
+vcf_read_static_fields(): Info: Got EOF reading CHROM, as expected.
+Max buffered alignments: 1698
+time: command terminated abnormally
+     1325.66 real      1780.85 user       111.33 sys
+
+No phreds:
+
+FreeBSD barracuda.uits  bacon ~/Data/TOPMed/Jobs/Haplohseq-analysis 1049: ./ad2vcf-test 
+../../local/bin/ad2vcf
+NWD102903
+Starting VCF chromosome chr1.
+Starting VCF chromosome chr2.
+Starting VCF chromosome chr3.
+Starting VCF chromosome chr4.
+Starting VCF chromosome chr5.
+Starting VCF chromosome chr6.
+Starting VCF chromosome chr7.
+Starting VCF chromosome chr8.
+Starting VCF chromosome chr9.
+Starting VCF chromosome chr10.
+Starting VCF chromosome chr11.
+Starting VCF chromosome chr12.
+Starting VCF chromosome chr13.
+Starting VCF chromosome chr14.
+Starting VCF chromosome chr15.
+Starting VCF chromosome chr16.
+Starting VCF chromosome chr17.
+Starting VCF chromosome chr18.
+Starting VCF chromosome chr19.
+Starting VCF chromosome chr20.
+Starting VCF chromosome chr21.
+Starting VCF chromosome chr22.
+Starting VCF chromosome chrX.
+vcf_read_static_fields(): Info: Got EOF reading CHROM, as expected.
+Max buffered alignments: 2485
+2814254 VCF calls processed.
+940493095 SAM alignments processed.
+142366 SAM alignments discarded (0%).
+2777721 bases discarded.
+time: command terminated abnormally
+     1518.41 real      2063.63 user       131.98 sys
+NWD103371
+Starting VCF chromosome chr1.
+Starting VCF chromosome chr2.
+Starting VCF chromosome chr3.
+Starting VCF chromosome chr4.
+Starting VCF chromosome chr5.
+Starting VCF chromosome chr6.
+Starting VCF chromosome chr7.
+Starting VCF chromosome chr8.
+Starting VCF chromosome chr9.
+Starting VCF chromosome chr10.
+Starting VCF chromosome chr11.
+Starting VCF chromosome chr12.
+Starting VCF chromosome chr13.
+Starting VCF chromosome chr14.
+Starting VCF chromosome chr15.
+Starting VCF chromosome chr16.
+Starting VCF chromosome chr17.
+Starting VCF chromosome chr18.
+Starting VCF chromosome chr19.
+Starting VCF chromosome chr20.
+Starting VCF chromosome chr21.
+Starting VCF chromosome chr22.
+Starting VCF chromosome chrX.
+vcf_read_static_fields(): Info: Got EOF reading CHROM, as expected.
+Max buffered alignments: 1698
+2875222 VCF calls processed.
+771653111 SAM alignments processed.
+228353 SAM alignments discarded (0%).
+4333192 bases discarded.
+time: command terminated abnormally
+     1324.80 real      1786.02 user       113.35 sys
