@@ -4,18 +4,25 @@
 export PATH=../../local/bin:${PATH}
 which ad2vcf
 
-for sample in NWD102903; do
-    echo $sample
+samples=$(ls ../../SRR6990379/*.cram | cut -d / -f 4 | cut -d . -f 1)
+echo $samples
+for sample in $samples; do
+# for sample in NWD102903; do
     # 2 threads brings a significant gain over 1
     # 3, 4 or 5 threads use much more CPU time but do not help
     # the wall time at all.
-    for threads in 2; do
-	echo $threads
-	# Use 0x608 to include PHRED scores for stats, 0x208 to exclude
-	# PHRED code in ad2vcf is currently disabled
-	/usr/bin/time samtools view -@ $threads \
+    # Use 0x608 to include PHRED scores for stats, 0x208 to exclude
+    # samtools view takes about twice as long to run when reporting PHREDs
+    # PHRED code in ad2vcf is currently disabled
+    if [ ! -e Split-vcfs/Combined/combined.$sample-ad.vcf.xz ]; then
+	/usr/bin/time samtools view -@ 2 \
 	    --input-fmt-option required_fields=0x208 \
 	    ../../SRR6990379/$sample.b38.irc.v1.cram \
 	    | ad2vcf Split-vcfs/Combined/combined.$sample.vcf.xz
-    done
+    else
+	printf "$sample already done.\n"
+    fi
+    printf "hts-ref count: "
+    find $HOME/.cache/hts-ref | wc -l
+    find $HOME/.cache/hts-ref > hts-ref-list.$sample
 done
