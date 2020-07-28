@@ -1,0 +1,34 @@
+#!/bin/sh -e
+
+##########################################################################
+#   Script description:
+#       
+#   Arguments:
+#       
+#   Returns:
+#       
+#   History:
+#   Date        Name        Modification
+#   2019-10-11  Jason Bacon Begin
+##########################################################################
+
+usage()
+{
+    printf "Usage: $0 ngc-file SRR#\n"
+    exit 1
+}
+
+
+##########################################################################
+#   Main
+##########################################################################
+
+if [ $# != 2 ]; then
+    usage
+fi
+
+ngc=$1
+srr=$2
+curl -s -X POST -F ngc="@$ngc" "https://www.ncbi.nlm.nih.gov/Traces/sdl/1/retrieve?acc=${srr}&location=s3.us-east-1"
+curl -s -X POST "https://www.ncbi.nlm.nih.gov/Traces/sdl/1/retrieve?acc=${srr}&location=s3.us-east-1&meta-only=yes"
+

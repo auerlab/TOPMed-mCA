@@ -1,0 +1,33 @@
+#!/bin/sh -e
+
+##########################################################################
+#   Script description:
+#       Run multiple ad2vcf.sh jobs together
+#       
+#   History:
+#   Date        Name        Modification
+#   2020-07-28              Begin
+##########################################################################
+
+usage()
+{
+    printf "Usage: $0 sample-file job-count\n"
+    exit 1
+}
+
+
+##########################################################################
+#   Main
+##########################################################################
+
+if [ $# != 2 ]; then
+    usage
+fi
+sample_file=$1
+job_count=$2
+
+split -d -n l/$job_count $sample_file samples-
+for file in samples-*; do
+    echo $file
+    nohup ./ad2vcf.sh $file > $file.out 2> $file.err &
+done

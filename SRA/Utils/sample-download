@@ -1,0 +1,66 @@
+#!/bin/sh -e
+
+##########################################################################
+#   Script description:
+#       Fetch files in an SRA cart file using fusera
+#       https://www.ncbi.nlm.nih.gov/sra/docs/dbgap-cloud-access/#mount-the-cloud-storage-data
+#
+#   Arguments:
+#       Name of cart file
+#       
+#   History:
+#   Date        Name        Modification
+#   2019-10-11  Jason Bacon Begin
+##########################################################################
+
+usage()
+{
+    printf "Usage: $0 filename\n"
+    exit 1
+}
+
+
+##########################################################################
+#   Main
+##########################################################################
+
+if [ $# != 0 ]; then
+    usage
+fi
+sample_file=$1
+
+mkdir -p $HOME/SRA-download/mount
+for cart in $sample_file; do
+    all_srrs=$(cat $cart)
+    c=0
+    for srr in $all_srrs; do
+	printf "$c\n"
+	printf "===\nMounting cart $cart, srr $srr...\n"
+	fusera mount -l s3.us-east-1 -t prj_13558_D25493.ngc -a $srr \
+	    $HOME/SRA-download/mount &
+	sleep 2
+	while [ 0$(ls mount) = 0 ]; do
+	    printf "Waiting for fusera mount...\n"
+	    sleep 2
+	done
+	ls -l mount/*
+	#ls -l mount/*/*.cram >> cram-sizes.txt
+	#time cat mount/*/*.cram > /dev/null
+	#time cat mount/*/*.cram > /dev/null
+	#time samtools view mount/*/*.cram > /dev/null
+	#read -p "Press return when done with $srr..." junk
+	while [ ! -e download-done ]; do
+	    sleep 2
+	done
+	rm -f download-done
+	fusera unmount $HOME/SRA-download/mount
+	while [ 0$(ls mount) != 0 ]; do
+	    printf "Waiting for fusera mount...\n"
+	    sleep 2
+	done
+	c=$((c + 1))
+	if [ $c = 10 ]; then
+	    exit
+	fi
+    done
+done

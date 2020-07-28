@@ -1,0 +1,38 @@
+#!/bin/sh -e
+
+##########################################################################
+#   Script description:
+#       
+#   Arguments:
+#       
+#   Returns:
+#       
+#   History:
+#   Date        Name        Modification
+#   2019-10-11  Jason Bacon Begin
+##########################################################################
+
+usage()
+{
+    printf "Usage: $0 hash request-#\n"
+    printf "Get the hash and request # from dbgap download under\n"
+    printf '"2. Run ascp manually..."'
+    exit 1
+}
+
+
+##########################################################################
+#   Main
+##########################################################################
+
+if [ $# != 2 ]; then
+    usage
+fi
+
+hash="$1"
+request=$2
+set -x
+$HOME/.aspera/connect/bin/ascp -QTr -l 300M -k 1 \
+    -i $HOME/.aspera/connect/etc/asperaweb_id_dsa.openssh \
+    -W $hash \
+    dbtest@gap-upload.ncbi.nlm.nih.gov:data/instant/jtocino/$request .

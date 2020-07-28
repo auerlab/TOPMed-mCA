@@ -1,0 +1,3 @@
+#!/bin/sh -e
+
+~/sratoolkit.2.9.6-1-centos_linux64/bin/prefetch --max-size=200G --ascp-path="~/.aspera/connect/bin/ascp|~/.aspera/connect/etc/asperaweb_id_dsa.putty" ~/SRA-cloud/cart_DAR53116_201910181043.krt

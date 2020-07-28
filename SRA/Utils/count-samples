@@ -1,0 +1,10 @@
+#!/bin/sh -e
+
+total=0
+for file in *.krt; do
+    c=$(prefetch -l $file |wc -l)
+    total=$((total+c))
+done
+echo $total
+days=$((total * 48 / 60 / 24 ))
+echo $days

@@ -1,0 +1,10 @@
+
+53094 JHX Phase1
+53116 WHI phase2
+
+[ec2-user@ip-172-31-35-177 SRR6769027]$ time cat NWD401245.b38.irc.v1.cram > /dev/null
+
+real    5m23.307s
+user    0m0.108s
+sys 0m6.649s
+

@@ -1,0 +1,32 @@
+#!/bin/sh -e
+
+##########################################################################
+#   Script description:
+#       
+#   Arguments:
+#       
+#   Returns:
+#       
+#   History:
+#   Date        Name        Modification
+#   2020-03-12  Jason Bacon Begin
+##########################################################################
+
+usage()
+{
+    printf "Usage: $0 filename\n"
+    exit 1
+}
+
+
+##########################################################################
+#   Main
+##########################################################################
+
+if [ $# != 1 ]; then
+    usage
+fi
+
+for nwd in $(cat $1); do
+    awk -v nwd=$nwd '$3 == nwd { print $4 }' TOPMed_SraRunTable_20190628.txt
+done
