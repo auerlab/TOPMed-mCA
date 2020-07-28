@@ -2,7 +2,7 @@
 
 ##########################################################################
 #   Script description:
-#       Upload samples to GCP instance or bucket
+#       Pre-populate GCP instance with hts-ref cache
 #       
 #   History:
 #   Date        Name        Modification
@@ -11,7 +11,7 @@
 
 usage()
 {
-    printf "Usage: $0 sampe-file GCP-instance-name\n"
+    printf "Usage: $0 instance-name\n"
     exit 1
 }
 
@@ -20,17 +20,10 @@ usage()
 #   Main
 ##########################################################################
 
-if [ $# != 2 ]; then
+if [ $# != 1 ]; then
     usage
 fi
+instance=$1
 
-sample_file=$1
-instance=$2
-
-dest_dir=Haplohseq-analysis/SRA
-gcloud compute ssh $instance --command="mkdir -p $dest_dir/VCFs"
-gcloud compute scp $sample_file ${instance}:$dest_dir/VCFs
-for sample in $(cat $sample_file); do
-    gcloud compute scp ../Split-vcfs/Combined/combined.$sample.vcf.xz \
-	${instance}:$dest_dir
-done
+gcloud compute scp --compress Save/pkgsrc-RHEL7-gcc-8.0-usr-pkg.tgz \
+    ${instance}:
