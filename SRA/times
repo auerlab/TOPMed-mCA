@@ -93,3 +93,207 @@ real    30m38.248s
 user    40m53.476s
 sys 9m29.286s
 
+Sample: NWD102934  SRR: SRR6990380
+Waiting for fusera...
+Fusera is ready!
+Remember, Fusera needs to keep running in order to serve your files, don't close this terminal!
+NWD102934.b38.irc.v1.cram  NWD102934.b38.irc.v1.cram.crai
+
+Processing "combined.NWD102934.vcf.xz":
+
+Starting VCF chromosome chr1.
+Starting VCF chromosome chr2.
+Starting VCF chromosome chr3.
+Starting VCF chromosome chr4.
+Starting VCF chromosome chr5.
+Starting VCF chromosome chr6.
+Starting VCF chromosome chr7.
+Starting VCF chromosome chr8.
+Starting VCF chromosome chr9.
+Starting VCF chromosome chr10.
+Starting VCF chromosome chr11.
+Starting VCF chromosome chr12.
+Starting VCF chromosome chr13.
+Starting VCF chromosome chr14.
+Starting VCF chromosome chr15.
+Starting VCF chromosome chr16.
+Starting VCF chromosome chr17.
+Starting VCF chromosome chr18.
+Starting VCF chromosome chr19.
+Starting VCF chromosome chr20.
+Starting VCF chromosome chr21.
+Starting VCF chromosome chr22.
+Starting VCF chromosome chrX.
+vcf_read_static_fields(): Info: Got EOF reading CHROM, as expected.
+
+Final statistics:
+
+2762648 VCF calls processed
+809319064 SAM alignments processed
+Max buffered alignments: 30622
+3309792 SAM alignments discarded (0%)
+MAPQ min = 0  max = 0  mean = 0.000000
+54291755 total REF alleles (48%)
+52909192 total ALT alleles (46%)
+5623635 total OTHER alleles (4%)
+Min depth = 0
+Max depth = 27014
+Mean depth = 38.803694
+
+real	26m59.249s
+user	38m23.968s
+sys	8m9.014s
+Sample: NWD103371  SRR: SRR6990381
+Waiting for fusera...
+Fusera is ready!
+Remember, Fusera needs to keep running in order to serve your files, don't close this terminal!
+NWD103371.b38.irc.v1.cram	NWD103371.freeze5.v1.vcf.gz
+NWD103371.b38.irc.v1.cram.crai	NWD103371.freeze5.v1.vcf.gz.csi
+
+Processing "combined.NWD103371.vcf.xz":
+
+Starting VCF chromosome chr1.
+Starting VCF chromosome chr2.
+Starting VCF chromosome chr3.
+Starting VCF chromosome chr4.
+Starting VCF chromosome chr5.
+Starting VCF chromosome chr6.
+Starting VCF chromosome chr7.
+Starting VCF chromosome chr8.
+Starting VCF chromosome chr9.
+Starting VCF chromosome chr10.
+Starting VCF chromosome chr11.
+Starting VCF chromosome chr12.
+Starting VCF chromosome chr13.
+Starting VCF chromosome chr14.
+Starting VCF chromosome chr15.
+Starting VCF chromosome chr16.
+Starting VCF chromosome chr17.
+Starting VCF chromosome chr18.
+Starting VCF chromosome chr19.
+Starting VCF chromosome chr20.
+Starting VCF chromosome chr21.
+Starting VCF chromosome chr22.
+Starting VCF chromosome chrX.
+vcf_read_static_fields(): Info: Got EOF reading CHROM, as expected.
+
+Final statistics:
+
+2875222 VCF calls processed
+771653111 SAM alignments processed
+Max buffered alignments: 1698
+1817164 SAM alignments discarded (0%)
+MAPQ min = 0  max = 0  mean = 0.000000
+54246010 total REF alleles (49%)
+52969192 total ALT alleles (47%)
+3279194 total OTHER alleles (2%)
+Min depth = 0
+Max depth = 689
+Mean depth = 37.289365
+
+real	26m4.140s
+user	34m22.983s
+sys	7m48.650s
+Sample: NWD103804  SRR: SRR6990382
+Waiting for fusera...
+Fusera is ready!
+Remember, Fusera needs to keep running in order to serve your files, don't close this terminal!
+NWD103804.b38.irc.v1.cram	NWD103804.freeze5.v1.vcf.gz
+NWD103804.b38.irc.v1.cram.crai	NWD103804.freeze5.v1.vcf.gz.csi
+
+Processing "combined.NWD103804.vcf.xz":
+
+Starting VCF chromosome chr1.
+Starting VCF chromosome chr2.
+Starting VCF chromosome chr3.
+Starting VCF chromosome chr4.
+Starting VCF chromosome chr5.
+Starting VCF chromosome chr6.
+Starting VCF chromosome chr7.
+Starting VCF chromosome chr8.
+Starting VCF chromosome chr9.
+Starting VCF chromosome chr10.
+Starting VCF chromosome chr11.
+Starting VCF chromosome chr12.
+Starting VCF chromosome chr13.
+Starting VCF chromosome chr14.
+Starting VCF chromosome chr15.
+Starting VCF chromosome chr16.
+Starting VCF chromosome chr17.
+Starting VCF chromosome chr18.
+Starting VCF chromosome chr19.
+Starting VCF chromosome chr20.
+Starting VCF chromosome chr21.
+Starting VCF chromosome chr22.
+Starting VCF chromosome chrX.
+vcf_read_static_fields(): Info: Got EOF reading CHROM, as expected.
+
+Final statistics:
+
+2871838 VCF calls processed
+905219298 SAM alignments processed
+Max buffered alignments: 2717
+1725694 SAM alignments discarded (0%)
+MAPQ min = 0  max = 0  mean = 0.000000
+64016753 total REF alleles (49%)
+62617383 total ALT alleles (48%)
+3024469 total OTHER alleles (2%)
+Min depth = 0
+Max depth = 1604
+Mean depth = 44.095153
+
+real	29m28.742s
+user	39m41.444s
+sys	9m11.922s
+Sample: NWD104303  SRR: SRR6990383
+Waiting for fusera...
+Fusera is ready!
+Remember, Fusera needs to keep running in order to serve your files, don't close this terminal!
+NWD104303.b38.irc.v1.cram	NWD104303.freeze5.v1.vcf.gz
+NWD104303.b38.irc.v1.cram.crai	NWD104303.freeze5.v1.vcf.gz.csi
+
+Processing "combined.NWD104303.vcf.xz":
+
+Starting VCF chromosome chr1.
+Starting VCF chromosome chr2.
+Starting VCF chromosome chr3.
+Starting VCF chromosome chr4.
+Starting VCF chromosome chr5.
+Starting VCF chromosome chr6.
+Starting VCF chromosome chr7.
+Starting VCF chromosome chr8.
+Starting VCF chromosome chr9.
+Starting VCF chromosome chr10.
+Starting VCF chromosome chr11.
+Starting VCF chromosome chr12.
+Starting VCF chromosome chr13.
+Starting VCF chromosome chr14.
+Starting VCF chromosome chr15.
+Starting VCF chromosome chr16.
+Starting VCF chromosome chr17.
+Starting VCF chromosome chr18.
+Starting VCF chromosome chr19.
+Starting VCF chromosome chr20.
+Starting VCF chromosome chr21.
+Starting VCF chromosome chr22.
+Starting VCF chromosome chrX.
+vcf_read_static_fields(): Info: Got EOF reading CHROM, as expected.
+
+Final statistics:
+
+2864671 VCF calls processed
+647551873 SAM alignments processed
+Max buffered alignments: 1516
+1582893 SAM alignments discarded (0%)
+MAPQ min = 0  max = 0  mean = 0.000000
+45173141 total REF alleles (49%)
+43980732 total ALT alleles (47%)
+3004053 total OTHER alleles (3%)
+Min depth = 0
+Max depth = 853
+Mean depth = 31.121854
+
+real	22m13.748s
+user	30m5.459s
+sys	6m25.642s
+

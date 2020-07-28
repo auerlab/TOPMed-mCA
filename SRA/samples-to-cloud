@@ -11,7 +11,7 @@
 
 usage()
 {
-    printf "Usage: $0 sampe-file GCP-instance-name\n"
+    printf "Usage: $0 sample-file GCP-instance-name\n"
     exit 1
 }
 
@@ -27,10 +27,12 @@ fi
 sample_file=$1
 instance=$2
 
+sample_base=VCFs-$(basename $sample_file)
 dest_dir=Haplohseq-analysis/SRA
-gcloud compute ssh $instance --command="mkdir -p $dest_dir/VCFs"
-gcloud compute scp $sample_file ${instance}:$dest_dir/VCFs
+gcloud compute ssh $instance --command="mkdir -p $dest_dir"
+mkdir -p $sample_base
 for sample in $(cat $sample_file); do
-    gcloud compute scp ../Split-vcfs/Combined/combined.$sample.vcf.xz \
-	${instance}:$dest_dir
+    ln -f ../Split-vcfs/Combined/combined.$sample.vcf.xz $sample_base
 done
+gcloud compute scp --recurse $sample_base ${instance}:$dest_dir
+rm -rf $sample_base
