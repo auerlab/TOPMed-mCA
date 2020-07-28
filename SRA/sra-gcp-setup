@@ -113,7 +113,7 @@ else
     git pull
 fi
 source /usr/pkg/etc/pkgsrc.sh
-if [ ! -e /usr/pkg/bin/auto-update-system ]; then
+if [ ! -e /usr/pkg/sbin/auto-update-system ]; then
     cd /usr/pkgsrc/wip/auto-admin
     bmake clean clean-depends install clean clean-depends
 fi
@@ -129,12 +129,14 @@ if [ ! -e /usr/pkg/bin/ad2vcf ]; then
     cd /usr/pkgsrc/wip/ad2vcf
     bmake clean clean-depends install clean clean-depends
 fi
-if [ ! -e /usr/pkg/bin/iftop ]; then
+if [ ! -e /usr/pkg/sbin/iftop ]; then
     cd /usr/pkgsrc/net/iftop
     bmake clean clean-depends install clean clean-depends
 fi
-cd /usr/pkgsrc/security/mozilla-rootcerts-openssl
-bmake clean clean-depends install clean clean-depends
+if [ ! -e /usr/pkg/etc/openssl/certs/mozilla-rootcert-0.pem ]; then
+    cd /usr/pkgsrc/security/mozilla-rootcerts-openssl
+    bmake clean clean-depends install clean clean-depends
+fi
 
 echo Finished : `date` >> tools-setup.log
 needs-restarting
