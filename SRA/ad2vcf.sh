@@ -34,7 +34,7 @@ for sample in $(cat $sample_file); do
 
     srr=$(awk -v sample=$sample '$3 == sample { print $4 }' TOPMed_SraRunTable_20190628.txt)
     printf "Sample: $sample  SRR: $srr\n"
-    fusera mount -t ../SRA/prj_13558_D25493.ngc -a $srr $mount_dir &
+    fusera mount -t Security/prj_13558_D25493.ngc -a $srr $mount_dir &
     while [ ! -e $mount_dir/$srr/$sample.b38.irc.v1.cram ]; do
 	printf "Waiting for fusera...\n"
 	sleep 1
