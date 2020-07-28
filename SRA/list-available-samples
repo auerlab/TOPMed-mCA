@@ -1,4 +1,4 @@
 #!/bin/sh -e
 
 awk '$1 != "study" && $2 != "phs000920" && $2 != "phs000921" { print $3,$4 }' \
-    TOPMed_SraRunTable_20190628.txt > available-samples.txt
+    TOPMed_SraRunTable_20190628.txt > Sample-lists/available-samples.txt

@@ -27,12 +27,16 @@ fi
 sample_file=$1
 instance=$2
 
-sample_base=VCFs-$(basename $sample_file)
+sample_dir=VCFs-$(basename $sample_file)
 dest_dir=Haplohseq-analysis/SRA
 gcloud compute ssh $instance --command="mkdir -p $dest_dir"
-mkdir -p $sample_base
+rm -rf $sample_dir
+mkdir -p $sample_dir
 for sample in $(cat $sample_file); do
-    ln -f ../Split-vcfs/Combined/combined.$sample.vcf.xz $sample_base
+    if ! ln ../Split-vcfs/Combined/combined.$sample.vcf.xz $sample_dir; then
+	printf "$sample\n" >> missing-samples.txt
+    fi
 done
-gcloud compute scp --recurse $sample_base ${instance}:$dest_dir
-rm -rf $sample_base
+find $sample_dir -type f | wc -l
+gcloud compute scp --recurse $sample_dir ${instance}:$dest_dir
+rm -rf $sample_dir
