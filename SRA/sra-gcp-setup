@@ -24,7 +24,7 @@ echo Started : `date` > tools-setup.log
 
 yum update -y
 yum install -y mc gcc gcc-c++ gcc-gfortran java-1.8.0-openjdk-headless \
-    git zlib-devel bzip2-devel libcurl-devel tcsh bind-utils \
+    git zlib-devel bzip2-devel libcurl-devel tcsh bind-utils cvs \
     openssl-devel fuse.x86_64 ncurses-devel wget bzip2 yum-utils sysstat
 
 # Interferes with pkg_install
@@ -104,6 +104,10 @@ else for a while.
 EOM
 pause
 
+cd /usr/pkgsrc
+export CVS_RSH=ssh
+cvs -q up -dP || true
+
 if [ ! -e /usr/pkgsrc/wip ]; then
     printf "Cloning pkgsrc-wip...\n"
     cd /usr/pkgsrc
@@ -123,7 +127,9 @@ if [ ! -e /usr/pkg/bin/ape ]; then
 fi
 
 # Optimize computational tools
-pkg_delete -r htslib biolibc || true
+for pkg in samtools htslib ad2vcf biolibc; do
+    pkg_delete $pkg || true
+done
 export CFLAGS="-Wall -O2 -march=native"
 cd /usr/pkgsrc/biology/samtools
 bmake clean clean-depends install clean clean-depends
