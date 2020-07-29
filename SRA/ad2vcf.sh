@@ -26,6 +26,8 @@ fi
 sample_file=$1
 vcf_dir=$2
 
+mkdir -p $vcf_dir/Done
+
 #export PATH=./local/bin:$PATH
 which ad2vcf
 
@@ -49,7 +51,7 @@ for sample in $(awk '{ print $1 }' $sample_file); do
 	time samtools view -@ 2 --input-fmt-option required_fields=0x208 \
 	    $mount_dir/$srr/$sample.b38.irc.v1.cram \
 	    | ad2vcf $vcf_dir/combined.$sample.vcf.xz
-	touch $vcf_dir/$sample.done
+	ln $vcf_dir//combined.$sample-ad.vcf.xz $vcf_dir/Done
 	
 	fusera unmount $mount_dir
 	rmdir $mount_dir
