@@ -49,6 +49,7 @@ for sample in $(awk '{ print $1 }' $sample_file); do
 	time samtools view -@ 2 --input-fmt-option required_fields=0x208 \
 	    $mount_dir/$srr/$sample.b38.irc.v1.cram \
 	    | ad2vcf $vcf_dir/combined.$sample.vcf.xz
+	touch $vcf_dir/$sample.done
 	
 	fusera unmount $mount_dir
 	rmdir $mount_dir
