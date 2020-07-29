@@ -25,9 +25,11 @@ if [ $# != 2 ]; then
 fi
 sample_file=$1
 job_count=$2
+vcf_dir=VCFs-$(basename $sample_file)
 
-split -d -n l/$job_count $sample_file samples-
-for file in samples-*; do
+prefix=$(basename $sample_file)-
+split -d -n l/$job_count $sample_file $prefix
+for file in ${prefix}-??; do
     echo $file
-    nohup ./ad2vcf.sh $file > $file.out 2> $file.err &
+    nohup ./ad2vcf.sh $file $vcf_dir > $file.out 2> $file.err &
 done
