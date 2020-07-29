@@ -30,12 +30,14 @@ yum install -y mc gcc gcc-c++ gcc-gfortran java-1.8.0-openjdk-headless \
 # Interferes with pkg_install
 yum remove xz-devel
 
+sra_version=2.10.8
+
 cat << EOM > /etc/profile.d/zzz-bio.sh
 if ! echo \$PATH | fgrep -q /usr/pkg/bin; then
     . /usr/pkg/etc/pkgsrc.sh
 fi
 for dir in \\
-	/opt/sratoolkit.2.9.4-centos_linux64/bin \\
+	/opt/sratoolkit.$sra_version-centos_linux64/bin \\
 	/usr/local/bin; do
     if ! echo \$PATH | fgrep \$dir; then
 	PATH=\${dir}:\$PATH
@@ -44,13 +46,16 @@ done
 export PATH
 EOM
 
-if [ ! -e /opt/sratoolkit.2.9.4-centos_linux64 ]; then
+# 
+# https://github.com/ncbi/sra-tools/wiki/02.-Installing-SRA-Toolkit
+# sra_version=2.9.4     # Temporary for stability, late 2019
+if [ ! -e /opt/sratoolkit.$sra_version-centos_linux64 ]; then
     echo "----->" Install SRA toolkit
-    wget -q https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.9.4/sratoolkit.2.9.4-centos_linux64.tar.gz
-    tar xzf sratoolkit.2.9.4-centos_linux64.tar.gz
-    rm -f sratoolkit.2.9.4-centos_linux64.tar.gz
-    rm -rf /opt/sratoolkit.2.9.4-centos_linux64
-    mv ./sratoolkit.2.9.4-centos_linux64 /opt
+    wget -q https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/$sra_version/sratoolkit.$sra_version-centos_linux64.tar.gz
+    tar xzf sratoolkit.$sra_version-centos_linux64.tar.gz
+    rm -f sratoolkit.$sra_version-centos_linux64.tar.gz
+    rm -rf /opt/sratoolkit.$sra_version-centos_linux64
+    mv ./sratoolkit.$sra_version-centos_linux64 /opt
     # Script should be alphabetically after pkgsrc.sh and work whether or
     # not pkgsrc.sh is in /etc/profile.d
     chmod 755 /etc/profile.d/zzz-bio.sh
@@ -67,7 +72,7 @@ fi
 bashrc=$HOME/.bashrc
 if ! fgrep -q sratoolkit $bashrc; then
     cat << EOM >> $bashrc
-export PATH=\${PATH}:/opt/sratoolkit.2.9.4-centos_linux64/bin:/usr/local/bin
+export PATH=\${PATH}:/opt/sratoolkit.$sra_version-centos_linux64/bin:/usr/local/bin
 EOM
 fi
 

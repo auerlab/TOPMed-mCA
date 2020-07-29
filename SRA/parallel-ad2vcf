@@ -29,7 +29,7 @@ vcf_dir=VCFs-$(basename $sample_file)
 
 prefix=$(basename $sample_file)-
 split -d -n l/$job_count $sample_file $prefix
-for file in ${prefix}-??; do
+for file in ${prefix}??; do
     echo $file
     nohup ./ad2vcf.sh $file $vcf_dir > $file.out 2> $file.err &
 done
