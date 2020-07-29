@@ -1,0 +1,32 @@
+#!/bin/sh -e
+
+##########################################################################
+#   Script description:
+#       Download results from a GCP ad2vcf run
+#       
+#   History:
+#   Date        Name        Modification
+#   2020-07-29  Jason Bacon Begin
+##########################################################################
+
+usage()
+{
+    printf "Usage: $0 instance sample-file\n"
+    exit 1
+}
+
+
+##########################################################################
+#   Main
+##########################################################################
+
+if [ $# != 2 ]; then
+    usage
+fi
+instance=$1
+sample_file=$(basename $2)
+dir=Haplohseq-analysis/SRA/VCFs-$sample_file
+echo $instance $dir
+
+gcloud compute scp --recurse ${instance}:$dir/Done Results-$sample_file
+
