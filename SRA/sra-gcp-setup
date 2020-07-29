@@ -130,6 +130,10 @@ if [ ! -e /usr/pkg/bin/ape ]; then
     cd /usr/pkgsrc/wip/ape
     bmake clean clean-depends install clean clean-depends
 fi
+if [ ! -e /usr/pkg/bin/basic-stats ]; then
+    cd /usr/pkgsrc/wip/basic-stats
+    bmake clean clean-depends install clean clean-depends
+fi
 
 # Optimize computational tools
 for pkg in samtools htslib ad2vcf biolibc; do

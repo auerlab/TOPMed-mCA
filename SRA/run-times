@@ -1,0 +1,4 @@
+#!/bin/sh -e
+
+grep real *.err | awk '{ print $2 }' | tr 'ms' ' ' \
+    | awk '{ print $1 + $2/60 }' | basic-stats --average 1
