@@ -32,11 +32,11 @@ dest_dir=Haplohseq-analysis/SRA
 gcloud compute ssh $instance --command="mkdir -p $dest_dir"
 rm -rf $sample_dir
 mkdir -p $sample_dir
-for sample in $(cat $sample_file); do
+for sample in $(awk '{ print $1 }' $sample_file); do
     if ! ln ../Split-vcfs/Combined/combined.$sample.vcf.xz $sample_dir; then
-	printf "$sample\n" >> missing-samples.txt
+	printf "$sample\n" >> $sample_dir/missing-samples.txt
     fi
 done
-find $sample_dir -type f | wc -l
+find $sample_dir -name '*.xz' | wc -l
 gcloud compute scp --recurse $sample_dir ${instance}:$dest_dir
 rm -rf $sample_dir
