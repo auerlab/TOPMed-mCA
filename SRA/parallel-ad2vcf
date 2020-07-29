@@ -26,10 +26,11 @@ fi
 sample_file=$1
 job_count=$2
 vcf_dir=VCFs-$(basename $sample_file)
+mkdir -p Logs
 
 prefix=$(basename $sample_file)-
 split -d -n l/$job_count $sample_file $prefix
 for file in ${prefix}??; do
     echo $file
-    nohup ./ad2vcf.sh $file $vcf_dir > $file.out 2> $file.err &
+    nohup ./ad2vcf.sh $file $vcf_dir > Logs/$file.out 2> Logs/$file.err &
 done
