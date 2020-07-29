@@ -1,4 +1,40 @@
 #!/bin/sh -e
 
-grep real *.err | awk '{ print $2 }' | tr 'ms' ' ' \
-    | awk '{ print $1 + $2/60 }' | basic-stats --average 1
+##########################################################################
+#   Script description:
+#       Compute ad2vcf run times from logs
+#       
+#   History:
+#   Date        Name        Modification
+#   2020-07-29              Begin
+##########################################################################
+
+usage()
+{
+    printf "Usage: $0 parallel-jobs\n"
+    exit 1
+}
+
+
+##########################################################################
+#   Main
+##########################################################################
+
+if [ $# != 1 ]; then
+    usage
+fi
+jobs=$1
+
+avg_time=$(grep real Logs*/*.err | awk '{ print $2 }' | tr 'ms' ' ' \
+    | awk '{ print $1 + $2/60 }' | basic-stats --average 1)
+printf "Average time = %f minutes\n" $avg_time
+jobs_per_hour=$(printf "$jobs / $avg_time * 60\n" | bc -l)
+jobs_per_day=$(printf "$jobs_per_hour * 24\n" | bc -l)
+jobs_per_week=$(printf "$jobs_per_day * 7\n" | bc -l)
+jobs_per_month=$(printf "$jobs_per_day * 30.44\n" | bc -l)
+printf "With %u parallel jobs:\n" $jobs
+printf "    %f jobs/hour.\n" $jobs_per_hour
+printf "    %f jobs/day.\n" $jobs_per_day
+printf "    %f jobs/week.\n" $jobs_per_week
+printf "    %f jobs/month.\n" $jobs_per_month
+
