@@ -24,7 +24,7 @@ echo Started : `date` > tools-setup.log
 
 yum update -y
 yum install -y mc gcc gcc-c++ gcc-gfortran java-1.8.0-openjdk-headless \
-    git zlib-devel bzip2-devel libcurl-devel tcsh bind-utils cvs \
+    git zlib-devel bzip2-devel libcurl-devel tcsh bind-utils cvs bc \
     openssl-devel fuse.x86_64 ncurses-devel wget bzip2 yum-utils sysstat
 
 # Interferes with pkg_install
