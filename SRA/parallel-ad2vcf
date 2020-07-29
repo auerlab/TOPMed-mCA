@@ -32,5 +32,9 @@ prefix=$(basename $sample_file)-
 split -d -n l/$job_count $sample_file $prefix
 for file in ${prefix}??; do
     echo $file
-    nohup ./ad2vcf.sh $file $vcf_dir > Logs/$file.out 2> Logs/$file.err &
+    if [ -e Logs/$file.out ]; then
+	printf "Logs/$file.out already exists.  Move or remove and try again.\n"
+    else
+	nohup ./ad2vcf.sh $file $vcf_dir > Logs/$file.out 2> Logs/$file.err &
+    fi
 done
