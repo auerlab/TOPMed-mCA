@@ -46,19 +46,24 @@ for sample in $(awk '{ print $1 }' $sample_file); do
 	    printf "\n===================================================\n"
 	    printf "Sample: $sample  SRR: $srr\n"
 	    fusera mount -t Security/prj_13558_D25493.ngc -a $srr $mount_dir &
-	    while [ ! -e $mount_dir/$srr/$sample.b38.irc.v1.cram ]; do
+	    tries=0
+	    while [ ! -e $mount_dir/$srr/$sample.b38.irc.v1.cram ] && [ $tries -lt 10 ]; do
 		printf "Waiting for fusera...\n"
-		sleep 1
+		sleep 3
+		tries=$((tries + 1))
 	    done
-	    ls $mount_dir/$srr
-	    
-	    time samtools view -@ 2 --input-fmt-option required_fields=0x208 \
-		$mount_dir/$srr/$sample.b38.irc.v1.cram \
-		> /dev/null #| ad2vcf $vcf_dir/combined.$sample.vcf.xz
-	    #mv $vcf_dir/combined.$sample-ad.vcf.xz $vcf_dir/Done
-	    
-	    fusera unmount $mount_dir
-	    rmdir $mount_dir
+	    if [ tries = 10 ]; then
+		printf "Giving up on $srr.\n"
+	    else
+		ls $mount_dir/$srr
+		time samtools view -@ 2 --input-fmt-option required_fields=0x208 \
+		    $mount_dir/$srr/$sample.b38.irc.v1.cram \
+		    | ad2vcf $vcf_dir/combined.$sample.vcf.xz
+		mv $vcf_dir/combined.$sample-ad.vcf.xz $vcf_dir/Done
+		
+		fusera unmount $mount_dir
+		rmdir $mount_dir
+	    fi
 	fi
     else
 	printf "Hey! Found $study in $sample_file.\n"
