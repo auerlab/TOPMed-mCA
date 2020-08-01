@@ -1,0 +1,213 @@
+===================================================
+Sample: NWD831812  SRR: SRR6776185
+Waiting for fusera...
+Fusera is ready!
+Remember, Fusera needs to keep running in order to serve your files, don't close this terminal!
+NWD831812.b38.irc.v1.cram	NWD831812.freeze5.v1.vcf.gz
+NWD831812.b38.irc.v1.cram.crai	NWD831812.freeze5.v1.vcf.gz.csi
+
+Processing "VCFs-test-samples//combined.NWD831812.vcf.xz":
+
+Starting VCF chromosome chr1.
+Starting VCF chromosome chr2.
+Starting VCF chromosome chr3.
+Starting VCF chromosome chr4.
+Starting VCF chromosome chr5.
+Starting VCF chromosome chr6.
+Starting VCF chromosome chr7.
+Starting VCF chromosome chr8.
+Starting VCF chromosome chr9.
+Starting VCF chromosome chr10.
+Starting VCF chromosome chr11.
+Starting VCF chromosome chr12.
+Starting VCF chromosome chr13.
+Starting VCF chromosome chr14.
+Starting VCF chromosome chr15.
+Starting VCF chromosome chr16.
+Starting VCF chromosome chr17.
+Starting VCF chromosome chr18.
+Starting VCF chromosome chr19.
+Starting VCF chromosome chr20.
+Starting VCF chromosome chr21.
+Starting VCF chromosome chr22.
+Starting VCF chromosome chrX.
+vcf_read_static_fields(): Info: Got EOF reading CHROM, as expected.
+
+Final statistics:
+
+2148592 VCF calls processed
+945786348 SAM alignments processed
+Max buffered alignments: 5469
+3026538 SAM alignments discarded (0%)
+MAPQ min = 0  max = 0  mean = 0.000000
+51514409 total REF alleles (48%)
+49915531 total ALT alleles (47%)
+3838105 total OTHER alleles (3%)
+Min depth = 0
+Max depth = 2723
+Mean depth = 47.207632
+
+real	33m28.306s
+user	46m45.602s
+sys	6m1.326s
+
+===================================================
+Sample: NWD561898  SRR: SRR6775618
+Waiting for fusera...
+Fusera is ready!
+Remember, Fusera needs to keep running in order to serve your files, don't close this terminal!
+NWD561898.b38.irc.v1.cram	NWD561898.freeze5.v1.vcf.gz
+NWD561898.b38.irc.v1.cram.crai	NWD561898.freeze5.v1.vcf.gz.csi
+
+Processing "VCFs-test-samples//combined.NWD561898.vcf.xz":
+
+Starting VCF chromosome chr1.
+Starting VCF chromosome chr2.
+Starting VCF chromosome chr3.
+Starting VCF chromosome chr4.
+Starting VCF chromosome chr5.
+Starting VCF chromosome chr6.
+Starting VCF chromosome chr7.
+Starting VCF chromosome chr8.
+Starting VCF chromosome chr9.
+Starting VCF chromosome chr10.
+Starting VCF chromosome chr11.
+Starting VCF chromosome chr12.
+Starting VCF chromosome chr13.
+Starting VCF chromosome chr14.
+Starting VCF chromosome chr15.
+Starting VCF chromosome chr16.
+Starting VCF chromosome chr17.
+Starting VCF chromosome chr18.
+Starting VCF chromosome chr19.
+Starting VCF chromosome chr20.
+Starting VCF chromosome chr21.
+Starting VCF chromosome chr22.
+Starting VCF chromosome chrX.
+vcf_read_static_fields(): Info: Got EOF reading CHROM, as expected.
+
+Final statistics:
+
+2083985 VCF calls processed
+760126049 SAM alignments processed
+Max buffered alignments: 56389
+1494770 SAM alignments discarded (0%)
+MAPQ min = 0  max = 0  mean = 0.000000
+39661816 total REF alleles (49%)
+38290085 total ALT alleles (47%)
+2675347 total OTHER alleles (3%)
+Min depth = 0
+Max depth = 10764
+Mean depth = 37.405212
+
+real	26m39.085s
+user	38m17.300s
+sys	4m42.005s
+
+===================================================
+Sample: NWD682826  SRR: SRR6775862
+Waiting for fusera...
+Fusera is ready!
+Remember, Fusera needs to keep running in order to serve your files, don't close this terminal!
+NWD682826.b38.irc.v1.cram	NWD682826.freeze5.v1.vcf.gz
+NWD682826.b38.irc.v1.cram.crai	NWD682826.freeze5.v1.vcf.gz.csi
+
+Processing "VCFs-test-samples//combined.NWD682826.vcf.xz":
+
+Starting VCF chromosome chr1.
+Starting VCF chromosome chr2.
+Starting VCF chromosome chr3.
+Starting VCF chromosome chr4.
+Starting VCF chromosome chr5.
+Starting VCF chromosome chr6.
+Starting VCF chromosome chr7.
+Starting VCF chromosome chr8.
+Starting VCF chromosome chr9.
+Starting VCF chromosome chr10.
+Starting VCF chromosome chr11.
+Starting VCF chromosome chr12.
+Starting VCF chromosome chr13.
+Starting VCF chromosome chr14.
+Starting VCF chromosome chr15.
+Starting VCF chromosome chr16.
+Starting VCF chromosome chr17.
+Starting VCF chromosome chr18.
+Starting VCF chromosome chr19.
+Starting VCF chromosome chr20.
+Starting VCF chromosome chr21.
+Starting VCF chromosome chr22.
+Starting VCF chromosome chrX.
+vcf_read_static_fields(): Info: Got EOF reading CHROM, as expected.
+
+Final statistics:
+
+2118028 VCF calls processed
+797088738 SAM alignments processed
+Max buffered alignments: 1688
+1982138 SAM alignments discarded (0%)
+MAPQ min = 0  max = 0  mean = 0.000000
+41369306 total REF alleles (49%)
+40313343 total ALT alleles (47%)
+2570812 total OTHER alleles (3%)
+Min depth = 0
+Max depth = 747
+Mean depth = 38.565425
+
+real	27m45.696s
+user	39m42.553s
+sys	4m52.445s
+
+===================================================
+Sample: NWD819382  SRR: SRR6776160
+Waiting for fusera...
+Fusera is ready!
+Remember, Fusera needs to keep running in order to serve your files, don't close this terminal!
+NWD819382.b38.irc.v1.cram	NWD819382.freeze5.v1.vcf.gz
+NWD819382.b38.irc.v1.cram.crai	NWD819382.freeze5.v1.vcf.gz.csi
+
+Processing "VCFs-test-samples//combined.NWD819382.vcf.xz":
+
+Starting VCF chromosome chr1.
+Starting VCF chromosome chr2.
+Starting VCF chromosome chr3.
+Starting VCF chromosome chr4.
+Starting VCF chromosome chr5.
+Starting VCF chromosome chr6.
+Starting VCF chromosome chr7.
+Starting VCF chromosome chr8.
+Starting VCF chromosome chr9.
+Starting VCF chromosome chr10.
+Starting VCF chromosome chr11.
+Starting VCF chromosome chr12.
+Starting VCF chromosome chr13.
+Starting VCF chromosome chr14.
+Starting VCF chromosome chr15.
+Starting VCF chromosome chr16.
+Starting VCF chromosome chr17.
+Starting VCF chromosome chr18.
+Starting VCF chromosome chr19.
+Starting VCF chromosome chr20.
+Starting VCF chromosome chr21.
+Starting VCF chromosome chr22.
+Starting VCF chromosome chrX.
+vcf_read_static_fields(): Info: Got EOF reading CHROM, as expected.
+
+Final statistics:
+
+2100576 VCF calls processed
+878862553 SAM alignments processed
+Max buffered alignments: 9363
+1774047 SAM alignments discarded (0%)
+MAPQ min = 0  max = 0  mean = 0.000000
+45499366 total REF alleles (48%)
+44370761 total ALT alleles (47%)
+3171624 total OTHER alleles (3%)
+Min depth = 0
+Max depth = 5698
+Mean depth = 42.783564
+
+real	30m48.592s
+user	43m46.153s
+sys	5m39.394s
+
+
