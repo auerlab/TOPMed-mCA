@@ -1,0 +1,48 @@
+#!/bin/sh -e
+
+##########################################################################
+#   Script description:
+#       Stop currently running jobs
+#       
+#   History:
+#   Date        Name        Modification
+#   2020-07-29              Begin
+##########################################################################
+
+usage()
+{
+    printf "Usage: $0 sample-file\n"
+    exit 1
+}
+
+
+##########################################################################
+#   Main
+##########################################################################
+
+if [ $# != 1 ]; then
+    usage
+fi
+sample_file=$(basename $1)
+vcf_dir=VCFs-$sample_file
+
+read -p 'Are you sure? yes/[no] ' sure
+if [ 0$sure != 0yes ]; then
+    exit
+fi
+
+if pkill ad2vcf; then
+    sleep 5
+fi
+if pkill fusera; then
+    sleep 2
+fi
+rmdir mount-*
+rm $vcf_dir/*-ad*
+rm $sample_file-??
+c=1
+while [ -e Logs.$c ]; do
+    c=$((c + 1))
+done
+mv Logs Logs.$c
+
