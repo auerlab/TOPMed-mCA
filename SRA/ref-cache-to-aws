@@ -1,0 +1,30 @@
+#!/bin/sh -e
+
+##########################################################################
+#   Script description:
+#       Pre-populate AWS instance with hts-ref cache
+#       
+#   History:
+#   Date        Name        Modification
+#   2020-07-27  Jason Bacon Begin
+##########################################################################
+
+usage()
+{
+    printf "Usage: $0 instance-name\n"
+    exit 1
+}
+
+
+##########################################################################
+#   Main
+##########################################################################
+
+if [ $# != 1 ]; then
+    usage
+fi
+instance=ec2-user@$1
+
+key='-i ~/.ssh/aws-us-east.pem'
+ssh $key $instance mkdir -p .cache
+rsync -av --progress "-e ssh $key" ~/.cache/hts-ref ${instance}:.cache

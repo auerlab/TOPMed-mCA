@@ -1,0 +1,42 @@
+#!/bin/sh -e
+
+##########################################################################
+#   Script description:
+#       Upload samples to AWS instance
+#       
+#   History:
+#   Date        Name        Modification
+#   2020-07-27  Jason Bacon Begin
+##########################################################################
+
+usage()
+{
+    printf "Usage: $0 sample-file host/IP\n"
+    exit 1
+}
+
+
+##########################################################################
+#   Main
+##########################################################################
+
+if [ $# != 2 ]; then
+    usage
+fi
+
+sample_file=$1
+host=$2
+
+key='-i ~/.ssh/aws-us-east.pem'
+sample_dir=VCFs-$(basename $sample_file)
+dest_dir=Haplohseq-analysis/SRA
+ssh $key ec2-user@$host mkdir -p $dest_dir
+rm -rf $sample_dir
+mkdir -p $sample_dir
+for sample in $(awk '{ print $1 }' $sample_file); do
+    if ! ln ../Split-vcfs/Combined/combined.$sample.vcf.xz $sample_dir; then
+	printf "$sample\n" >> $sample_dir/missing-samples.txt
+    fi
+done
+find $sample_dir -name '*.xz' | wc -l
+rsync -av --delete --progress -e "ssh $key" $sample_dir ec2-user@$host:$dest_dir
