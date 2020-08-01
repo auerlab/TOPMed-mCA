@@ -4,6 +4,8 @@ VM specs
 	Fusera performs terribly on CentOS 8
 	ALv2 and other newer distros may also pose a problem
     16 vcpus c5a AMD Epyc 3.3Ghz
+	$0.616 / hour
+	$0.010 / GB transfer
     8 jobs per VM
 	Pretty close to optimal job performance, max total throughput
     50 GB virtual disk more than enough for 1000 samples
