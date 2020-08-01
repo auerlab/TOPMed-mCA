@@ -36,5 +36,7 @@ for file in ${prefix}??; do
 	printf "Logs/$file.out already exists.  Move or remove and try again.\n"
     else
 	nohup ./ad2vcf.sh $file $vcf_dir > Logs/$file.out 2> Logs/$file.err &
+	printf "Sample file = %s  Job count = %s  VCF-dir = %s\n" \
+	    $sample_file $job_count $vcf_dir > Logs/job-info
     fi
 done

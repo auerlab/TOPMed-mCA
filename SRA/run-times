@@ -11,7 +11,7 @@
 
 usage()
 {
-    printf "Usage: $0 parallel-jobs\n"
+    printf "Usage: $0 parallel-jobs-used 'log-dir-spec'\n"
     exit 1
 }
 
@@ -20,12 +20,13 @@ usage()
 #   Main
 ##########################################################################
 
-if [ $# != 1 ]; then
+if [ $# != 2 ]; then
     usage
 fi
 jobs=$1
+log_spec="$2"
 
-avg_time=$(grep real Logs*/*.err | awk '{ print $2 }' | tr 'ms' ' ' \
+avg_time=$(grep real $log_spec/*.err | awk '{ print $2 }' | tr 'ms' ' ' \
     | awk '{ print $1 + $2/60 }' | basic-stats --average 1)
 printf "Average time = %f minutes\n" $avg_time
 jobs_per_hour=$(printf "$jobs / $avg_time * 60\n" | bc -l)
