@@ -26,6 +26,7 @@ fi
 jobs=$1
 log_spec="$2"
 
+printf "Completed jobs: %s\n" $(grep real $log_spec/*.err|wc -l)
 avg_time=$(grep real $log_spec/*.err | awk '{ print $2 }' | tr 'ms' ' ' \
     | awk '{ print $1 + $2/60 }' | basic-stats --average 1)
 printf "Average time = %f minutes\n" $avg_time

@@ -11,7 +11,7 @@
 
 usage()
 {
-    printf "Usage: $0 instance sample-file\n"
+    printf "Usage: $0 instance|hostname|ip sample-file aws|gcp\n"
     exit 1
 }
 
@@ -20,13 +20,28 @@ usage()
 #   Main
 ##########################################################################
 
-if [ $# != 2 ]; then
+if [ $# != 3 ]; then
     usage
 fi
 instance=$1
 sample_file=$(basename $2)
-dir=Haplohseq-analysis/SRA/VCFs-$sample_file
+service=$3
+
+dir=Haplohseq-analysis/SRA
 echo $instance $dir
 
-gcloud compute scp --recurse ${instance}:$dir/Done Results-$sample_file
-
+case $service in
+aws)
+    key="-i $HOME/.ssh/aws-us-east.pem"
+    set -x
+    rsync -e "ssh $key" -av --progress ec2-user@${instance}:$dir/VCFs-$sample_file/Done/ Results-$sample_file
+    rsync -e "ssh $key" -av --progress ec2-user@${instance}:$dir/Logs\* Results-$sample_file
+    ;;
+gcp)
+    gcloud compute scp --recurse ${instance}:$dir/Done Results-$sample_file
+    gcloud compute scp --recurse ${instance}:Logs\* Results-$sample_file
+    ;;
+*)
+    usage
+    ;;
+esac
