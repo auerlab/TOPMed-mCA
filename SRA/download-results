@@ -34,12 +34,15 @@ case $service in
 aws)
     key="-i $HOME/.ssh/aws-us-east.pem"
     set -x
-    rsync -e "ssh $key" -av --progress ec2-user@${instance}:$dir/VCFs-$sample_file/Done/ Results-$sample_file
-    rsync -e "ssh $key" -av --progress ec2-user@${instance}:$dir/Logs\* Results-$sample_file
+    rsync -e "ssh $key" -av --progress \
+	ec2-user@${instance}:$dir/VCFs-$sample_file/Done/ Results-$sample_file
+    rsync -e "ssh $key" -av --progress \
+	ec2-user@${instance}:$dir/Logs\* Results-$sample_file
     ;;
 gcp)
-    gcloud compute scp --recurse ${instance}:$dir/Done Results-$sample_file
-    gcloud compute scp --recurse ${instance}:Logs\* Results-$sample_file
+    gcloud compute scp --recurse ${instance}:$dir/VCFs-$sample_file/Done/ \
+	Results-$sample_file
+    gcloud compute scp --recurse ${instance}:$dir/Logs\* Results-$sample_file
     ;;
 *)
     usage
