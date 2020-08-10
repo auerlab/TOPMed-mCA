@@ -1,1 +1,3 @@
 .*.bak
+SLURM-outputs
+Split-vcfs
