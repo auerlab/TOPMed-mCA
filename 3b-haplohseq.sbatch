@@ -6,7 +6,7 @@
 #SBATCH --error=SLURM-outputs/haplohseq-%A_%a.err
 
 # Dummy value for testing outside SLURM env
-: ${SLURM_ARRAY_TASK_ID:=1}
+: ${SLURM_ARRAY_TASK_ID:=2}
 
 # ad2vcf outputs from Josh
 vcf_dir=Split-vcfs/Combined+AD
@@ -15,7 +15,6 @@ cd $vcf_dir
 output_dir=Haplo-output
 mkdir -p $output_dir
 
-ls *-ad.vcf.xz | head
 filename=$(ls *-ad.vcf.xz | \
     awk -v i=$SLURM_ARRAY_TASK_ID 'NR == i { print $0 }')
 filename_prefix=`echo $filename | cut -d - -f 1`
