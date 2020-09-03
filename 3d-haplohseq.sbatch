@@ -1,6 +1,6 @@
 #!/bin/sh -e
 
-#SBATCH --array=1-2765%100
+#SBATCH --array=1-2765%50
 #SBATCH --mem=1g
 #SBATCH --output=SLURM-outputs/haplohseq-%A_%a.out
 #SBATCH --error=SLURM-outputs/haplohseq-%A_%a.err
@@ -9,17 +9,19 @@
 : ${SLURM_ARRAY_TASK_ID:=2}
 
 # ad2vcf outputs from Josh
-vcf_dir=Split-vcfs/Combined+AD
+vcf_dir=MAF/Filtered-vcfs/
 cd $vcf_dir
 
 output_dir=Haplo-output
 mkdir -p $output_dir
 
-filename=$(ls *-ad.vcf.xz | \
+filename=$(ls combined*-ad-*.vcf.xz | \
     awk -v i=$SLURM_ARRAY_TASK_ID 'NR == i { print $0 }')
+uncompressed=${filename%.xz}
 filename_prefix=`echo $filename | cut -d - -f 1`
 sample=${filename_prefix#combined.}
-printf "$filename $filename_prefix $sample $output_dir\n"
+hostname
+printf "$filename $uncompressed $filename_prefix $sample $output_dir\n"
 
 # ../../../local/bin version should be built with portable optimizations
 # On FreeBSD, can also use ports version optimized for each compute node
@@ -27,13 +29,19 @@ printf "$filename $filename_prefix $sample $output_dir\n"
 which vcf2hap haplohseq
 
 printf "Uncompressing...\n"
-uncompressed=${filename%.xz}
-xzcat $filename > $uncompressed
+# xzcat is causing intermittent failures in vcf2hap
+# Buffering issue when using redirection?
+# xzcat < $filename > $uncompressed
+# Does removing beforehand fix the issue?
+rm -f $uncompressed
+xzcat < $filename | sed -E 's|,[0-9]+:|:|' > $uncompressed
+sync
 
 # Generate hap file from VCF
 printf "\nSTEP 1: GENERATING HAPLOTYPE FILES...\n"
 printf "Generating .hap file...\n"
 vcf2hap $sample < $uncompressed > $filename_prefix-ad.hap
+sync
 
 # Identify allelic imbalance (AI) given a tumor
 # exome VCF file generated using the UnifiedGenotyper
@@ -46,6 +54,7 @@ vcf2hap $sample < $uncompressed > $filename_prefix-ad.hap
 #  --vcf example_input/tumor_exome.vcf \
 #  -o example_output/tumor_exome
 
+# prevelance = 0.01 per Paul Scheet
 printf "\nSTEP 2: IDENTIFYING REGIONS OF AI ...\n"
 if [ -e $output_dir/$filename_prefix.posterior.dat ]; then
     printf "haplohseq already done.\n"
@@ -53,13 +62,13 @@ else
     time haplohseq \
 	--vcf $uncompressed \
 	--phased $filename_prefix-ad.hap \
-	--event_prevalence 0.1 \
+	--event_prevalence 0.01 \
 	-d $output_dir \
 	-p $filename_prefix
 fi
 
 # Save space
-rm -f $uncompressed $filename_prefix-ad.hap
+# rm -f $uncompressed $filename_prefix-ad.hap
 exit 0
 
 # Should not be needed

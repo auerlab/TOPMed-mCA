@@ -1,0 +1,4 @@
+#!/bin/sh -e
+
+rm -rf Filtered-vcfs/*.hap Filtered-vcfs/*.vcf Filtered-vcfs/*.core \
+    Filtered-vcfs/Haplo-output

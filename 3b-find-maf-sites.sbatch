@@ -11,6 +11,8 @@
 
 #SBATCH --array=1-23
 #SBATCH --mem=200
+#SBATCH --output=SLURM-outputs/find-maf-sites-%A_%a.out
+#SBATCH --error=SLURM-outputs/find-maf-sites-%A_%a.err
 
 : ${SLURM_ARRAY_TASK_ID:=1}
 
@@ -21,5 +23,5 @@ else
 fi
 
 bcftools view -H -q 0.01:minor \
-    ../../../phased/freeze.8.chr$chr.pass_only.phased.bcf \
-    | awk '{ print $2 }'
+    ../../phased/freeze.8.chr$chr.pass_only.phased.bcf \
+    | awk '{ print $2 }' > Filtered-vcfs/chr$chr-maf-sites.txt

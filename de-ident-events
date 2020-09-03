@@ -1,0 +1,36 @@
+#!/bin/sh -e
+
+##########################################################################
+#   Script description:
+#       Deidentify event files and link into Events dir
+#       
+#   History:
+#   Date        Name        Modification
+#   2020-08-24  Jason Bacon Begin
+##########################################################################
+
+usage()
+{
+    printf "Usage: $0 haplohseq-output-dir\n"
+    exit 1
+}
+
+
+##########################################################################
+#   Main
+##########################################################################
+
+if [ $# != 1 ]; then
+    usage
+fi
+dir=$1
+mkdir -p Events
+files=$(ls $dir/*.events.dat)
+sn=1
+for file in $files; do
+    hash=$(printf "%04s" $sn)
+    deident=$(basename $file | sed -E "s|NWD[0-9]+|$hash|")
+    printf "$file -> $deident\n"
+    ln -f $file Events/$deident
+    sn=$((sn + 1))
+done

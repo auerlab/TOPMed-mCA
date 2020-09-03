@@ -1,0 +1,4 @@
+#!/bin/sh -e
+
+dir=Split-vcfs/Combined+AD
+rm -rf $dir/*.hap $dir/*.vcf $dir/*.core $dir/Haplo-output
