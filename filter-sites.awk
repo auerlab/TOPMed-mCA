@@ -12,19 +12,21 @@
 #############################################################################
 
 BEGIN {
-    chr = -1;
+    # Force $1 != chr for first record
+    chr = "";
     previous_pos = -1000;
 }
 {
+    # chr1, chr2, ...
     if ( $1 != chr )
     {
 	# Start of new chromosome in VCF
 	chr = $1;
 	
 	# File with positions where MAF meets criteria
-	maf_file = "chr" chr "-maf-sites.txt"
+	maf_file = "Filtered-vcfs/" chr "-maf-sites.txt"
 	
-	# Ensure that maf_pos < $2
+	# Ensure that maf_pos < $2 when starting new chromosome
 	maf_pos = -1;
     }
     

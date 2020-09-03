@@ -2,7 +2,8 @@
 
 ##########################################################################
 #   Script description:
-#       Filter VCFs for sites with MAF >= 0.01
+#       Filter VCFs for sites with MAF >= 0.01 and separated by 1000kb
+#       or more
 #       
 #   History:
 #   Date        Name        Modification
@@ -17,7 +18,7 @@
 
 : ${SLURM_ARRAY_TASK_ID:=1}
 
-my_vcf=$(ls ../Split-vcfs/Combined+AD/combined.*-ad.vcf.xz | \
+my_vcf=$(ls Split-vcfs/Combined+AD/combined.*-ad.vcf.xz | \
     awk -v task=$SLURM_ARRAY_TASK_ID 'NR == task')
 printf "Processing $my_vcf...\n"
 base=$(basename $my_vcf)
