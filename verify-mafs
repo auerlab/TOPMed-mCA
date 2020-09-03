@@ -1,0 +1,13 @@
+#!/bin/sh -e
+
+#xzcat ../Split-vcfs/Combined+AD/combined.NWD100018-ad.vcf.xz | head
+for chr in $(seq 22); do
+    echo $chr
+    for pos in $(xzcat combined.NWD100018-ad-maf-0.01.vcf.xz | awk -v chr=chr$chr '$1 == chr { print $2 }'); do
+	if ! fgrep -q $pos chr$chr.out; then
+	    printf "$pos not in chr$chr.out.\n"
+	fi
+    done
+done
+#head chr1.out
+

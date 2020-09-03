@@ -9,7 +9,7 @@
 : ${SLURM_ARRAY_TASK_ID:=2}
 
 # ad2vcf outputs from Josh
-vcf_dir=MAF/Filtered-vcfs/
+vcf_dir=Filtered-vcfs
 cd $vcf_dir
 
 output_dir=Haplo-output

@@ -1,0 +1,9 @@
+#!/bin/sh -e
+
+samples=$(cd Filtered-vcfs && ls combined.*-ad-maf-0.01.vcf.xz | cut -d . -f 2 | cut -d - -f 1)
+for sample in $samples; do
+    printf "\n$sample\nFiltered: "
+    xzcat Filtered-vcfs/combined.$sample-ad-maf-0.01.vcf.xz | wc -l
+    printf "Raw:      "
+    xzcat Split-vcfs/Combined+AD/combined.$sample-ad.vcf.xz | wc -l
+done

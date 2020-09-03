@@ -1,0 +1,5 @@
+#!/bin/sh -e
+
+for file in Filtered-vcfs/combined*-ad*.vcf.xz; do
+    xzcat $file | tail -n 1
+done
