@@ -14,9 +14,10 @@
 BEGIN {
     # Force $1 != chr for first record
     chr = "";
-    previous_pos = -1000;
+    last_kept_pos = 0;
 }
 {
+    # printf("===\nChecking %s %s\n", $1, $2);
     # chr1, chr2, ...
     if ( $1 != chr )
     {
@@ -26,20 +27,30 @@ BEGIN {
 	# File with positions where MAF meets criteria
 	maf_file = "Filtered-vcfs/" chr "-maf-sites.txt"
 	
-	# Ensure that maf_pos < $2 when starting new chromosome
-	maf_pos = -1;
+	# Ensure that next_ok_maf_pos < $2 when starting new chromosome
+	next_ok_maf_pos = -1;
+	
+	last_kept_pos = 0;
     }
     
     # Read more lines from MAF list until pos >= $2 (pos in VCF)
-    while ( (maf_pos < $2 ) && ((getline maf_pos < maf_file) != 0) )
+    while ( (next_ok_maf_pos < $2 ) && ((getline next_ok_maf_pos < maf_file) != 0) )
     {
-	# printf("Skipping %s\n", maf_pos);
+	# printf("Skipping %s\n", next_ok_maf_pos);
     }
     
     # Also filter out sites < 1000kb apart
-    if ( ($2 == maf_pos) && (maf_pos - previous_pos >= 1000) )
+    distance = $2 - last_kept_pos;
+    if ( ($2 == next_ok_maf_pos) && (distance >= 1000) )
     {
 	print $0;
-	previous_pos = maf_pos;
+	# Debug
+	# printf("Keep %s,%s  Next OK MAF = %s  Distance from last kept = %s\n", $1, $2, next_ok_maf_pos, distance);
+	last_kept_pos = $2;
+    }
+    else
+    {
+	# Debug
+	# printf("=== Toss %s,%s  Next OK MAF = %s  Distance from last kept = %s\n", $1, $2, next_ok_maf_pos, distance);
     }
 }
