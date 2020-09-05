@@ -23,5 +23,4 @@ my_vcf=$(ls Split-vcfs/Combined+AD/combined.*-ad.vcf.xz | \
 printf "Processing $my_vcf...\n"
 base=$(basename $my_vcf)
 outfile=Filtered-vcfs/${base%.vcf.xz}-maf-0.01.vcf.xz
-# xzcat $my_vcf | wc -l
 xzcat $my_vcf | awk -f filter-sites.awk | xz > $outfile

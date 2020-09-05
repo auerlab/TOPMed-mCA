@@ -34,23 +34,24 @@ BEGIN {
     }
     
     # Read more lines from MAF list until pos >= $2 (pos in VCF)
-    while ( (next_ok_maf_pos < $2 ) && ((getline next_ok_maf_pos < maf_file) != 0) )
+    # Force numeric comparison with + 0
+    while ( (next_ok_maf_pos + 0 < $2 ) && (getline next_ok_maf_pos < maf_file != 0) )
     {
-	# printf("Skipping %s\n", next_ok_maf_pos);
+	# printf("Read %s from %s.\n", next_ok_maf_pos, maf_file);
     }
     
     # Also filter out sites < 1000kb apart
     distance = $2 - last_kept_pos;
     if ( ($2 == next_ok_maf_pos) && (distance >= 1000) )
     {
-	print $0;
+	# print $0;
 	# Debug
-	# printf("Keep %s,%s  Next OK MAF = %s  Distance from last kept = %s\n", $1, $2, next_ok_maf_pos, distance);
+	printf("Keep %s,%s  Next OK MAF = %s  Distance from last kept = %s\n", $1, $2, next_ok_maf_pos, distance);
 	last_kept_pos = $2;
     }
     else
     {
 	# Debug
-	# printf("=== Toss %s,%s  Next OK MAF = %s  Distance from last kept = %s\n", $1, $2, next_ok_maf_pos, distance);
+	printf("=== Toss %s,%s  Next OK MAF = %s  Distance from last kept = %s\n", $1, $2, next_ok_maf_pos, distance);
     }
 }

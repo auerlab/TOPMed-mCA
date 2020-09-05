@@ -1,23 +1,28 @@
 #!/bin/sh -e
 
+# Peregrine: Getting stale NFS handles on xzcat | sed with %24 or more
+# Probably timeouts from too much NFS load for the 1G network
+# Using local /tmp for uncompressed files eliminated the issue
 #SBATCH --array=1-2765%50
 #SBATCH --mem=1g
 #SBATCH --output=SLURM-outputs/haplohseq-%A_%a.out
 #SBATCH --error=SLURM-outputs/haplohseq-%A_%a.err
 
 # Dummy value for testing outside SLURM env
-: ${SLURM_ARRAY_TASK_ID:=2}
+: ${SLURM_ARRAY_TASK_ID:=1}
 
 # ad2vcf outputs from Josh
 vcf_dir=Filtered-vcfs
 cd $vcf_dir
 
 output_dir=Haplo-output
-mkdir -p $output_dir
+tmp_dir=/tmp/haplohseq-$SLURM_ARRAY_JOB_ID
+# FIXME: rmdir $tmp_dir as post-processing
+mkdir -p $output_dir $tmp_dir
 
 filename=$(ls combined*-ad-*.vcf.xz | \
     awk -v i=$SLURM_ARRAY_TASK_ID 'NR == i { print $0 }')
-uncompressed=${filename%.xz}
+uncompressed=$tmp_dir/${filename%.xz}
 filename_prefix=`echo $filename | cut -d - -f 1`
 sample=${filename_prefix#combined.}
 hostname
@@ -29,10 +34,13 @@ printf "$filename $uncompressed $filename_prefix $sample $output_dir\n"
 which vcf2hap haplohseq
 
 printf "Uncompressing...\n"
-# xzcat is causing intermittent failures in vcf2hap
-# Buffering issue when using redirection?
+# Peregrine: xzcat is causing intermittent failures in vcf2hap
+# Examining the files later shows they are all OK
+# The problem only occurs shortly after xzcat completes
 # xzcat < $filename > $uncompressed
-# Does removing beforehand fix the issue?
+# Same issue does not occur when using unxz
+# Buffering issue when using redirection?  Does stdout pass through SLURM?
+# Removing $uncompressed beforehand fixes the issue
 rm -f $uncompressed
 xzcat < $filename | sed -E 's|,[0-9]+:|:|' > $uncompressed
 sync
@@ -68,7 +76,7 @@ else
 fi
 
 # Save space
-# rm -f $uncompressed $filename_prefix-ad.hap
+rm -f $uncompressed $filename_prefix-ad.hap
 exit 0
 
 # Should not be needed
