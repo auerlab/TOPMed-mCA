@@ -1,3 +1,4 @@
 .*.bak
 SLURM-outputs
 Split-vcfs
+sync.log

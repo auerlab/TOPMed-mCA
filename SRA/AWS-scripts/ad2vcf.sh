@@ -31,9 +31,9 @@ mkdir -p $vcf_dir/Done
 #export PATH=./local/bin:$PATH
 which ad2vcf
 
-acc_list=TOPMed_SraRunTable_20190628.txt
+acc_list=TOPMed_SraRunTable_20200729.txt.xz
 for sample in $(awk '{ print $1 }' $sample_file); do
-    study=$(awk -v sample=$sample '$3 == sample { print $2 }' $acc_list)
+    study=$(xzcat $acc_list | awk -v sample=$sample '$3 == sample { print $2 }')
     # Studies should have been filtered out before upload, but check again
     if [ $study != phs000920 ] && [ $study != phs000921 ]; then
 	if [ -e $vcf_dir/Done/combined.$sample-ad.vcf.xz ]; then
@@ -42,7 +42,7 @@ for sample in $(awk '{ print $1 }' $sample_file); do
 	    mount_dir=$(pwd)/mount-$sample
 	    mkdir -p $mount_dir
 	
-	    srr=$(awk -v sample=$sample '$3 == sample { print $4 }' $acc_list)
+	    srr=$(xzcat $acc_list | awk -v sample=$sample '$3 == sample { print $4 }')
 	    printf "\n===================================================\n"
 	    printf "Sample: $sample  SRR: $srr\n"
 	    fusera mount -t Security/prj_13558_D25493.ngc -a $srr $mount_dir &

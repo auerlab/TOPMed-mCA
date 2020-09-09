@@ -45,4 +45,3 @@ while [ -e Logs.$c ]; do
     c=$((c + 1))
 done
 mv Logs Logs.$c
-

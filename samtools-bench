@@ -1,0 +1,9 @@
+#!/bin/sh -e
+
+for threads in 1 2; do
+    echo $threads
+    /usr/bin/time samtools view -@ $threads \
+	--input-fmt-option required_fields=0x208 \
+	../../SRR6990379/NWD102903.b38.irc.v1.cram \
+	| cat > /dev/null
+done
