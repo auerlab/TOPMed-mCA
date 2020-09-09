@@ -2,16 +2,16 @@
 
 ##########################################################################
 #   Script description:
-#       Send multiple sample lists to cloud in parallel
+#       Split sample list into N components
 #       
 #   History:
 #   Date        Name        Modification
-#   2020-07-28  Jason Bacon Begin
+#   2020-09-09  Jason Bacon Begin
 ##########################################################################
 
 usage()
 {
-    printf "Usage: $0 instance sample-file [sample-file ...]\n"
+    printf "Usage: $0 filename chunks\n"
     exit 1
 }
 
@@ -20,13 +20,12 @@ usage()
 #   Main
 ##########################################################################
 
-if [ $# -lt 2 ]; then
+if [ $# != 2 ]; then
     usage
 fi
+master_list=$1
+chunks=$2
 
-instance=$1
-shift
-for file in $@; do
-    echo $file
-    ./Local-scripts/samples-to-cloud $file $instance
-done
+total_lines=$(cat $master_list | wc -l)
+lines=$(($total_lines / $chunks + 1))
+split -d -l $lines $master_list ${master_list%.*}-

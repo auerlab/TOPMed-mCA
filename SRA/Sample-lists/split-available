@@ -1,3 +1,0 @@
-#!/bin/sh -e
-
-split -d -l 1000 available-samples.txt available-
