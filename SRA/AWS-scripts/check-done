@@ -1,7 +1,31 @@
 #!/bin/sh
 
-vcf_dir=VCFs-available-00
-for file in $vcf_dir/*-ad*; do
+##########################################################################
+#   Script description:
+#       Visually inspect ad2vcf outputs
+#       
+#   History:
+#   Date        Name        Modification
+#   2020-09-09  EC2 Default UserBegin
+##########################################################################
+
+usage()
+{
+    printf "Usage: $0 VCF-dir\n"
+    exit 1
+}
+
+
+##########################################################################
+#   Main
+##########################################################################
+
+if [ $# != 1 ]; then
+    usage
+fi
+vcf_dir=$1
+
+for file in $vcf_dir/Done/*-ad*; do
     echo $file
-    xzcat $file | tail -1
+    xzcat $file | head -2
 done
