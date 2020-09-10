@@ -25,6 +25,18 @@ if [ $# != 1 ]; then
 fi
 prefix=$1
 
+cat << EOM
+
+This will delete files from AWS that are not on $(hostname -s).
+
+This should not be done if AWS jobs are using the files to be uploaded.
+
+EOM
+read -p "Are you sure? (yes/[no]) " sure
+if [ 0$sure != 0yes ]; then
+    exit
+fi
+
 cd ~/Data/TOPMed/Jobs/Haplohseq-analysis/SRA
 key='-i ~/.ssh/aws-us-east.pem'
 dest_dir=Haplohseq-analysis/SRA
