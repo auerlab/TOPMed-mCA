@@ -1,0 +1,7 @@
+#!/bin/sh -e
+
+xzcat TOPMed_SraRunTable_20200729.txt.xz | awk '{ print $1 }' | sort > temp
+studies=$(uniq temp)
+for study in $studies; do
+    printf "%-15s %s\n" $study $(fgrep $study temp | wc -l)
+done

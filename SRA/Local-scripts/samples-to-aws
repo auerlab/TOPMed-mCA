@@ -11,7 +11,7 @@
 
 usage()
 {
-    printf "Usage: $0 sample-file host/IP\n"
+    printf "Usage: $0 prefix\n"
     exit 1
 }
 
@@ -20,23 +20,28 @@ usage()
 #   Main
 ##########################################################################
 
-if [ $# != 2 ]; then
+if [ $# != 1 ]; then
     usage
 fi
+prefix=$1
 
-sample_file=$1
-host=$2
-
+cd ~/Data/TOPMed/Jobs/Haplohseq-analysis/SRA
 key='-i ~/.ssh/aws-us-east.pem'
-sample_dir=VCFs-$(basename $sample_file)
 dest_dir=Haplohseq-analysis/SRA
-ssh $key ec2-user@$host mkdir -p $dest_dir
-rm -rf $sample_dir
-mkdir -p $sample_dir
-for sample in $(awk '{ print $1 }' $sample_file); do
-    if ! ln ../Split-vcfs/Combined/combined.$sample.vcf.xz $sample_dir; then
-	printf "$sample\n" >> $sample_dir/missing-samples.txt
-    fi
+
+c=0
+for host in $(cat $prefix-aws-ips); do
+    sample_dir=$(printf "VCFs-$prefix-samples-%02d" $c)
+    sample_file=$(printf "Sample-lists/$prefix-samples-%02d" $c)
+    c=$((c + 1))
+    echo $sample_dir
+    mkdir $sample_dir
+    for sample in $(awk '{ print $1 }' $sample_file); do
+	if ! ln ../Split-vcfs/Combined/combined.$sample.vcf.xz $sample_dir; then
+	    printf "$sample\n" >> $sample_dir/missing-samples.txt
+	fi
+    done
+    find $sample_dir -name '*.xz' | wc -l
+    ssh $key ec2-user@$host mkdir -p $dest_dir
+    rsync -av --delete --progress -e "ssh $key" $sample_dir ec2-user@$host:$dest_dir
 done
-find $sample_dir -name '*.xz' | wc -l
-rsync -av --delete --progress -e "ssh $key" $sample_dir ec2-user@$host:$dest_dir
