@@ -1,0 +1,11 @@
+#!/bin/sh -e
+
+cd /home/ec2-user/Haplohseq-analysis/SRA
+pkill ad2vcf || true
+./AWS-scripts/unmount-all
+c=1
+while [ -e Logs.$c ]; do
+    c=$((c + 1))
+done
+mv Logs Logs.$c
+ls
