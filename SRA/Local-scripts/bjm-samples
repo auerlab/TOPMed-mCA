@@ -1,0 +1,5 @@
+#!/bin/sh -e
+
+xzcat TOPMed_SraRunTable_20200729.txt.xz | \
+    awk '($1 == "BioMe" || $1 == "JHS" || $1 == "MESA") && ($2 != "phs000920" && $2 != "phs000921") { print $3,$4,$1 }' \
+    > Sample-lists/bjm-samples.txt

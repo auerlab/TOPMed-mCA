@@ -1,5 +1,0 @@
-#!/bin/sh -e
-
-xzcat TOPMed_SraRunTable_20200729.txt.xz | \
-    awk '$1 != "study" && $1 != "WHI" && $2 != "phs000920" && $2 != "phs000921" { print $3,$4 }' \
-    > Sample-lists/non-whi-samples.txt
