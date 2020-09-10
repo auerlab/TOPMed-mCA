@@ -33,15 +33,17 @@ c=0
 for host in $(cat $prefix-aws-ips); do
     sample_dir=$(printf "VCFs-$prefix-samples-%02d" $c)
     sample_file=$(printf "Sample-lists/$prefix-samples-%02d" $c)
-    c=$((c + 1))
     echo $sample_dir
-    mkdir $sample_dir
+    mkdir -p $sample_dir
+    rm -f $sample_dir/missing-samples.txt
     for sample in $(awk '{ print $1 }' $sample_file); do
-	if ! ln ../Split-vcfs/Combined/combined.$sample.vcf.xz $sample_dir; then
+	if ! ln -f ../Split-vcfs/Combined/combined.$sample.vcf.xz $sample_dir; then
 	    printf "$sample\n" >> $sample_dir/missing-samples.txt
 	fi
     done
     find $sample_dir -name '*.xz' | wc -l
-    ssh $key ec2-user@$host mkdir -p $dest_dir
-    rsync -av --delete --progress -e "ssh $key" $sample_dir ec2-user@$host:$dest_dir
+    ssh -x $key ec2-user@$host mkdir -p $dest_dir
+    nohup rsync -av -e "ssh $key" $sample_dir ec2-user@$host:$dest_dir \
+	> $sample_dir-upload.log 2>&1 &
+    c=$((c + 1))
 done

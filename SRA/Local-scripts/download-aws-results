@@ -6,10 +6,11 @@ dir=Haplohseq-analysis/SRA
 key="-i $HOME/.ssh/aws-us-east.pem"
 for ip in $(cat whi-aws-ips); do
     echo $ip
-    rsync -e "ssh $key" -av \
+    nohup rsync -e "ssh $key" -av \
 	--exclude 'VCFs-whi-samples-*/combined.*-ad.vcf.xz' \
-	ec2-user@${ip}:$dir/VCFs-\* .
+	ec2-user@${ip}:$dir/VCFs-\* . > download-$ip.log 2>&1 &
 done
+wait
 
 # Back up results immediately to 2 other places
 rsync -avx --exclude 'VCFs-*/*.xz' \
