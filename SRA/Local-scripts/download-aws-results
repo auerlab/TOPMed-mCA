@@ -7,7 +7,7 @@ key="-i $HOME/.ssh/aws-us-east.pem"
 for ip in $(cat whi-aws-ips); do
     echo $ip
     nohup rsync -e "ssh $key" -av \
-	--exclude 'VCFs-whi-samples-*/combined.*-ad.vcf.xz' \
+	--exclude 'VCFs-*-samples-*/*.xz*' \
 	ec2-user@${ip}:$dir/VCFs-\* . > download-$ip.log 2>&1 &
 done
 wait
