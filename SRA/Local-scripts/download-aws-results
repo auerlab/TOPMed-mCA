@@ -2,19 +2,25 @@
 
 cd /home/bacon/Data/TOPMed/Jobs/Haplohseq-analysis/SRA
 
+mkdir -p Transfer-logs
 dir=Haplohseq-analysis/SRA
 key="-i $HOME/.ssh/aws-us-east.pem"
 for ip in $(cat whi-aws-ips); do
-    echo $ip
     nohup rsync -e "ssh $key" -av \
 	--exclude 'VCFs-*-samples-*/*.xz*' \
-	ec2-user@${ip}:$dir/VCFs-\* . > download-$ip.log 2>&1 &
+	ec2-user@${ip}:$dir/VCFs-\* . > Transfer-logs/download-$ip.log 2>&1 &
 done
+
+printf "Waiting for AWS downloads...\n"
 wait
 
 # Back up results immediately to 2 other places
+printf "Backing up to Peregrine...\n"
 rsync -avx --exclude 'VCFs-*/*.xz' \
-    VCFs-* peregrine.hpc.uwm.edu:Data/TOPMed/Jobs/Haplohseq-analysis/SRA
+    VCFs-* peregrine.hpc.uwm.edu:Data/TOPMed/Jobs/Haplohseq-analysis/SRA \
+    > Transfer-logs/peregrine-backup.log 2>&1
 
+printf "Backing up to Mortimer...\n"
 rsync -avx -e 'ssh -p 22005' --exclude 'VCFs-*/*.xz' \
-    VCFs-* mortimer.hpc.uwm.edu:/raid-05/SPH/pauer/bacon/TOPMed/Jobs/Haplohseq-analysis/SRA
+    VCFs-* mortimer.hpc.uwm.edu:/raid-05/SPH/pauer/bacon/TOPMed/Jobs/Haplohseq-analysis/SRA \
+    > Transfer-logs/mortimer-backup.log 2>&1

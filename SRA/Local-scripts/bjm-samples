@@ -1,5 +1,17 @@
 #!/bin/sh -e
 
+cd ~/Data/TOPMed/Jobs/Haplohseq-analysis/SRA
 xzcat TOPMed_SraRunTable_20200729.txt.xz | \
     awk '($1 == "BioMe" || $1 == "JHS" || $1 == "MESA") && ($2 != "phs000920" && $2 != "phs000921") { print $3,$4,$1 }' \
-    > Sample-lists/bjm-samples.txt
+    > Sample-lists/bjm-samples.unchecked
+rm -f Sample-lists/bjm-samples.txt
+while read line; do
+    sample=$(echo $line | awk '{ print $1 }')
+    if [ -e ../Split-vcfs/Combined/combined.$sample.vcf.xz ]; then
+	echo "$line" >> Sample-lists/bjm-samples.txt
+    else
+	printf "Missing VCF for $sample\n"
+    fi
+done < Sample-lists/bjm-samples.unchecked
+diff Sample-lists/bjm-samples.unchecked Sample-lists/bjm-samples.txt || true
+wc -l Sample-lists/bjm-samples.unchecked Sample-lists/bjm-samples.txt

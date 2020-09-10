@@ -28,6 +28,7 @@ prefix=$1
 cd ~/Data/TOPMed/Jobs/Haplohseq-analysis/SRA
 key='-i ~/.ssh/aws-us-east.pem'
 dest_dir=Haplohseq-analysis/SRA
+mkdir -p Transfer-logs
 
 c=0
 for host in $(cat $prefix-aws-ips); do
@@ -38,12 +39,13 @@ for host in $(cat $prefix-aws-ips); do
     rm -f $sample_dir/missing-samples.txt
     for sample in $(awk '{ print $1 }' $sample_file); do
 	if ! ln -f ../Split-vcfs/Combined/combined.$sample.vcf.xz $sample_dir; then
-	    printf "$sample\n" >> $sample_dir/missing-samples.txt
+	    study=$(awk -v sample=$sample '$1 == sample { print $3 }' $sample_file)
+	    printf "$sample $study\n" >> $sample_dir/missing-samples.txt
 	fi
     done
     find $sample_dir -name '*.xz' | wc -l
     ssh -x $key ec2-user@$host mkdir -p $dest_dir
-    nohup rsync -av -e "ssh $key" $sample_dir ec2-user@$host:$dest_dir \
-	> $sample_dir-upload.log 2>&1 &
+    nohup rsync -av --delete -e "ssh $key" $sample_dir ec2-user@$host:$dest_dir \
+	> Transfer-logs/$sample_dir-upload.log 2>&1 &
     c=$((c + 1))
 done
