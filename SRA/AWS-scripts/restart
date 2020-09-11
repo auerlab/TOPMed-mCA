@@ -1,5 +1,30 @@
 #!/bin/sh -e
 
+##########################################################################
+#   Script description:
+#       Kill jobs and clean up in prep for next run
+#       
+#   History:
+#   Date        Name        Modification
+#   2020-09-11  EC2 Default UserBegin
+##########################################################################
+
+usage()
+{
+    printf "Usage: $0 prefix\n"
+    exit 1
+}
+
+
+##########################################################################
+#   Main
+##########################################################################
+
+if [ $# != 1 ]; then
+    usage
+fi
+prefix=$1
+
 cd /home/ec2-user/Haplohseq-analysis/SRA
 pkill samtools || true
 pkill ad2vcf || true
@@ -10,4 +35,5 @@ while [ -e Logs.$c ]; do
     c=$((c + 1))
 done
 mv Logs Logs.$c
+rm $prefix-samples-*
 ls
