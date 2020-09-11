@@ -37,3 +37,4 @@ done
 mv Logs Logs.$c
 rm $prefix-samples-*
 ls
+grep parallel ~/.bash_history
