@@ -1,0 +1,52 @@
+#!/bin/sh -e
+
+##########################################################################
+#   Script description:
+#       Validate that a VCF is not truncated by checking the structure
+#       of the last line.  It's still possible, but very unlikely, that
+#       it was truncated exactly at the newline.
+#       
+#   History:
+#   Date        Name        Modification
+#   2020-09-11  Jason Bacon Begin
+##########################################################################
+
+usage()
+{
+    printf "Usage: $0 filename\n"
+    exit 1
+}
+
+
+##########################################################################
+#   Main
+##########################################################################
+
+if [ $# != 1 ]; then
+    usage
+fi
+
+file=$1
+
+last_line=$(xzcat $file | tail -n 1)
+
+if [ $(echo $last_line | awk '{ print NF }') != 10 ]; then
+    printf "Last line missing fields.\n"
+    exit 1
+fi
+
+last_field=$(echo $last_line | awk '{ print $10 }')
+if [ $(echo $last_field | awk -F : '{ print NF }') != 3 ]; then
+    printf "Last field incomplete.\n"
+    exit 1
+fi
+
+ad=$(echo $last_field | awk -F : '{ print $2 }')
+ref=$(echo $ad | awk -F , '{ print $1 }')
+alt=$(echo $ad | awk -F , '{ print $2 }')
+dp=$(echo $last_field | awk -F : '{ print $3 }')
+# printf "$ref $alt $dp\n"
+if [ $((ref + alt)) != $dp ]; then
+    printf "\nref + alt != dp\n" >> $corrupt_vcfs
+    exit 1
+fi
