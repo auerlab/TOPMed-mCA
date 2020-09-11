@@ -11,7 +11,7 @@
 
 usage()
 {
-    printf "Usage: $0 sample-file job-count\n"
+    printf "Usage: $0 sample-file\n"
     exit 1
 }
 
@@ -20,11 +20,18 @@ usage()
 #   Main
 ##########################################################################
 
-if [ $# != 2 ]; then
+if [ $# != 1 ]; then
     usage
 fi
 sample_file=$1
-job_count=$2
+# 6 jobs seems ideal for a 16-vCPU c5a-4xlarge VM
+# Running 10 of these, so 60 ad2vcf jobs in parallel.
+# These are 16 hyperthreads, 8 full CPUs, so 8 2-core jobs too much and
+# actually reduces jobs/hr slightly vs 6 jobs/VM.
+# I lean against using higher-count VMs since the VM's network interface
+# could become a bottleneck.  Better to spread the I/O load out to some
+# extent so each VM can breathe easy reading CRAMs.
+job_count=6
 vcf_dir=VCFs-$(basename $sample_file)
 mkdir -p Logs
 
