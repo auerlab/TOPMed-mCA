@@ -40,3 +40,4 @@ for file in ${prefix}??; do
 	    $sample_file $job_count $vcf_dir > Logs/job-info
     fi
 done
+top

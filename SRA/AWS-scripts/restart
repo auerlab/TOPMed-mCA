@@ -1,7 +1,9 @@
 #!/bin/sh -e
 
 cd /home/ec2-user/Haplohseq-analysis/SRA
+pkill samtools || true
 pkill ad2vcf || true
+top
 ./AWS-scripts/unmount-all
 c=1
 while [ -e Logs.$c ]; do
