@@ -1,6 +1,6 @@
 #!/bin/sh -e
 
-cd /home/bacon/Data/TOPMed/Jobs/Haplohseq-analysis/SRA
+cd ~/Data/TOPMed/Jobs/Haplohseq-analysis/SRA
 
 mkdir -p Transfer-logs
 dir=Haplohseq-analysis/SRA

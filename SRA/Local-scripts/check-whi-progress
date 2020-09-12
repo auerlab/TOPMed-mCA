@@ -1,6 +1,8 @@
 #!/bin/sh -e
 
+cd ~/Data/TOPMed/Jobs/Haplohseq-analysis/SRA
+
 #~/scripts/aws-run whi-aws-ips 'ls Haplo*/SRA/VCF*/*.xz | wc -l'
 ~/scripts/aws-run whi-aws-ips 'ls Haplo*/SRA/VCF*/Done/*.xz | wc -l'
-~/scripts/aws-run whi-aws-ips 'cd Haplo*/SRA && AWS-scripts/run-times 7 Logs'
+~/scripts/aws-run whi-aws-ips 'cd Haplo*/SRA && AWS-scripts/run-times 6 Logs'
 #~/scripts/aws-run whi-aws-ips 'xzcat Haplo*/SRA/VCF*/Done/*.xz | head -2'
