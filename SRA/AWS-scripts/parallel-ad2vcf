@@ -55,6 +55,8 @@ for file in ${prefix}??; do
 	nohup ./AWS-scripts/ad2vcf.sh $file $vcf_dir > Logs/$file.out 2> Logs/$file.err &
 	printf "Sample file = %s  Job count = %s  VCF-dir = %s\n" \
 	    $sample_file $job_count $vcf_dir > Logs/job-info
+	# Offset fusera mounts
+	sleep 1
     fi
 done
 top
