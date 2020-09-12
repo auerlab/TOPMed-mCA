@@ -78,7 +78,7 @@ for sample in $(awk '{ print $1 }' $sample_file); do
 			# until EOF in ad2vcf would waste a lot of time.
 			time samtools view -@ 2 \
 			    --input-fmt-option required_fields=0x208 \
-			    $cram | ad2vcf $vcf_niput || true
+			    $cram | ad2vcf $vcf_input || true
 			
 			# Check structure of last line and verify that fusera
 			# mount is still readable.   Mounts sometimes go bad,

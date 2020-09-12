@@ -35,16 +35,18 @@ job_count=6
 vcf_dir=VCFs-$(basename $sample_file)
 mkdir -p Logs
 
-# Rebalance remaining samples if restarting
+# Rebalance remaining samples if restarting: Only add sample to the list
+# for each job if there is no output file in the Done directory.
 while read line; do
     sample=$(echo $line | awk '{ print $1 }')
     if [ ! -e $vcf_dir/Done/combined.$sample-ad.vcf.xz ]; then
 	echo $line >> $sample_file.remaining
     fi
 done < $sample_file
-
 prefix=$(basename $sample_file)-
 split -d -n l/$job_count $sample_file.remaining $prefix
+rm -f $sample_file.remaining
+
 for file in ${prefix}??; do
     echo $file
     if [ -e Logs/$file.out ]; then
