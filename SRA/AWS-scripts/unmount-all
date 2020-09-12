@@ -2,6 +2,8 @@
 
 for dir in mount-NWD*; do
     echo $dir
-    fusera unmount $dir
+    if [ 0$(ls $dir/) != 0 ]; then
+	fusera unmount $dir
+    fi
     rmdir $dir
 done
