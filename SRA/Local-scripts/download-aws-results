@@ -14,6 +14,8 @@ done
 printf "Waiting for AWS downloads...\n"
 wait
 
+find VCFs-whi-samples-0*/Done -name '*.xz' | wc -l
+
 # Back up results immediately to 2 other places
 printf "Backing up to Peregrine...\n"
 rsync -avx --exclude 'VCFs-*/*.xz' \
