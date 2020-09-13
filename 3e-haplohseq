@@ -28,7 +28,7 @@ if [ $# != 1 ]; then
 fi
 vcf_dir=$1
 
-sample_count=$(find $vcf_dir -name '*.vcf.xz' | wc -l)
+sample_count=$(find $vcf_dir -depth 1 -name '*.vcf.xz' | wc -l)
 sample_count=$(printf "%d" $sample_count)   # Strip leading space
 
 sbatch --array=1-$sample_count%50 3e-haplohseq.sbatch $vcf_dir
