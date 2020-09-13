@@ -70,7 +70,6 @@ for sample in $(awk '{ print $1 }' $sample_file); do
 		    if [ tries = 10 ]; then
 			printf "Giving up on $srr.\n"
 		    else
-			ls $mount_dir/$srr
 			cram=$mount_dir/$srr/$sample.b38.irc.v1.cram
 			
 			# Can't rely on exit status since samtools is unhappy
@@ -88,8 +87,10 @@ for sample in $(awk '{ print $1 }' $sample_file); do
 			    [ $(head -c 100 $cram | wc -c) = 100 ]; then
 			    mv $vcf_output $vcf_dir/Done
 			fi
-			fusera unmount $mount_dir
-			rmdir $mount_dir
+			if [ -e $mount_dir/$srr/$sample.b38.irc.v1.cram ]; then
+			    fusera unmount $mount_dir
+			fi
+			rmdir $mount_dir || true
 		    fi
 		done
 	    fi

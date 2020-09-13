@@ -1,10 +1,11 @@
 #!/bin/sh -e
 
-# 6 or 7 jobs seems ideal for a 16-vCPU c5a-4xlarge VM
+# 6 jobs seems ideal for a 16-vCPU c5a-4xlarge VM
+# 7 or 8 causes frequent fusera failures
 # Running 10 of these, so 60 ad2vcf jobs in parallel.
 # These are 16 hyperthreads, 8 full CPUs, so 8 2-core jobs too much and
 # actually reduces jobs/hr slightly vs 6 jobs/VM.
 # I lean against using higher-count VMs since the VM's network interface
 # could become a bottleneck.  Better to spread the I/O load out to some
 # extent so each VM can breathe easy reading CRAMs.
-echo 7
+echo 6
