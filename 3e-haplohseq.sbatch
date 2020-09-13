@@ -3,14 +3,17 @@
 # Peregrine: Getting stale NFS handles on xzcat | sed with %24 or more
 # Probably timeouts from too much NFS load for the 1G network
 # Using local /tmp for uncompressed files eliminated the issue
-#SBATCH --array=1-2765%50
 #SBATCH --mem=1g
 #SBATCH --output=SLURM-outputs/haplohseq-%A_%a.out
 #SBATCH --error=SLURM-outputs/haplohseq-%A_%a.err
 
 ##########################################################################
 #   Script description:
-#       
+#       Run haplohseq on all .vcf.xz files in a directory
+#       Don't run this directly:
+#       Use
+#           ./3d-haplohseq $dir
+#
 #   History:
 #   Date        Name        Modification
 #   2020-09-13  Jason Bacon Begin
@@ -18,7 +21,7 @@
 
 usage()
 {
-    printf "Usage: $0 sample-group (e.g. whi, bjm)\n"
+    printf "Usage: $0 dir\n"
     exit 1
 }
 
@@ -30,27 +33,29 @@ usage()
 if [ $# != 1 ]; then
     usage
 fi
-sample_group=$1
+vcf_dir=$1
 
 # Dummy value for testing outside SLURM env
 : ${SLURM_ARRAY_TASK_ID:=1}
+: ${SLURM_ARRAY_JOB_ID:=1}
 
-# ad2vcf outputs from Josh
-vcf_dir=AD-VCFs-$sample_group/Filtered
 cd $vcf_dir
-
 output_dir=Haplo-output
 tmp_dir=/tmp/haplohseq-$SLURM_ARRAY_JOB_ID
 # FIXME: rmdir $tmp_dir as post-processing
 mkdir -p $output_dir $tmp_dir
 
-filename=$(ls combined*-ad-*.vcf.xz | \
+filename=$(find . -name 'combined*-ad.vcf.xz' | \
     awk -v i=$SLURM_ARRAY_TASK_ID 'NR == i { print $0 }')
 uncompressed=$tmp_dir/${filename%.xz}
 filename_prefix=`echo $filename | cut -d - -f 1`
-sample=${filename_prefix#combined.}
+sample=${filename_prefix##*.}
 hostname
-printf "$filename $uncompressed $filename_prefix $sample $output_dir\n"
+printf "Filename:     $filename\n"
+printf "Uncompressed: $uncompressed\n"
+printf "Prefix:       $filename_prefix\n"
+printf "Sample:       $sample\n"
+printf "Output dir:   $output_dir\n"
 
 # ../../../local/bin version should be built with portable optimizations
 # On FreeBSD, can also use ports version optimized for each compute node

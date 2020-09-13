@@ -1,0 +1,37 @@
+#!/bin/sh -e
+
+##########################################################################
+#   Script description:
+#       
+#   Arguments:
+#       
+#   Returns:
+#       
+#   History:
+#   Date        Name        Modification
+#   2020-09-13  Jason Bacon Begin
+##########################################################################
+
+usage()
+{
+    printf "Usage: $0 dir\n"
+    exit 1
+}
+
+
+##########################################################################
+#   Main
+##########################################################################
+
+if [ $# != 1 ]; then
+    usage
+fi
+dir=$1
+
+cd $1
+for file in $(find . -name '*.vcf.xz'); do
+    echo $file
+    xzcat ../$file | wc -l
+    xzcat $file | wc -l
+    xzcat $file | tail -2
+done

@@ -1,0 +1,9 @@
+#!/bin/sh -e
+
+previous_position=0
+xzcat AD-VCFs-whi/MAF-0.01-1000nt/combined.NWD999572-ad.vcf.xz \
+    | awk '{ print $2 }' | \
+    while read position; do
+	printf "%d\n" $((position-previous_position))
+	previous_position=$position
+    done

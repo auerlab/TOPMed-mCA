@@ -43,7 +43,7 @@ BEGIN {
     
     # Also filter out sites < 1000kb apart
     distance = $2 - last_kept_pos;
-    if ( ($2 == next_ok_maf_pos) && (distance >= 1000) )
+    if ( ($2 == next_ok_maf_pos) && (distance >= separation) )
     {
 	print $0;
 	# Debug

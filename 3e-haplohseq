@@ -2,8 +2,10 @@
 
 ##########################################################################
 #   Script description:
-#       Filter sites for minimum allele frew (MAF) and minimum distance
-#       from each other
+#       Run haplohseq on all .vcf.xz files in a directory
+#   Arguments:
+#       
+#   Returns:
 #       
 #   History:
 #   Date        Name        Modification
@@ -12,7 +14,7 @@
 
 usage()
 {
-    printf "Usage: $0 sample-group (e.g. whi, bjm)\n"
+    printf "Usage: $0 dir\n"
     exit 1
 }
 
@@ -24,14 +26,9 @@ usage()
 if [ $# != 1 ]; then
     usage
 fi
-sample_group=$1
+vcf_dir=$1
 
-vcf_dir=AD-VCFs-$sample_group
 sample_count=$(find $vcf_dir -name '*.vcf.xz' | wc -l)
 sample_count=$(printf "%d" $sample_count)   # Strip leading space
-printf "Samples: $sample_count\n"
-maf=0.01            # Minimum allele frequency
-separation=1000     # Min distance between events
-mkdir -p AD-VCFs-$sample_group/MAF-$maf-${separation}nt
-sbatch --array=1-$sample_count%%50 \
-    3d-filter-sites.sbatch $sample_group $maf $separation
+
+sbatch --array=1-$sample_count%50 3e-haplohseq.sbatch $vcf_dir

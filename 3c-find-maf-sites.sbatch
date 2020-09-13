@@ -26,7 +26,7 @@ else
 fi
 
 maf=0.01
-filterd_dir=MAF-$maf
+filtered_dir=MAF-$maf
 mkdir -p $filtered_dir
 bcftools view -H -q ${maf}:minor \
     ../../phased/freeze.8.chr$chr.pass_only.phased.bcf \

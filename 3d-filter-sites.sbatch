@@ -20,7 +20,7 @@
 
 usage()
 {
-    printf "Usage: $0 sample-group (e.g. whi, bjm)\n"
+    printf "Usage: $0 sample-group (e.g. whi, bjm) MAF min-separation\n"
     exit 1
 }
 
@@ -29,17 +29,18 @@ usage()
 #   Main
 ##########################################################################
 
-if [ $# != 1 ]; then
+if [ $# != 3 ]; then
     usage
 fi
 sample_group=$1
+maf=$2
+separation=$3
 
 : ${SLURM_ARRAY_TASK_ID:=1}
 
-my_vcf=$(ls AD-VCFs-$sample_group/combined.*-ad.vcf.xz | \
+my_vcf=$(find AD-VCFs-$sample_group -name 'combined.*-ad.vcf.xz' | \
     awk -v task=$SLURM_ARRAY_TASK_ID 'NR == task')
-printf "Processing $my_vcf...\n"
+printf "Processing $my_vcf on $(hostname)...\n"
 base=$(basename $my_vcf)
-mkdir -p AD-VCFs-$sample_group/Filtered
-outfile=AD-VCFs-$sample_group/Filtered/${base%.vcf.xz}-maf-0.01.vcf.xz
-xzcat $my_vcf | awk -f filter-sites.awk | xz > $outfile
+outfile=AD-VCFs-$sample_group/MAF-$maf-${separation}nt/$base
+xzcat $my_vcf | awk -v separation=$separation -f filter-sites.awk | xz > $outfile
