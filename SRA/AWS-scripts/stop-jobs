@@ -32,7 +32,7 @@ fi
 vcf_dir=VCFs-$sample_file
 suffix=${sample_file##*-}
 
-log_dir=$(echo Logs-$suffix)
+log_dir=$vcf_dir/Logs
 if [ ! -d $log_dir ]; then
     printf "$log_dir does not exist or is not a directory.\n"
     exit 1

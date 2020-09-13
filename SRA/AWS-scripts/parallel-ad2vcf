@@ -30,16 +30,10 @@ if ! echo $sample_file | grep -q -e '-[0-9][0-9]'; then
 fi
 suffix=${sample_file##*-}
 
-# 6 jobs seems ideal for a 16-vCPU c5a-4xlarge VM
-# Running 10 of these, so 60 ad2vcf jobs in parallel.
-# These are 16 hyperthreads, 8 full CPUs, so 8 2-core jobs too much and
-# actually reduces jobs/hr slightly vs 6 jobs/VM.
-# I lean against using higher-count VMs since the VM's network interface
-# could become a bottleneck.  Better to spread the I/O load out to some
-# extent so each VM can breathe easy reading CRAMs.
-job_count=6
+cd /home/ec2-user/Haplohseq-analysis/SRA
+job_count=$(AWS-scripts/job-count)
 vcf_dir=VCFs-$(basename $sample_file)
-log_dir=Logs-$suffix
+log_dir=$vcf_dir/Logs
 mkdir -p $log_dir
 
 # Rebalance remaining samples if restarting: Only add sample to the list
@@ -59,7 +53,8 @@ for file in ${prefix}??; do
     if [ -e $log_dir/$file.out ]; then
 	printf "$log_dir/$file.out already exists.  Move or remove and try again.\n"
     else
-	nohup ./AWS-scripts/ad2vcf.sh $file $vcf_dir > $log_dir/$file.out 2> $log_dir/$file.err &
+	nohup ./AWS-scripts/ad2vcf.sh $file $vcf_dir \
+	    > $log_dir/$file.out 2> $log_dir/$file.err &
 	printf "Sample file = %s  Job count = %s  VCF-dir = %s\n" \
 	    $sample_file $job_count $vcf_dir > $log_dir/job-info
 	# Offset fusera mounts

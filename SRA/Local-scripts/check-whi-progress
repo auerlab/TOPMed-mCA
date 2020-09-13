@@ -1,8 +1,9 @@
 #!/bin/sh -e
 
 cd ~/Data/TOPMed/Jobs/Haplohseq-analysis/SRA
+job_count=$(AWS-scripts/job-count)
 
 #~/scripts/aws-run whi-aws-ips 'ls Haplo*/SRA/VCF*/*.xz | wc -l'
 ~/scripts/aws-run whi-aws-ips 'ls Haplo*/SRA/VCF*/Done/*.xz | wc -l'
-~/scripts/aws-run whi-aws-ips 'cd Haplo*/SRA && AWS-scripts/run-times 6 Logs'
+~/scripts/aws-run whi-aws-ips 'cd Haplo*/SRA && AWS-scripts/run-times $job_count Logs'
 #~/scripts/aws-run whi-aws-ips 'xzcat Haplo*/SRA/VCF*/Done/*.xz | head -2'
