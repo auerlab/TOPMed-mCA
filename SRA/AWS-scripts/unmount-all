@@ -1,9 +1,11 @@
 #!/bin/sh -e
 
-for dir in mount-NWD*; do
-    echo $dir
-    if [ 0$(ls $dir/) != 0 ]; then
-	fusera unmount $dir
-    fi
-    rmdir $dir
-done
+if ls mount-*; then
+    for dir in mount-NWD*; do
+	echo $dir
+	if [ 0$(ls $dir/) != 0 ]; then
+	    fusera unmount $dir
+	fi
+	rmdir $dir
+    done
+fi
