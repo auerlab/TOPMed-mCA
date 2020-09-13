@@ -1,0 +1,9 @@
+#!/bin/sh -e
+
+#for file in Split-vcfs/Combined+AD/combined.*-ad.vcf.xz; do
+for file in Split-vcfs/Combined+AD/combined.NWD100018-ad.vcf.xz; do
+    echo $file
+    # xzcat $file | more
+    xzcat $file | awk -f site-distance.awk > out
+    tail -n 1 out
+done

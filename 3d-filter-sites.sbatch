@@ -16,9 +16,25 @@
 #SBATCH --output=SLURM-outputs/filter-sites-%A_%a.out
 #SBATCH --error=SLURM-outputs/filter-sites-%A_%a.err
 
+usage()
+{
+    printf "Usage: $0 sample-group (e.g. whi, bjm)\n"
+    exit 1
+}
+
+
+##########################################################################
+#   Main
+##########################################################################
+
+if [ $# != 1 ]; then
+    usage
+fi
+sample_group=$1
+
 : ${SLURM_ARRAY_TASK_ID:=1}
 
-my_vcf=$(ls Split-vcfs/Combined+AD/combined.*-ad.vcf.xz | \
+my_vcf=$(ls AD-VCFs-$sample_group/combined.*-ad.vcf.xz | \
     awk -v task=$SLURM_ARRAY_TASK_ID 'NR == task')
 printf "Processing $my_vcf...\n"
 base=$(basename $my_vcf)

@@ -1,0 +1,42 @@
+#!/bin/sh -e
+
+##########################################################################
+#   Script description:
+#       Validate structure of AD-enhanced VCFs before running haplohseq
+#       
+#   History:
+#   Date        Name        Modification
+#   2020-09-13  Jason Bacon Begin
+##########################################################################
+
+usage()
+{
+    printf "Usage: $0 prefix\n"
+    exit 1
+}
+
+
+##########################################################################
+#   Main
+##########################################################################
+
+if [ $# != 1 ]; then
+    usage
+fi
+prefix=$1
+
+combined_dir=AD-VCFs-$prefix
+mkdir -p $combined_dir
+printf "Linking to $combined_dir...\n"
+find SRA/VCFs-$prefix-samples-*/Done -name '*.vcf.xz' \
+    -exec ln -f '{}' $combined_dir \;
+
+master_list=$combined_dir/vcfs.txt
+printf "Building $master_list...\n"
+find $combined_dir -name '*-ad.vcf.xz' > $master_list
+
+printf "Splitting...\n"
+chunks=6
+total_lines=$(cat $master_list | wc -l)
+lines=$(($total_lines / $chunks + 1))
+split -d -l $lines $master_list ${master_list%.*}-
