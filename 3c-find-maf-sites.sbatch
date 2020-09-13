@@ -3,6 +3,9 @@
 ##########################################################################
 #   Script description:
 #       Find sites with MAF > 1%
+#       This takes a couple days since it has to scan all the BCFs
+#       Only needs to be run once and the results can be used for all
+#       sample groups
 #       
 #   History:
 #   Date        Name        Modification
@@ -22,6 +25,9 @@ else
     chr=$SLURM_ARRAY_TASK_ID
 fi
 
-bcftools view -H -q 0.01:minor \
+maf=0.01
+filterd_dir=MAF-$maf
+mkdir -p $filtered_dir
+bcftools view -H -q ${maf}:minor \
     ../../phased/freeze.8.chr$chr.pass_only.phased.bcf \
-    | awk '{ print $2 }' > Filtered-vcfs/chr$chr-maf-sites.txt
+    | awk '{ print $2 }' > $filtered_dir/chr$chr-maf-sites.txt

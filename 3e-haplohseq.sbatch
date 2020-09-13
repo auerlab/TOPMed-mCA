@@ -8,11 +8,35 @@
 #SBATCH --output=SLURM-outputs/haplohseq-%A_%a.out
 #SBATCH --error=SLURM-outputs/haplohseq-%A_%a.err
 
+##########################################################################
+#   Script description:
+#       
+#   History:
+#   Date        Name        Modification
+#   2020-09-13  Jason Bacon Begin
+##########################################################################
+
+usage()
+{
+    printf "Usage: $0 sample-group (e.g. whi, bjm)\n"
+    exit 1
+}
+
+
+##########################################################################
+#   Main
+##########################################################################
+
+if [ $# != 1 ]; then
+    usage
+fi
+sample_group=$1
+
 # Dummy value for testing outside SLURM env
 : ${SLURM_ARRAY_TASK_ID:=1}
 
 # ad2vcf outputs from Josh
-vcf_dir=Filtered-vcfs
+vcf_dir=AD-VCFs-$sample_group/Filtered
 cd $vcf_dir
 
 output_dir=Haplo-output

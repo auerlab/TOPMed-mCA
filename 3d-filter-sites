@@ -2,11 +2,11 @@
 
 ##########################################################################
 #   Script description:
-#       Deidentify event files and link into Events dir
+#       
 #       
 #   History:
 #   Date        Name        Modification
-#   2020-08-24  Jason Bacon Begin
+#   2020-09-13  Jason Bacon Begin
 ##########################################################################
 
 usage()
@@ -24,16 +24,9 @@ if [ $# != 1 ]; then
     usage
 fi
 sample_group=$1
-dir=AD-VCFs-$sample_group/Filtered/Haplo-output
 
-events_dir=AD-VCFs-$sample_group/Events
-mkdir -p $events_dir
-files=$(ls $dir/*.events.dat)
-sn=1
-for file in $files; do
-    hash=$(printf "%04s" $sn)
-    deident=$(basename $file | sed -E "s|NWD[0-9]+|$hash|")
-    printf "$file -> $deident\n"
-    ln -f $file $events_dir/$deident
-    sn=$((sn + 1))
-done
+vcf_dir=AD-VCFs-$sample_group
+sample_count=$(find $vcf_dir -name '*.vcf.xz' | wc -l)
+sample_count=$(printf "%d" $sample_count)   # Strip leading space
+printf "Samples: $sample_count\n"
+sbatch --array=1-$sample_count 3d-filter-sites.sbatch

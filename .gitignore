@@ -2,3 +2,6 @@
 SLURM-outputs
 Split-vcfs
 sync.log
+AD-VCFs-*
+Filtered-VCFs-*
+MAF-*
