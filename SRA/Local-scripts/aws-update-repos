@@ -2,11 +2,11 @@
 
 ##########################################################################
 #   Script description:
-#       Kill jobs and clean up in prep for next run
+#       Upload samples to AWS instance
 #       
 #   History:
 #   Date        Name        Modification
-#   2020-09-11  EC2 Default UserBegin
+#   2020-07-27  Jason Bacon Begin
 ##########################################################################
 
 usage()
@@ -25,15 +25,22 @@ if [ $# != 1 ]; then
 fi
 prefix=$1
 
-cd /home/ec2-user/Haplohseq-analysis/SRA
-pkill samtools || true
-pkill ad2vcf || true
-top
-./AWS-scripts/unmount-all
-c=1
-while [ -e Logs.$c ]; do
-    c=$((c + 1))
+cat << EOM
+
+This will update scripts on all instances.
+
+This should not be done if AWS jobs are running.
+
+EOM
+read -p "Are you sure? (yes/[no]) " sure
+if [ 0$sure != 0yes ]; then
+    exit
+fi
+
+cd ~/Data/TOPMed/Jobs/Haplohseq-analysis/SRA
+key='-i ~/.ssh/aws-us-east.pem'
+prefix=$1
+
+for host in $(cat $prefix-aws-ips); do
+    ssh -x -t $key ec2-user@$host 'cd Haplohseq-analysis && git pull -r'
 done
-mv Logs Logs.$c
-rm $prefix-samples-*
-ls

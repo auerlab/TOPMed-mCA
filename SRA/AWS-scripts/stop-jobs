@@ -24,24 +24,36 @@ if [ $# != 1 ]; then
     usage
 fi
 sample_file=$(basename $1)
+if ! echo $sample_file | grep -q -e '-[0-9][0-9]'; then
+    printf "Sample file should end in - followed by 2 digits.\n"
+    exit 1
+fi
+
 vcf_dir=VCFs-$sample_file
+suffix=${sample_file##*-}
+
+log_dir=$(echo Logs-$suffix)
+if [ ! -d $log_dir ]; then
+    printf "$log_dir does not exist or is not a directory.\n"
+    exit 1
+fi
 
 read -p 'Are you sure? yes/[no] ' sure
 if [ 0$sure != 0yes ]; then
     exit
 fi
 
-if pkill ad2vcf; then
-    sleep 5
-fi
-if pkill fusera; then
-    sleep 2
-fi
-rmdir mount-*
+cd /home/ec2-user/Haplohseq-analysis/SRA
+pkill samtools || true
+pkill ad2vcf || true
+top
+./AWS-scripts/unmount-all
+
 rm $vcf_dir/*-ad*
 rm $sample_file-??
+
 c=1
-while [ -e Logs.$c ]; do
+while [ -e $log_dir.$c ]; do
     c=$((c + 1))
 done
-mv Logs Logs.$c
+mv $log_dir $log_dir.$c
