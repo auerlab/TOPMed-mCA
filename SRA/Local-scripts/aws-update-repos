@@ -11,7 +11,7 @@
 
 usage()
 {
-    printf "Usage: $0 prefix\n"
+    printf "Usage: $0 sample-group (e.g. whi, bjm)\n"
     exit 1
 }
 
@@ -23,7 +23,7 @@ usage()
 if [ $# != 1 ]; then
     usage
 fi
-prefix=$1
+sample_group=$1
 
 cat << EOM
 
@@ -39,8 +39,8 @@ fi
 
 cd ~/Data/TOPMed/Jobs/Haplohseq-analysis/SRA
 key='-i ~/.ssh/aws-us-east.pem'
-prefix=$1
+sample_group=$1
 
-for host in $(cat $prefix-aws-ips); do
+for host in $(cat $sample_group-aws-ips); do
     ssh -x -t $key ec2-user@$host 'cd Haplohseq-analysis && git pull -r'
 done

@@ -11,7 +11,7 @@
 
 usage()
 {
-    printf "Usage: $0 prefix\n"
+    printf "Usage: $0 sample-group (e.g. whi, bjm)\n"
     exit 1
 }
 
@@ -23,7 +23,7 @@ usage()
 if [ $# != 1 ]; then
     usage
 fi
-prefix=$1
+sample_group=$1
 
 cat << EOM
 
@@ -43,9 +43,9 @@ dest_dir=Haplohseq-analysis/SRA
 mkdir -p Transfer-logs
 
 c=0
-for host in $(cat $prefix-aws-ips); do
-    sample_dir=$(printf "VCFs-$prefix-samples-%02d" $c)
-    sample_file=$(printf "Sample-lists/$prefix-samples-%02d" $c)
+for host in $(cat $sample_group-aws-ips); do
+    sample_dir=$(printf "VCFs-$sample_group-samples-%02d" $c)
+    sample_file=$(printf "Sample-lists/$sample_group-samples-%02d" $c)
     echo $sample_dir
     mkdir -p $sample_dir
     rm -f $sample_dir/missing-samples.txt

@@ -11,7 +11,7 @@
 
 usage()
 {
-    printf "Usage: $0 prefix\n"
+    printf "Usage: $0 sample-group (e.g. whi, bjm)\n"
     exit 1
 }
 
@@ -23,14 +23,14 @@ usage()
 if [ $# != 1 ]; then
     usage
 fi
-prefix=$1
+sample_group=$1
 
 cd ~/Data/TOPMed/Jobs/Haplohseq-analysis/SRA
 
 mkdir -p Transfer-logs
 dir=Haplohseq-analysis/SRA
 key="-i $HOME/.ssh/aws-us-east.pem"
-for ip in $(cat $prefix-aws-ips); do
+for ip in $(cat $sample_group-aws-ips); do
     nohup rsync -e "ssh $key" -av \
 	--exclude 'VCFs-*-samples-*/*.xz*' \
 	ec2-user@${ip}:$dir/VCFs-\* . > Transfer-logs/download-$ip.log 2>&1 &
@@ -39,12 +39,12 @@ done
 printf "Waiting for AWS downloads...\n"
 wait
 
-for dir in VCFs-$prefix-samples-0*/Done; do
+for dir in VCFs-$sample_group-samples-0*/Done; do
     printf "%-30s" $dir
     find $dir -name '*.xz' | wc -l
 done
 printf "%-30s" "All"
-find VCFs-$prefix-samples-0*/Done -name '*.xz' | wc -l
+find VCFs-$sample_group-samples-0*/Done -name '*.xz' | wc -l
 
 # Back up results immediately to 2 other places
 printf "Backing up to Peregrine...\n"
