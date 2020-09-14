@@ -42,14 +42,14 @@ for sample in $(awk '{ print $1 }' $sample_file); do
 	# These should have been filtered out before upload, but check again
 	study=$(xzcat $acc_list | awk -v sample=$sample '$3 == sample { print $2 }')
 	if [ $study != phs000920 ] && [ $study != phs000921 ]; then
-	    vcf_validated=$vcf_dir/Done/combined.$sample-ad.vcf.xz
-	    if [ -e $vcf_validated ]; then
+	    validated_vcf=$vcf_dir/Done/combined.$sample-ad.vcf.xz
+	    if [ -e $validated_vcf ]; then
 		printf "$sample already finished.\n"
 	    else
 		# Retry ad2vcf command until we verify that the CRAM is still
 		# readable at the end and the VCF output is not corrupt
 		vcf_output=$vcf_dir/combined.$sample-ad.vcf.xz
-		while [ ! -e $vcf_validated ]; do
+		while [ ! -e $validated_vcf ]; do
 		    mount_dir=$(pwd)/mount-$sample
 		    mkdir -p $mount_dir
 		
@@ -83,8 +83,11 @@ for sample in $(awk '{ print $1 }' $sample_file); do
 			# mount is still readable.   Mounts sometimes go bad,
 			# still showing files, but producing I/O errors
 			# on read.
-			if ./AWS-scripts/validate-vcf $vcf_output && \
-			    [ $(head -c 100 $cram | wc -c) = 100 ]; then
+			if [ $(head -c 100 $cram | wc -c) != 100 ]; then
+			    printf "Fusera mount failed.  Restarting job...\n"
+			elif ! ./AWS-scripts/validate-vcf $vcf_output; then
+			    printf "ad2vcf output corrupt.  Restarting job...\n"
+			else
 			    mv $vcf_output $vcf_dir/Done
 			fi
 			if [ -e $mount_dir/$srr/$sample.b38.irc.v1.cram ]; then
