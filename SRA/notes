@@ -26,3 +26,9 @@ SRA
 ---
 https://www.ncbi.nlm.nih.gov/sra/docs/sra-cloud/
 Better: https://github.com/ncbi/sra-tools/wiki
+
+Sample groups
+-------------
+whi     WHI
+bjm     BioMe, JHS, MESA
+
