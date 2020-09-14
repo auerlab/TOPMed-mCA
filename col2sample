@@ -2,7 +2,7 @@
 
 ##########################################################################
 #   Script description:
-#       Determine the column of a given sample ID
+#       Determine the sample IDs of the given columns
 #       
 #   History:
 #   Date        Name        Modification
