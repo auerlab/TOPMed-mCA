@@ -11,7 +11,7 @@
 
 usage()
 {
-    printf "Usage: $0 sample-group (e.g. whi, bjm)\n"
+    printf "Usage: $0 haplohseq-output-dir\n"
     exit 1
 }
 
@@ -23,14 +23,12 @@ usage()
 if [ $# != 1 ]; then
     usage
 fi
-sample_group=$1
-dir=AD-VCFs-$sample_group/Filtered/Haplo-output
+dir=$1
 
-events_dir=AD-VCFs-$sample_group/Events
+events_dir=$dir/De-identified-events
 mkdir -p $events_dir
-files=$(ls $dir/*.events.dat)
 sn=1
-for file in $files; do
+for file in $(find $dir -depth 1 -name '*.events.dat'); do
     hash=$(printf "%04s" $sn)
     deident=$(basename $file | sed -E "s|NWD[0-9]+|$hash|")
     printf "$file -> $deident\n"

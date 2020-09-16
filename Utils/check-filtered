@@ -29,6 +29,8 @@ fi
 dir=$1
 
 cd $1
+find . -depth 1 -name '*.xz' | wc -l
+find .. -depth 1 -name '*.xz' | wc -l
 for file in $(find . -name '*.vcf.xz'); do
     echo $file
     xzcat ../$file | wc -l
