@@ -1,6 +1,4 @@
 
 Fusera performs terribly on CentOS 8
-    Fully utulizes 1 core and provides kb/s throughout
+    Fully utilizes 1 core and provides kb/s throughout
     On CentOS 7, ~6 mb/s
-    Best option: CentOS 7 with pkgsrc gcc8
-

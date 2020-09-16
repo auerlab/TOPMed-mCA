@@ -1,14 +1,1 @@
 
-Update htslib and samtools in pkgsrc
-    Test on GCP
-
-Add stats colection to ad2vcf
-
-Filter out sample IDs from opt-out studies (Paul's email)
-
-Determine bucket throughput on GCP
-    Max jobs per instance
-    Max jobs across instances
-
-Determine total run-time on GCP
-    Get PO from Sean
