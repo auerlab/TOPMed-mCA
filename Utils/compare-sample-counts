@@ -1,0 +1,37 @@
+#!/bin/sh -e
+
+##########################################################################
+#   Script description:
+#       Count samples, filtered samples, and events files
+#       
+#   History:
+#   Date        Name        Modification
+#   2020-09-14  Jason Bacon Begin
+##########################################################################
+
+usage()
+{
+    printf "Usage: $0 ad2vcf-output-dir\n"
+    exit 1
+}
+
+
+##########################################################################
+#   Main
+##########################################################################
+
+if [ $# != 1 ]; then
+    usage
+fi
+dir=$1
+
+cd $dir
+printf "ad2vcf output VCFS: "
+find . -depth 1 -name '*-ad.vcf.xz' | wc -l
+for filtered_dir in MAF-*; do
+    echo $filtered_dir
+    printf "Filtered VCFs:      "
+    find $filtered_dir -depth 1 -name '*-ad.vcf.xz' | wc -l
+    printf "Events files:       "
+    find $filtered_dir/Haplo-output -depth 1 -name '*events*' | wc -l
+done
