@@ -1,7 +1,87 @@
 #!/bin/sh -e
 
-xzcat TOPMed_SraRunTable_20200729.txt.xz | awk '{ print $1 }' | sort > temp
+gen_sample_script()
+{
+    cat << EOM > Local-scripts/group$group-samples
+#!/bin/sh -e
+
+run_table=$run_table
+cd ~/Data/TOPMed/Jobs/Haplohseq-analysis/SRA
+printf "Samples listed in \$run_table: $group_total\n"
+xzcat \$run_table | \\
+    awk '($sample_compare) && \$2 != "phs000920" && \$2 != "phs000921" { print \$3,\$4,\$1 }' \\
+    > Sample-lists/group$group-samples.unchecked
+rm -f Sample-lists/group$group-samples.txt
+xzcat $run_table > ${run_table%.xz}
+while read line; do
+    sample=\$(echo \$line | awk '{ print \$1 }')
+    if [ -e ../Split-vcfs/Combined/combined.\$sample.vcf.xz ]; then
+	echo "\$line" >> Sample-lists/group$group-samples.txt
+    else
+	printf "Missing VCF for "
+	awk -v sample=\$sample '\$3 == sample { print \$1, \$2, \$3 }' \\
+	    ${run_table%.xz}
+    fi
+done < Sample-lists/group$group-samples.unchecked
+diff Sample-lists/group$group-samples.unchecked Sample-lists/group$group-samples.txt || true
+wc -l Sample-lists/group$group-samples.unchecked Sample-lists/group$group-samples.txt
+EOM
+    chmod 755 Local-scripts/group$group-samples
+}
+
+cd ~/Data/TOPMed/Jobs/Haplohseq-analysis/SRA
+run_table=TOPMed_SraRunTable_20200729.txt.xz
+
+# Show group counts
+# WHI was the first manually chosen group
+# BioMe, JHS, and MESA was the second
+# Remaining groups will be arbitrary
+xzcat $run_table \
+    | awk '$1 != "study" { print $1 }' | wc -l
+xzcat $run_table \
+    | awk '$1 == "WHI" { print $1 }' | wc -l
+xzcat $run_table \
+    | awk '$1 ~ /^BioMe$|^JHS$|^MESA$/ { print $1 }' | wc -l
+xzcat $run_table \
+    | awk '$1 !~ /^WHI$|^BioMe$|^JHS$|^MESA$|^GALAII$|^SAGE$/ { print $1 }' | wc -l
+
+# Show samples per study excluding WHI, BioMe, JHS, and MESA
+# Separate the 80,363 samples into 4 groups of about 20,000 each
+# GALAII (phs000920) and SAGE (phs000921) opted out and are unavailable
+# PUSH_SCD and PCGC_CHD are not in the dbGap BCFs we split
+xzcat $run_table \
+    | awk '$1 !~ /^study$|^WHI$|^BioMe$|^JHS$|^MESA$|^GALAII$|^SAGE$|^PUSH_SCD$|^PCGC_CHD$/ { print $1 }' > temp
 studies=$(uniq temp)
+total=0
+group_total=0
+group=3
+sample_compare=''
 for study in $studies; do
-    printf "%-15s %s\n" $study $(fgrep $study temp | wc -l)
+    samples=$(fgrep -w $study temp | wc -l)
+    total=$((total + samples))
+    
+    # If there's room for one more in this group, add it
+    # The max count below was determined by trial-and-error to produce
+    # 4 groups about the same size
+    if [ $((group_total + samples)) -le 20000 ]; then
+	if [ -n "$sample_compare" ]; then
+	    sample_compare="$sample_compare ||"
+	fi
+	sample_compare="$sample_compare \$1 == \"$study\""
+	group_total=$((group_total + samples))
+    
+    # Otherwise, output script for this group and start a new one
+    else
+	gen_sample_script
+	
+	# Reset for next sample group
+	group=$((group + 1))
+	group_total=$samples
+	sample_compare="\$1 == \"$study\""
+
+	# Separate info output below
+	printf '\n'
+    fi
+    printf "%-15s %5s %7s %7s\n" $study $samples $total $group_total
 done
+gen_sample_script

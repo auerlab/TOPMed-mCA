@@ -1,0 +1,22 @@
+#!/bin/sh -e
+
+run_table=TOPMed_SraRunTable_20200729.txt.xz
+cd ~/Data/TOPMed/Jobs/Haplohseq-analysis/SRA
+printf "Samples listed in $run_table: 19679\n"
+xzcat $run_table | \
+    awk '($1 == "CRA" || $1 == "HVH" || $1 == "VAFAR" || $1 == "Partners" || $1 == "VU_AF" || $1 == "WGHS" || $1 == "MGH_AF" || $1 == "BAGS" || $1 == "CCAF" || $1 == "Sarcoidosis" || $1 == "ARIC" || $1 == "SAFS" || $1 == "GenSalt" || $1 == "GeneSTAR" || $1 == "HyperGEN") && $2 != "phs000920" && $2 != "phs000921" { print $3,$4,$1 }' \
+    > Sample-lists/group4-samples.unchecked
+rm -f Sample-lists/group4-samples.txt
+xzcat TOPMed_SraRunTable_20200729.txt.xz > TOPMed_SraRunTable_20200729.txt
+while read line; do
+    sample=$(echo $line | awk '{ print $1 }')
+    if [ -e ../Split-vcfs/Combined/combined.$sample.vcf.xz ]; then
+	echo "$line" >> Sample-lists/group4-samples.txt
+    else
+	printf "Missing VCF for "
+	awk -v sample=$sample '$3 == sample { print $1, $2, $3 }' \
+	    TOPMed_SraRunTable_20200729.txt
+    fi
+done < Sample-lists/group4-samples.unchecked
+diff Sample-lists/group4-samples.unchecked Sample-lists/group4-samples.txt || true
+wc -l Sample-lists/group4-samples.unchecked Sample-lists/group4-samples.txt

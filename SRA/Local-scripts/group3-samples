@@ -1,0 +1,22 @@
+#!/bin/sh -e
+
+run_table=TOPMed_SraRunTable_20200729.txt.xz
+cd ~/Data/TOPMed/Jobs/Haplohseq-analysis/SRA
+printf "Samples listed in $run_table: 18396\n"
+xzcat $run_table | \
+    awk '( $1 == "EOCOPD" || $1 == "COPDGene" || $1 == "CFS" || $1 == "Amish" || $1 == "Samoan" || $1 == "FHS") && $2 != "phs000920" && $2 != "phs000921" { print $3,$4,$1 }' \
+    > Sample-lists/group3-samples.unchecked
+rm -f Sample-lists/group3-samples.txt
+xzcat TOPMed_SraRunTable_20200729.txt.xz > TOPMed_SraRunTable_20200729.txt
+while read line; do
+    sample=$(echo $line | awk '{ print $1 }')
+    if [ -e ../Split-vcfs/Combined/combined.$sample.vcf.xz ]; then
+	echo "$line" >> Sample-lists/group3-samples.txt
+    else
+	printf "Missing VCF for "
+	awk -v sample=$sample '$3 == sample { print $1, $2, $3 }' \
+	    TOPMed_SraRunTable_20200729.txt
+    fi
+done < Sample-lists/group3-samples.unchecked
+diff Sample-lists/group3-samples.unchecked Sample-lists/group3-samples.txt || true
+wc -l Sample-lists/group3-samples.unchecked Sample-lists/group3-samples.txt
