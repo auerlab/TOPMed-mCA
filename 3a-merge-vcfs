@@ -11,7 +11,7 @@
 
 usage()
 {
-    printf "Usage: $0 prefix\n"
+    printf "Usage: $0 sample-group\n"
     exit 1
 }
 
@@ -23,12 +23,12 @@ usage()
 if [ $# != 1 ]; then
     usage
 fi
-prefix=$1
+sample_group=$1
 
-combined_dir=AD-VCFs-$prefix
+combined_dir=AD-VCFs-$sample_group
 mkdir -p $combined_dir
 printf "Linking to $combined_dir...\n"
-find SRA/VCFs-$prefix-samples-*/Done -name '*.vcf.xz' \
+find SRA/VCFs-$sample_group-samples-*/Done -name '*.vcf.xz' \
     -exec ln -f '{}' $combined_dir \;
 
 master_list=$combined_dir/vcfs.txt
