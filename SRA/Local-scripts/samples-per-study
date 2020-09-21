@@ -16,7 +16,7 @@ xzcat $run_table > ${run_table%.xz}
 while read line; do
     sample=\$(echo \$line | awk '{ print \$1 }')
     if [ -e ../Split-vcfs/Combined/combined.\$sample.vcf.xz ]; then
-	echo "\$line" >> Sample-lists/group$group-samples.txt
+	printf "\$line\n" >> Sample-lists/group$group-samples.txt
     else
 	printf "Missing VCF for "
 	awk -v sample=\$sample '\$3 == sample { print \$1, \$2, \$3 }' \\
@@ -30,7 +30,7 @@ EOM
 }
 
 cd ~/Data/TOPMed/Jobs/Haplohseq-analysis/SRA
-run_table=TOPMed_SraRunTable_20200729.txt.xz
+run_table=TOPMed_SraRunTable_20200920.txt.xz
 
 # Show group counts
 # WHI was the first manually chosen group
@@ -56,6 +56,7 @@ total=0
 group_total=0
 group=3
 sample_compare=''
+printf "Group $group\n"
 for study in $studies; do
     samples=$(fgrep -w $study temp | wc -l)
     total=$((total + samples))
@@ -63,7 +64,7 @@ for study in $studies; do
     # If there's room for one more in this group, add it
     # The max count below was determined by trial-and-error to produce
     # 4 groups about the same size
-    if [ $((group_total + samples)) -le 20000 ]; then
+    if [ $((group_total + samples)) -le 25000 ]; then
 	if [ -n "$sample_compare" ]; then
 	    sample_compare="$sample_compare ||"
 	fi
@@ -80,8 +81,9 @@ for study in $studies; do
 	sample_compare="\$1 == \"$study\""
 
 	# Separate info output below
-	printf '\n'
+	printf "\nGroup $group\n"
     fi
     printf "%-15s %5s %7s %7s\n" $study $samples $total $group_total
 done
 gen_sample_script
+rm -f temp
