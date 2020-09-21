@@ -1,0 +1,46 @@
+#!/bin/sh -e
+
+##########################################################################
+#   Script description:
+#       Compare VCF counts locally and on AWS
+#       
+#   History:
+#   Date        Name        Modification
+#   2020-09-21  Jason Bacon Begin
+##########################################################################
+
+usage()
+{
+    printf "Usage: $0 sample-group (e.g. whi, bjm, group3)\n"
+    exit 1
+}
+
+
+##########################################################################
+#   Main
+##########################################################################
+
+if [ $# != 1 ]; then
+    usage
+fi
+sample_group=$1
+
+cd ~/Data/TOPMed/Jobs/Haplohseq-analysis/SRA
+for dir in VCFs-$sample_group-samples-[0-9][0-9]; do
+    ls $dir/*.vcf.xz | wc -l
+done
+
+#aws-run "ls Haplohseq-analysis/SRA/VCFs-$sample_group-samples-*"
+aws-run "ls Haplohseq-analysis/SRA/VCFs-$sample_group-samples-*/*.vcf.xz | wc -l"
+exit
+
+chunk=0
+while read aws_ip; do
+    echo $aws_ip, $chunk
+    chunk2=$(printf "%02u" $chunk)
+    dir=Haplohseq-analysis/SRA/VCFs-$sample_group-samples-$chunk2
+    # ssh -x -i ~/.ssh/aws-us-east.pem ec2-user@$aws_ip "ls $dir/*.vcf.xz | wc -l"
+    # aws $aws_ip "ls -d Haplohseq-analysis/SRA/VCFs-*"
+    ssh -x -i ~/.ssh/aws-us-east.pem ec2-user@$aws_ip ls || true
+    chunk=$((chunk + 1))
+done < aws-ips
