@@ -28,7 +28,7 @@ sample_group=$1
 cd ~/Data/TOPMed/Jobs/Haplohseq-analysis/SRA
 job_count=$(AWS-scripts/job-count)
 
-# ~/scripts/aws-run whi-aws-ips 'ls Haplo*/SRA/VCF*/*.xz | wc -l'
-~/scripts/aws-run -c whi-aws-ips "ls Haplohseq-analysis/SRA/VCFs-$sample_group-*/*.xz | wc -l && ls Haplohseq-analysis/SRA/VCFs-$sample_group-*/Done/*.xz | wc -l"
-~/scripts/aws-run -c whi-aws-ips "cd Haplo*/SRA && AWS-scripts/run-times $job_count VCFs-$sample_group-*/Logs"
-# ~/scripts/aws-run whi-aws-ips 'xzcat Haplo*/SRA/VCF*/Done/*.xz | head -2'
+# ~/scripts/aws-run aws-ips 'ls Haplo*/SRA/VCF*/*.xz | wc -l'
+~/scripts/aws-run -c aws-ips "ls Haplohseq-analysis/SRA/VCFs-$sample_group-*/*.xz | wc -l && ls Haplohseq-analysis/SRA/VCFs-$sample_group-*/Done/*.xz | wc -l"
+~/scripts/aws-run -c aws-ips "cd Haplo*/SRA && AWS-scripts/run-times $job_count VCFs-$sample_group-*/Logs"
+# ~/scripts/aws-run aws-ips 'xzcat Haplo*/SRA/VCF*/Done/*.xz | head -2'

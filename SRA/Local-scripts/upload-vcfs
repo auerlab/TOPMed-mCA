@@ -44,7 +44,7 @@ dest_dir=Haplohseq-analysis/SRA
 mkdir -p Transfer-logs
 
 c=0
-for host in $(cat $sample_group-aws-ips); do
+for host in $(cat aws-ips); do
     sample_dir=$(printf "VCFs-$sample_group-samples-%02d" $c)
     sample_file=$(printf "Sample-lists/$sample_group-samples-%02d" $c)
     echo $sample_dir

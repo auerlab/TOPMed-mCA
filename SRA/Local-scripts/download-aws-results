@@ -30,7 +30,7 @@ cd ~/Data/TOPMed/Jobs/Haplohseq-analysis/SRA
 mkdir -p Transfer-logs
 dir=Haplohseq-analysis/SRA
 key="-i $HOME/.ssh/aws-us-east.pem"
-for ip in $(cat $sample_group-aws-ips); do
+for ip in $(cat aws-ips); do
     nohup rsync -e "ssh $key" -av \
 	--exclude 'VCFs-*-samples-*/*.xz*' \
 	ec2-user@${ip}:$dir/VCFs-\* . > Transfer-logs/download-$ip.log 2>&1 &
