@@ -23,6 +23,7 @@ while read line; do
 	    ${run_table%.xz}
     fi
 done < Sample-lists/group$group-samples.unchecked
+rm -f ${run_table%.xz}
 diff Sample-lists/group$group-samples.unchecked Sample-lists/group$group-samples.txt || true
 wc -l Sample-lists/group$group-samples.unchecked Sample-lists/group$group-samples.txt
 EOM

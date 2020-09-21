@@ -58,7 +58,7 @@ for host in $(cat aws-ips); do
     done
     find $sample_dir -name '*.xz' | wc -l
     ssh -x $key ec2-user@$host mkdir -p $dest_dir
-    nohup rsync -av -e "ssh $key" "$@" $sample_dir ec2-user@$host:$dest_dir \
+    nohup rsync -av --delete -e "ssh $key" $sample_dir ec2-user@$host:$dest_dir \
 	> Transfer-logs/$sample_dir-upload.log 2>&1 &
     c=$((c + 1))
 done
