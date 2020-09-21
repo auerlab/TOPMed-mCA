@@ -1,0 +1,33 @@
+#!/bin/sh -e
+
+##########################################################################
+#   Script description:
+#       Count VCFs pre and post ad2vcf
+#       
+#   History:
+#   Date        Name        Modification
+#   2020-09-20  Jason Bacon Begin
+##########################################################################
+
+usage()
+{
+    printf "Usage: $0 sample-group\n"
+    exit 1
+}
+
+
+##########################################################################
+#   Main
+##########################################################################
+
+if [ $# != 1 ]; then
+    usage
+fi
+sample_group=$1
+
+cd ~/Data/TOPMed/Jobs/Haplohseq-analysis/SRA
+for vcf_dir in VCFs-$sample_group-*; do
+    raw=$(find $vcf_dir -depth 1 -name '*.vcf.xz' | wc -l)
+    processed=$(find $vcf_dir/Done -depth 1 -name '*.vcf.xz' | wc -l)
+    printf "%s: %8u %8u\n" $vcf_dir $raw $processed
+done
