@@ -30,7 +30,7 @@ maf=0.01            # Minimum allele frequency
 separation=1000     # Min distance between events
 vcf_dir=AD-VCFs-$sample_group
 
-sample_count=$(find $vcf_dir -depth 1 -name '*-ad.vcf.xz' | wc -l)
+sample_count=$(ls $vcf_dir | grep '.*-ad\.vcf\.xz' | wc -l)
 sample_count=$(printf "%d" $sample_count)   # Strip leading space
 printf "Samples: $sample_count\n"
 

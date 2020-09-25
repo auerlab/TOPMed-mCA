@@ -30,19 +30,21 @@ mkdir -p $events_dir
 sn=1
 unconverted=0
 converted=0
-for file in $(find $dir -depth 1 -name 'combined.NWD*.events.dat'); do
+map_file=$dir/ID-map.txt
+rm -f $map_file
+for file in $(find $dir -maxdepth 1 -name 'combined.NWD*.events.dat'); do
     base=$(basename $file)
     # hash=$(printf "%04s" $sn)
     nwid=$(echo $base | cut -d . -f 2)
     # hash=$(sed -e 's|"||g' ../Data/WHI_LOH_events_array.csv \
     #     | awk -F , -v nwid=$nwid '$10 == nwid { print $1 }' | uniq)
     hash=$(awk -F '[,.]' -v nwid=$nwid '$1 == nwid { print $2 }' \
-	../Data/whi-filenames.csv | uniq)
+	Data/whi-filenames.csv | uniq)
     if [ 0$hash = 0 ]; then
 	# printf "No conversion found for $nwid.\n"
 	unconverted=$((unconverted+1))
     else
-	printf "'%s' '%s'\n" $nwid $hash
+	printf "%s %s\n" $nwid $hash >> $map_file
 	deident=$(basename $file | sed -E "s|NWD[0-9]+|$hash|")
 	printf "$file -> $deident\n"
 	converted=$((converted+1))
