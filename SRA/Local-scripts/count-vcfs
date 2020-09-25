@@ -27,7 +27,7 @@ sample_group=$1
 
 cd ~/Data/TOPMed/Jobs/Haplohseq-analysis/SRA
 for vcf_dir in VCFs-$sample_group-*; do
-    raw=$(find $vcf_dir -depth 1 -name '*.vcf.xz' | wc -l)
-    processed=$(find $vcf_dir/Done -depth 1 -name '*.vcf.xz' | wc -l)
+    raw=$(find $vcf_dir -maxdepth 1 -name '*.vcf.xz' | wc -l)
+    processed=$(find $vcf_dir/Done -maxdepth 1 -name '*.vcf.xz' | wc -l)
     printf "%s: %8u %8u\n" $vcf_dir $raw $processed
 done
