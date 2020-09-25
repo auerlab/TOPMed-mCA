@@ -38,7 +38,7 @@ separation=$3
 
 : ${SLURM_ARRAY_TASK_ID:=1}
 
-my_vcf=$(find AD-VCFs-$sample_group -depth 1 -name '*-ad.vcf.xz' \
+my_vcf=$(ls AD-VCFs-$sample_group | grep '.*-ad\.vcf\.xz' \
     | awk -v task=$SLURM_ARRAY_TASK_ID 'NR == task')
 printf "Task $SLURM_ARRAY_TASK_ID processing $my_vcf on $(hostname)...\n"
 base=$(basename $my_vcf)

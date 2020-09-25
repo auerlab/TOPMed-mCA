@@ -1,0 +1,7 @@
+#!/bin/sh -e
+
+cd AD-VCFs-whi/MAF-0.01-1000nt
+while true; do
+    ls | grep 'combined.*\.vcf\.xz' | wc -l
+    sleep 2
+done

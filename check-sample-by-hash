@@ -2,19 +2,19 @@
 
 ##########################################################################
 #   Script description:
-#       Run haplohseq on all .vcf.xz files in a directory
+#       
 #   Arguments:
 #       
 #   Returns:
 #       
 #   History:
 #   Date        Name        Modification
-#   2020-09-13  Jason Bacon Begin
+#   2020-09-24  Jason Bacon Begin
 ##########################################################################
 
 usage()
 {
-    printf "Usage: $0 ad-vcf-dir [sbatch flags]\n"
+    printf "Usage: $0 hash\n"
     exit 1
 }
 
@@ -23,15 +23,19 @@ usage()
 #   Main
 ##########################################################################
 
-if [ $# -lt 1 ]; then
+if [ $# != 1 ]; then
     usage
 fi
-vcf_dir=$1
-shift
+hash=$1
 
-ls $vcf_dir | grep '.*\.vcf\.xz' > $vcf_dir/VCF-list.txt
-sample_count=$(cat $vcf_dir/VCF-list.txt | wc -l)
-sample_count=$(printf "%d" $sample_count)   # Strip leading space
-
-set -x
-sbatch --array=1-$sample_count%150 "$@" 3e-haplohseq.sbatch $vcf_dir
+nwid=$(awk -v hash=$hash '$2 == hash { print $1 }' de-ident-mappings.txt)
+printf "$nwid\n"
+xzcat AD-VCFs-whi/combined.$nwid-ad.vcf.xz | tail -n 1
+printf "Scanning logs...\n"
+set +e
+logs=$(find SLURM-outputs -name haplohseq\*.out | xargs fgrep -l $nwid)
+echo $logs
+for log in $logs; do
+    cat $log
+    cat ${log%.out}.err
+done

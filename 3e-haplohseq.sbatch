@@ -21,7 +21,7 @@
 
 usage()
 {
-    printf "Usage: $0 dir\n"
+    printf "Usage: $0 ad-vcf-dir\n"
     exit 1
 }
 
@@ -37,20 +37,28 @@ vcf_dir=$1
 
 # Dummy value for testing outside SLURM env
 : ${SLURM_ARRAY_TASK_ID:=1}
-: ${SLURM_ARRAY_JOB_ID:=1}
 
 cd $vcf_dir
 output_dir=Haplo-output
-tmp_dir=/tmp/haplohseq-$SLURM_ARRAY_JOB_ID
-# FIXME: rmdir $tmp_dir as post-processing
-mkdir -p $output_dir $tmp_dir
+mkdir -p $output_dir
 
-filename=$(find . -name 'combined*-ad.vcf.xz' | \
-    awk -v i=$SLURM_ARRAY_TASK_ID 'NR == i { print $0 }')
-uncompressed=$tmp_dir/${filename%.xz}
+# Using ls here was resulting in some jobs getting the same filename for
+# some reason.  It's a weird NFS issue where directory listing are missing
+# some files or files are added when under heavy load. Denerate a static list
+# VCF-list.txt in the calling script and use it here.
+# Same results using find or ls|grep
+# Works OK on NFSv3 but fails on 4.
+# ls | grep 'combined.*-ad\.vcf\.xz' > $output_dir/list-$SLURM_ARRAY_TASK_ID.txt
+#filename=$(ls | grep 'combined.*-ad\.vcf\.xz' \
+#    | awk -v i=$SLURM_ARRAY_TASK_ID 'NR == i { print $0 }')
+# This works fine and saves time when NFS is heavily loaded
+filename=$(awk -v i=$SLURM_ARRAY_TASK_ID 'NR == i { print $0 }' VCF-list.txt)
+# Use local disk for uncompressed files to offload NFS
+uncompressed=/tmp/${filename%.xz}
 filename_prefix=`echo $filename | cut -d - -f 1`
 sample=${filename_prefix##*.}
 hostname
+printf "TASK ID:      $SLURM_ARRAY_TASK_ID\n"
 printf "Filename:     $filename\n"
 printf "Uncompressed: $uncompressed\n"
 printf "Prefix:       $filename_prefix\n"
