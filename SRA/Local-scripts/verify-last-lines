@@ -2,18 +2,17 @@
 
 ##########################################################################
 #   Script description:
-#       Split sample list into N components
-#       Run this after $group-sample-list to divide samples for multiple
-#       cloud instances
+#       Confirm that the position of the last call matches in input and
+#       output files.  This is also done by ad2vcf.sh on group4 and later.
 #       
 #   History:
 #   Date        Name        Modification
-#   2020-09-09  Jason Bacon Begin
+#   2020-09-25  Jason Bacon Begin
 ##########################################################################
 
 usage()
 {
-    printf "Usage: $0 filename chunks\n"
+    printf "Usage: $0 directory\n"
     exit 1
 }
 
@@ -22,12 +21,14 @@ usage()
 #   Main
 ##########################################################################
 
-if [ $# != 2 ]; then
+if [ $# != 1 ]; then
     usage
 fi
-master_list=$1
-chunks=$2
+dir=$1
 
-total_lines=$(cat $master_list | wc -l)
-lines=$(($total_lines / $chunks + 1))
-split -d -l $lines $master_list ${master_list%.*}-
+cd $dir
+for file in *.vcf.xz; do
+    printf "===\n"
+    xzcat $file | tail -n 1 | awk '{ print $2 }'
+    xzcat Done/${file%.vcf.xz}-ad.vcf.xz | tail -n 1 | awk '{ print $2 }'
+done
