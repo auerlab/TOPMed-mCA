@@ -54,6 +54,8 @@ fi
 # Make sure position of last line is the same in input and output
 output_pos=$(echo $last_line | awk '{ print $2 }')
 input_pos=$(xzcat ${file%-ad.vcf.xz}.vcf.xz | tail -n 1 | awk '{ print $2 }')
+printf "Last call pos in input:  $input_pos\n"
+printf "Last call pos in output: $output_pos\n"
 if [ $input_pos != $output_pos ]; then
     printf "Final output position does not match input.\n"
     printf "File must be truncated at a line boundary.\n"
