@@ -25,7 +25,5 @@ if [ $# != 1 ]; then
 fi
 vcf_dir=$1
 
-for file in $vcf_dir/Done/*-ad*; do
-    echo $file
-    xzcat $file | head -2
-done
+ls $vcf_dir/*.vcf.xz | wc -l
+ls $vcf_dir/Done/*.vcf.xz | wc -l
