@@ -17,6 +17,19 @@ usage()
 
 
 ##########################################################################
+#   Function description:
+#       Pause until user presses return
+##########################################################################
+
+pause()
+{
+    local junk
+    
+    printf "Press return to continue..."
+    read junk
+}
+
+##########################################################################
 #   Main
 ##########################################################################
 
@@ -30,5 +43,6 @@ job_count=$(AWS-scripts/job-count)
 
 # ~/scripts/aws-run aws-ips 'ls Haplo*/SRA/VCF*/*.xz | wc -l'
 ~/scripts/aws-run -c "ls Haplohseq-analysis/SRA/VCFs-$sample_group-*/*.xz | wc -l && ls Haplohseq-analysis/SRA/VCFs-$sample_group-*/Done/*.xz | wc -l"
+pause
 ~/scripts/aws-run -c "cd Haplo*/SRA && AWS-scripts/run-times $job_count VCFs-$sample_group-*/Logs"
 # ~/scripts/aws-run aws-ips 'xzcat Haplo*/SRA/VCF*/Done/*.xz | head -2'
