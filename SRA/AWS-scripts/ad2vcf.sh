@@ -26,6 +26,10 @@ fi
 sample_file=$1
 vcf_dir=$2
 
+if [ $(cat $sample_file | wc -l) = 0 ]; then
+    exit
+fi
+
 mkdir -p $vcf_dir/Done
 
 #export PATH=./local/bin:$PATH

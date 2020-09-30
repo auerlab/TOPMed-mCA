@@ -49,8 +49,8 @@ pkill ad2vcf || true
 top
 ./AWS-scripts/unmount-all
 
-rm $vcf_dir/*-ad*
-rm $sample_file-??
+rm -f $vcf_dir/*-ad* || true
+rm -f $sample_file-?? || true
 
 c=1
 while [ -e $log_dir.$c ]; do
