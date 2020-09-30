@@ -85,6 +85,9 @@ for sample in $(awk '{ print $1 }' $sample_file); do
 			# on read.
 			if [ $(head -c 100 $cram | wc -c) != 100 ]; then
 			    printf "Fusera mount failed.  Restarting job...\n"
+			    printf "Unable to read $cram\n"
+			    ls -l $cram
+			    head -c 100 $cram | wc -c
 			elif ! ./AWS-scripts/validate-vcf $vcf_output; then
 			    printf "ad2vcf output corrupt.  Restarting job...\n"
 			else
