@@ -1,4 +1,113 @@
 
-Fusera performs terribly on CentOS 8
-    Fully utilizes 1 core and provides kb/s throughout
-    On CentOS 7, ~6 mb/s
+Majority of analysis done on Peregrine
+    FreeBSD 12.1
+    ZFS with lz4 compression
+    232 compute cores
+    Dell PowerEdge R415 Opteron 4180 2.6GHz
+    Dell PowerEdge R6415 AMD Epyc 7551 2.0 GHz
+    Gigabit network, Dell PowerConnect
+    https://uwm.edu/hpc/specifications-3/
+
+Primary software development on Barracuda
+    FreeBSD 12.1
+    clang 8.0.1
+    ZFS with lz4 compression
+
+vcf-split
+    Max output files about 9k before serious loss of performance
+    Caused compute node lock-ups on Mortimer (CentOS 7)
+    Succeeded on Peregrine
+
+ad2vcf
+    Must be done in cloud in order to access SRA CRAM files
+    Fusera was the only working method at the time of processing
+    SRA Tools did not have the authentication capabilities to access
+    restricted SRA files, even in the cloud
+    
+Fusera
+    Performs terribly on CentOS 8
+	Fully utilizes 1 core and provides kb/s throughout
+    On CentOS 7 or Amazon Linux 1, ~6 mb/s
+    Tested with time cat file.cram > /dev/null
+
+    0.41% mount failure rate on Amazon Linux 1 (82 mount failures 20k samples)
+    Experienced frequent failures on both AWS and GCP
+
+Cloud
+    AWS far superior to GCP is most respects
+    GCP showed better single-thread read throughput through Fusera mounts,
+    but far fewer VM configuration options, terrible documentation with
+    common tasks scanttered across multiple web pages, cumbersome interaction
+    with instances via Google Cloud SDK (Easier to use standard tools like ssh
+    and rsync with AWS)
+    
+    Fusera performance was not an issue with AWS since it parallelized well
+    up to 60 processes and samtools is CPU-bound when decoding CRAMs anyway
+    
+    Scientific software installed using pkgsrc, configured by
+    auto-pkgsrc-setup to compile everything using its own gcc8 package
+    
+    Instance automatically configured by SRA/AWS-scripts/sra-cloud-setup
+
+    [ec2-user@ip-172-31-42-140 ~]$ pkg_info
+    APE-3.5.3.8         Another Programmer's Editor
+    gettext-tools-0.21  Tools for providing messages in different languages
+    basic-stats-0.0.0.6 Command-line tool to perform basic statistics on tabular data
+    ncurses-6.2nb2      CRT screen handling and optimization package
+    bsdtar-3.4.3        Fast multi-format tape archiver
+    makedepend-1.0.6    Dependency generator for make
+    python37-3.7.8      Interpreted, interactive, object-oriented programming language
+    libtool-base-2.4.6nb2 Generic shared library support script (the script itself)
+    perl-5.30.3         Practical Extraction and Report Language
+    curl-7.71.1         Client that groks URLs
+    p5-gettext-1.07nb4  Perl5 module interface to C I18N functions
+    help2man-1.47.16    Generate simple manual pages from program output
+    nghttp2-1.41.0      Implementation of HTTP/2 in C
+    flex-2.6.4          Fast clone of lex(1), the lexical scanner generator
+    twintk-0.9.4.2      Terminal Windows Toolkit
+    digest-20190127     Message digest wrapper utility
+    bison-3.4.2         GNU yacc(1) replacement
+    iftop-1.0pre4       Display bandwidth usage on an interface
+    auto-admin-0.6.6.7  Portable tools for automating systems management
+    xorgproto-2020.1    Various X headers from Xorg X11
+    cwrappers-20180325  pkgsrc compiler wrappers
+    libpare-1.1.1       Pointer Array Regular Expressions
+    libunistring-0.9.10 Unicode string library
+    readline-8.0        GNU library that can recall and edit previous input
+    libpcap-1.9.1       System-independent interface for user-level packet capture
+    xz-5.2.5            General-purpose data compression software
+    gtexinfo-6.7nb2     GNU info documentation utilities
+    bootstrap-mk-files-20180901 *.mk files for the bootstrap bmake utility
+    bmake-20200524nb1   Portable (autoconf) version of NetBSD 'make' utility
+    bzip2-1.0.8         Block-sorting file compressor
+    zlib-1.2.11         General purpose data compression library
+    p5-Locale-libintl-1.31 Perl internationalization library
+    htslib-1.10.2nb1    C library for high-throughput sequencing data formats
+    libbacon-1.2.2.1    Miscellaneous experimental functions
+    db4-4.8.30nb1       Berkeley DB version 4 from Oracle
+    webbrowser-0.3.0    Proxy script for launching "best" available web browser
+    pax-20080110nb4     POSIX standard archiver with many extensions
+    gettext-lib-0.21    Internationalized Message Handling Library (libintl)
+    libffi-3.3nb3       Foreign function interface
+    automake-1.16.2     GNU Standards-compliant Makefile generator
+    checkperms-1.12     Check and correct file permissions
+    gcc8-8.4.0          The GNU Compiler Collection (GCC) - 8.0 Release Series
+    openssl-1.1.1gnb2   Secure Socket Layer and cryptographic library
+    samtools-1.10       Tools for manipulating sequence alignment maps
+    p5-Unicode-EastAsianWidth-1.40nb1 Perl5 module that provides properties of East Asian characters
+    ad2vcf-0.1.1.47     Add allelic depth info from a SAM stream to a VCF file
+    autoconf-2.69nb9    Generates automatic source code configuration scripts
+    m4-1.4.18nb2        GNU version of UNIX m4 macro language processor
+    pkgconf-1.6.0       API-driven pkg-config replacement
+    libuuid-2.32.1      Generate unique identifiers for objects
+    biolibc-0.1.0.31    Low-level high-performance bioinformatics library
+    xmlcatmgr-2.2nb1    XML and SGML catalog manager
+    pkg_install-20200701 Package management and administration tools for pkgsrc
+    mozilla-rootcerts-1.0.20200529nb1 Root CA certificates from the Mozilla Project
+    nbpatch-20151107    Patch files using diff output
+    libxml2-2.9.10nb2   XML parser library from the GNOME project
+    binutils-2.34nb2    GNU binary utilities
+    mozilla-rootcerts-openssl-2.4nb1 Wedge for installing and managing mozilla-rootcerts
+    libidn2-2.3.0       Convert internationalized domain names to/from ASCII Encoding
+    p5-Text-Unidecode-1.30nb3 Perl5 module that transliterates Unicode to US-ASCII
+
