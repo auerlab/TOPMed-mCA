@@ -34,4 +34,14 @@ fi
 cd /home/ec2-user/Haplohseq-analysis/SRA
 AWS-scripts/stop-jobs $path
 git pull
+cat << EOM
+
+Reinstall ad2vcf if needed using the following commands:
+
+cd /usr/pkgsrc/wip/ad2vcf
+git pull
+bmake clean deinstall reinstall
+
+EOM
+sudo su
 AWS-scripts/parallel-ad2vcf $path
