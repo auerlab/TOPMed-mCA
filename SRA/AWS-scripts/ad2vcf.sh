@@ -51,9 +51,12 @@ for sample in $(awk '{ print $1 }' $sample_file); do
 		printf "$sample already finished.\n"
 	    else
 		# Retry ad2vcf command until we verify that the CRAM is still
-		# readable at the end and the VCF output is not corrupt
+		# readable at the end and the VCF output is not corrupt.
+		# Give up if ad2vcf returns EX_DATAERR, code 65, indicating
+		# something wrong with the input.
 		vcf_output=$vcf_dir/combined.$sample-ad.vcf.xz
-		while [ ! -e $validated_vcf ]; do
+		exit_status=0
+		while [ ! -e $validated_vcf ] && [ $exit_status != 65 ]; do
 		    mount_dir=$(pwd)/mount-$sample
 		    mkdir -p $mount_dir
 		
@@ -72,16 +75,19 @@ for sample in $(awk '{ print $1 }' $sample_file); do
 		    done
 		    
 		    if [ tries = 10 ]; then
-			printf "Giving up on $srr.\n"
+			printf "Giving up on $srr mount.\n"
 		    else
 			cram=$mount_dir/$srr/$sample.b38.irc.v1.cram
 			
 			# Can't rely on exit status since samtools is unhappy
 			# when ad2vcf closes the pipe.  Reading trailing junk
 			# until EOF in ad2vcf would waste a lot of time.
+			set +e
 			time samtools view -@ 2 \
 			    --input-fmt-option required_fields=0x208 \
-			    $cram | ad2vcf $vcf_input || true
+			    $cram | ad2vcf $vcf_input
+			exit_status=$?
+			set -e
 			
 			# Check structure of last line and verify that fusera
 			# mount is still readable.   Mounts sometimes go bad,
