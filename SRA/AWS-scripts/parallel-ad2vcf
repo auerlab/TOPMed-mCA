@@ -35,6 +35,8 @@ job_count=$(AWS-scripts/job-count)
 vcf_dir=VCFs-$(basename $sample_file)
 log_dir=$vcf_dir/Logs
 mkdir -p $log_dir
+printf "Sample file = %s  Job count = %s  VCF-dir = %s\n" \
+    $sample_file $job_count $vcf_dir > $log_dir/job-info
 
 # Rebalance remaining samples if restarting: Only add sample to the list
 # for each job if there is no output file in the Done directory.
@@ -49,14 +51,12 @@ split -d -n l/$job_count $sample_file.remaining $prefix
 rm -f $sample_file.remaining
 
 for file in ${prefix}[0-9][0-9]; do
-    echo $file
     if [ -e $log_dir/$file.out ]; then
 	printf "$log_dir/$file.out already exists.  Move or remove and try again.\n"
-    else
+    elif [ $(cat $file | wc -l) != 0 ]; then
+	echo $file
 	nohup ./AWS-scripts/ad2vcf.sh $file $vcf_dir \
 	    > $log_dir/$file.out 2> $log_dir/$file.err &
-	printf "Sample file = %s  Job count = %s  VCF-dir = %s\n" \
-	    $sample_file $job_count $vcf_dir > $log_dir/job-info
 	# Offset fusera mounts
 	sleep 1
     fi

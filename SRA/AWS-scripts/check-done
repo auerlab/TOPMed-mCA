@@ -25,5 +25,8 @@ if [ $# != 1 ]; then
 fi
 vcf_dir=$1
 
-ls $vcf_dir/*.vcf.xz | wc -l
+ls $vcf_dir/*[0-9].vcf.xz | wc -l
 ls $vcf_dir/Done/*.vcf.xz | wc -l
+ls $vcf_dir/*[0-9].vcf.xz | cut -d . -f 2 > undone
+ls $vcf_dir/Done/*.vcf.xz | cut -d . -f 2 | cut -d - -f 1 > done
+diff undone done

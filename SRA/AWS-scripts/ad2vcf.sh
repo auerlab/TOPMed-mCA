@@ -45,7 +45,7 @@ for sample in $(awk '{ print $1 }' $sample_file); do
 	# phs000920 and phs000921 opted out of providing data for out study
 	# These should have been filtered out before upload, but check again
 	study=$(xzcat $acc_list | awk -v sample=$sample '$3 == sample { print $2 }')
-	if [ $study != phs000920 ] && [ $study != phs000921 ]; then
+	if [ 0$study != 0phs000920 ] && [ 0$study != 0phs000921 ]; then
 	    validated_vcf=$vcf_dir/Done/combined.$sample-ad.vcf.xz
 	    if [ -e $validated_vcf ]; then
 		printf "$sample already finished.\n"
