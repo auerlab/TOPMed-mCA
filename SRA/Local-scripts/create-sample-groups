@@ -51,6 +51,11 @@ EOM
 
 cd ~/Data/TOPMed/Jobs/Haplohseq-analysis/SRA
 run_table=TOPMed_SraRunTable_20200920.txt.xz
+if [ $(xzcat $run_table | awk '{ print $3 }' | uniq -d | wc -l) != 0 ]; then
+    printf "$run_table contains duplicate NWIDs.  Fix this and try again.\n"
+    xzcat $run_table | awk '{ print $3 }' | uniq -d
+    exit 1
+fi
 
 # Show group counts
 # WHI was the first manually chosen group
