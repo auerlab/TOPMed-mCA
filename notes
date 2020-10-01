@@ -26,7 +26,12 @@ ad2vcf
     
     NWD976804 (group3) kept hit MAX_SAM_BUFF_ALIGNMENTS even at 1M
     Bad CRAM file?
-    
+
+    Redundant NWD in TOPMed_SraRunTable_20200920.txt.xz
+    Group 3 samples.txt:
+    NWD100048 SRR6776551 VU_AF
+    NWD100048 SRR6953884 VU_AF  Removed from Sample-lists/group3-samples-08
+
 Fusera
     Performs terribly on CentOS 8
 	Fully utilizes 1 core and provides kb/s throughout
