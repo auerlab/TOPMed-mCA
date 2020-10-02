@@ -26,12 +26,14 @@ fi
 sample_file=$1
 vcf_dir=$2
 
+printf "\n===================================================\n"
+
 if [ $(cat $sample_file | wc -l) = 0 ]; then
+    printf "$sample_file is empty.\n"
     exit
 fi
 
 mkdir -p $vcf_dir/Done
-
 #export PATH=./local/bin:$PATH
 which ad2vcf
 
@@ -62,7 +64,6 @@ for sample in $(awk '{ print $1 }' $sample_file); do
 		    srr=$(xzcat $acc_list | awk -v sample=$sample '$3 == sample { print $4 }')
 		    cram=$mount_dir/$srr/$sample.b38.irc.v1.cram
 		
-		    printf "\n===================================================\n"
 		    printf "Sample: $sample  SRR: $srr\n"
 		    fusera mount -t Security/prj_13558_D25493.ngc -a $srr $mount_dir &
 		    
