@@ -28,12 +28,15 @@ sample_group=$1
 
 maf=0.01            # Minimum allele frequency
 separation=1000     # Min distance between events
-vcf_dir=AD-VCFs-$sample_group
 
-sample_count=$(ls $vcf_dir | grep '.*-ad\.vcf\.xz' | wc -l)
+vcf_dir=AD-VCFs-$sample_group
+vcf_list=$vcf_dir/VCF-list.txt
+
+ls $vcf_dir | grep '.*-ad\.vcf\.xz' > $vcf_list
+sample_count=$(cat $vcf_list | wc -l)
 sample_count=$(printf "%d" $sample_count)   # Strip leading space
 printf "Samples: $sample_count\n"
 
-mkdir -p AD-VCFs-$sample_group/MAF-$maf-${separation}nt
+mkdir -p $vcf_dir/MAF-$maf-${separation}nt
 sbatch --array=1-$sample_count%50 \
     3d-filter-sites.sbatch $sample_group $maf $separation

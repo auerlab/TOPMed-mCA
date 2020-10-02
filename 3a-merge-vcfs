@@ -2,7 +2,7 @@
 
 ##########################################################################
 #   Script description:
-#       Validate structure of AD-enhanced VCFs before running haplohseq
+#       Merge AD-enhanced VCFs from AWS group into a single directory
 #       
 #   History:
 #   Date        Name        Modification
@@ -28,14 +28,14 @@ sample_group=$1
 combined_dir=AD-VCFs-$sample_group
 mkdir -p $combined_dir
 printf "Linking to $combined_dir...\n"
-find SRA/VCFs-$sample_group-samples-*/Done -name '*.vcf.xz' \
+find SRA/VCFs-$sample_group-samples-[0-9]*/Done -name '*.vcf.xz' \
     -exec ln -f '{}' $combined_dir \;
 
 master_list=$combined_dir/vcfs.txt
 printf "Building $master_list...\n"
 find $combined_dir -name '*-ad.vcf.xz' > $master_list
 
-printf "Splitting...\n"
+printf "Splitting list into 6 chunks for SLURM jobs...\n"
 chunks=6
 total_lines=$(cat $master_list | wc -l)
 lines=$(($total_lines / $chunks + 1))
