@@ -1,0 +1,4 @@
+#!/bin/sh -e
+
+cd /usr/home/bacon/Data/TOPMed/Jobs/Haplohseq-analysis/SRA
+./Local-scripts/download-aws-results group4 > download.stdout 2> download.stderr

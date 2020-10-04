@@ -9,25 +9,16 @@
 #   2020-09-20  Jason Bacon Begin
 ##########################################################################
 
-usage()
-{
-    printf "Usage: $0 sample-group\n"
-    exit 1
-}
-
-
 ##########################################################################
 #   Main
 ##########################################################################
 
-if [ $# != 1 ]; then
-    usage
-fi
-sample_group=$1
-
 cd ~/Data/TOPMed/Jobs/Haplohseq-analysis/SRA
-for vcf_dir in VCFs-$sample_group-*; do
-    raw=$(find $vcf_dir -maxdepth 1 -name '*.vcf.xz' | wc -l)
-    processed=$(find $vcf_dir/Done -maxdepth 1 -name '*.vcf.xz' | wc -l)
-    printf "%s: %8u %8u\n" $vcf_dir $raw $processed
+for sample_group in whi bjm group3 group4; do
+    for vcf_dir in VCFs-$sample_group-*; do
+	raw=$(find $vcf_dir -maxdepth 1 -name '*.vcf.xz' | wc -l)
+	processed=$(find $vcf_dir/Done -maxdepth 1 -name '*.vcf.xz' | wc -l)
+	printf "%s: %8u %8u\n" $vcf_dir $raw $processed
+    done
 done
+printf "Total completed: $(find VCFs-*/Done -maxdepth 1 -name '*.vcf.xz' | wc -l)\n"

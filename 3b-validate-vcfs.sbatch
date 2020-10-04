@@ -1,9 +1,5 @@
 #!/bin/sh -e
 
-#SBATCH --array=1-6
-#SBATCH --output=SLURM-outputs/validate-vcfs-%A_%a.out
-#SBATCH --error=SLURM-outputs/validate-vcfs-%A_%a.err
-
 ##########################################################################
 #   Script description:
 #       Validate structure of AD-enhanced VCFs before running haplohseq
@@ -14,6 +10,10 @@
 #   Date        Name        Modification
 #   2020-09-13  Jason Bacon Begin
 ##########################################################################
+
+#SBATCH --array=1-6
+#SBATCH --output=SLURM-outputs/validate-vcfs-%A_%a.out
+#SBATCH --error=SLURM-outputs/validate-vcfs-%A_%a.err
 
 usage()
 {
@@ -57,4 +57,8 @@ for file in $(cat $my_list); do
 	    printf "OK\n"
 	fi
     fi
+    
+    # Check for match in last POS between pre and post ad2vcf?
+    # How to efficiently find input VCF?  Transfer groups from barracuda?
+    
 done

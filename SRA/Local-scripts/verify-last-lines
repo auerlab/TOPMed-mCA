@@ -12,7 +12,7 @@
 
 usage()
 {
-    printf "Usage: $0 directory\n"
+    printf "Usage: $0\n"
     exit 1
 }
 
@@ -21,14 +21,24 @@ usage()
 #   Main
 ##########################################################################
 
-if [ $# != 1 ]; then
+if [ $# != 0 ]; then
     usage
 fi
-dir=$1
 
-cd $dir
-for file in *.vcf.xz; do
-    printf "===\n"
-    xzcat $file | tail -n 1 | awk '{ print $2 }'
-    xzcat Done/${file%.vcf.xz}-ad.vcf.xz | tail -n 1 | awk '{ print $2 }'
+cd ~/Data/TOPMed/Jobs/Haplohseq-analysis/SRA/
+for dir in VCFs-*-[0-9][0-9]; do
+    for file in $dir/*.vcf.xz; do
+	printf "$file: "
+	input_pos=$(xzcat $file | tail -n 1 | awk '{ print $2 }')
+	base=$(basename $file)
+	output_file=$dir/Done/${base%.vcf.xz}-ad.vcf.xz
+	output_pos=$(xzcat $output_file | tail -n 1 | awk '{ print $2 }')
+	printf "%10s %10s " $input_pos $output_pos
+	if [ $input_pos != $output_pos ]; then
+	    printf "Mismatch!\n"
+	    printf "$output_file is missing calls\n" >> corrupt-VCFs.txt
+	else
+	    printf "OK\n"
+	fi
+    done
 done

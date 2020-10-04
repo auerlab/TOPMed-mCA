@@ -46,6 +46,9 @@ Fusera
 
     0.41% mount failure rate on Amazon Linux 1 (82 mount failures 20k samples)
     Experienced frequent failures on both AWS and GCP
+    
+    On a few VMs, a simple read test on the CRAM following successful ad2vcf
+    run would frequently fail.  if [ $(head -c 100 $cram | wc -c) = 100 ]
 
 Cloud
     AWS far superior to GCP is most respects
