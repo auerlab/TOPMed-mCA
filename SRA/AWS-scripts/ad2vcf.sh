@@ -84,7 +84,7 @@ for sample in $(awk '{ print $1 }' $sample_file); do
 			# until EOF in ad2vcf would waste a lot of time.
 			set +e
 			time samtools view -@ 2 \
-			    --input-fmt-option required_fields=0x208 \
+			    --input-fmt-option required_fields=0x218 \
 			    $cram | ad2vcf $vcf_input
 			exit_status=$?
 			set -e
