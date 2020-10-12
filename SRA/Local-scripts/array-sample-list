@@ -11,6 +11,8 @@ while read line; do
     nwd=$(echo $line | awk '{ print $1 }')
     # Brutally inefficient, but it adds up to about a minute so who cares...
     srr=$(awk '$3 == "'$nwd'" { print $4 }' $run_table)
-    printf "%s %s WHI\n" $nwd $srr
+    if [ -e ../Split-vcfs/Combined/combined.$sample.vcf.xz ]; then
+	printf "%s %s WHI\n" $nwd $srr
+    fi
 done < $temp_array > SRA/Samples/array-samples.txt
 rm -f $run_table $temp_array
