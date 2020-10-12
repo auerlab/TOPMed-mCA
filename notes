@@ -18,7 +18,7 @@ vcf-split
     Caused compute node lock-ups on Mortimer (CentOS 7)
     Succeeded on Peregrine
 
-ad2vcf
+AWS/ad2vcf
     Must be done in cloud in order to access SRA CRAM files
     Fusera was the only working method at the time of processing
     SRA Tools did not have the authentication capabilities to access
@@ -31,6 +31,12 @@ ad2vcf
     Group 3 samples.txt:
     NWD100048 SRR6776551 VU_AF
     NWD100048 SRR6953884 VU_AF  Removed from Sample-lists/group3-samples-08
+    
+    Some VMs (e.g. chunk 04) seem to run much slower than others.  I don't
+    think it's the input data since the same VMs performed poorly across many
+    samples.  Possibly due to retries from Fusera mounts that failed the
+    CRAM read test after a succussful ad2vcf run.  That test was removed
+    after the output VCF verification was implemented.
 
 Fusera
     Performs terribly on CentOS 8
