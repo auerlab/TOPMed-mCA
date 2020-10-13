@@ -1,8 +1,0 @@
-#!/bin/sh -e
-
-no_filter=VCFs-array-samples-no-filter-00/Done
-mkdir -p $no_filter
-for file in VCFs-array-samples-mapq10-00/Done/*; do
-    echo $file
-    ln $file $no_filter
-done

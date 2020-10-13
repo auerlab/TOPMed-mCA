@@ -1,0 +1,8 @@
+#!/bin/sh -e
+
+no_filter=AD-VCFs-array-no-filter
+mkdir -p $no_filter
+for file in AD-VCFs-array-mapq10/*.vcf.xz; do
+    echo $file
+    ln -f AD-VCFs-whi/$(basename $file) $no_filter
+done

@@ -47,10 +47,8 @@ mkdir -p $output_dir
 # some files or files are added when under heavy load. Denerate a static list
 # VCF-list.txt in the calling script and use it here.
 # Same results using find or ls|grep
-# Works OK on NFSv3 but fails on 4.
-# ls | grep 'combined.*-ad\.vcf\.xz' > $output_dir/list-$SLURM_ARRAY_TASK_ID.txt
 # filename=$(ls | grep 'combined.*-ad\.vcf\.xz' \
-#     | awk -v i=$SLURM_ARRAY_TASK_ID 'NR == i { print $0 }')
+#      | awk -v i=$SLURM_ARRAY_TASK_ID 'NR == i { print $0 }')
 # This works fine and saves time when NFS is heavily loaded
 filename=$(awk -v i=$SLURM_ARRAY_TASK_ID 'NR == i { print $0 }' VCF-list.txt)
 # Use local disk for uncompressed files to offload NFS

@@ -1,0 +1,22 @@
+#!/bin/sh
+
+
+##########################################################################
+#   Function description:
+#       Pause until user presses return
+##########################################################################
+
+pause()
+{
+    local junk
+    
+    printf "Press return to continue..."
+    read junk
+}
+
+for file in AD-VCFs-array-no-filter/MAF-0.01-1000nt/Haplo-output/*.events.dat; do
+    filtered=AD-VCFs-array-mapq10/MAF-0.01-1000nt/Haplo-output/$(basename $file)
+    printf "===\n"
+    echo $file | cut -d . -f 3
+    diff $file $filtered && printf "No differences.\n"
+done

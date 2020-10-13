@@ -25,7 +25,7 @@ if [ $# != 1 ]; then
 fi
 dir=$1
 
-events_dir=$dir/De-identified-events
+events_dir=$(echo $dir | cut -d / -f 1)-deidentified
 mkdir -p $events_dir
 sn=1
 unconverted=0
@@ -36,10 +36,10 @@ for file in $(find $dir -maxdepth 1 -name 'combined.NWD*.events.dat'); do
     base=$(basename $file)
     # hash=$(printf "%04s" $sn)
     nwid=$(echo $base | cut -d . -f 2)
-    # hash=$(sed -e 's|"||g' ../Data/WHI_LOH_events_array.csv \
+    # hash=$(sed -e 's|"||g' ../Misc/WHI_LOH_events_array.csv \
     #     | awk -F , -v nwid=$nwid '$10 == nwid { print $1 }' | uniq)
     hash=$(awk -F '[,.]' -v nwid=$nwid '$1 == nwid { print $2 }' \
-	Data/whi-filenames.csv | uniq)
+	Misc/whi-filenames.csv | uniq)
     if [ 0$hash = 0 ]; then
 	# printf "No conversion found for $nwid.\n"
 	unconverted=$((unconverted+1))
@@ -53,3 +53,6 @@ for file in $(find $dir -maxdepth 1 -name 'combined.NWD*.events.dat'); do
     sn=$((sn + 1))
 done
 printf "Unconverted: $unconverted  Converted: $converted\n"
+tar Jcvf ~/www/Temp/$events_dir.txz $events_dir
+chmod 644 ~/www/Temp/$events_dir.txz
+ls -l ~/www/Temp
