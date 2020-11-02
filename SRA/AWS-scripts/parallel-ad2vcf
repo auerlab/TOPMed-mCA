@@ -35,7 +35,7 @@ suffix=${sample_file##*-}
 cd /home/ec2-user/Haplohseq-analysis/SRA
 job_count=$(AWS-scripts/job-count)
 vcf_dir=VCFs-$(basename $sample_file)
-log_dir=$vcf_dir/Logs
+log_dir=$vcf_dir/Logs-MAPQ-$mapq_min
 mkdir -p $log_dir
 printf "Sample file = %s  Job count = %s  VCF-dir = %s\n" \
     $sample_file $job_count $vcf_dir > $log_dir/job-info
