@@ -85,7 +85,7 @@ for sample in $(awk '{ print $1 }' $sample_file); do
 			set +e
 			time samtools view -@ 2 \
 			    --input-fmt-option required_fields=0x218 \
-			    $cram | ad2vcf $vcf_input
+			    $cram | ad2vcf $vcf_input 10
 			exit_status=$?
 			set -e
 			
