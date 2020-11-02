@@ -11,7 +11,7 @@
 
 usage()
 {
-    printf "Usage: $0 sample-file\n"
+    printf "Usage: $0 sample-file MAPQ-min\n"
     exit 1
 }
 
@@ -20,10 +20,12 @@ usage()
 #   Main
 ##########################################################################
 
-if [ $# != 1 ]; then
+if [ $# != 2 ]; then
     usage
 fi
 sample_file=$1
+mapq_min=$2
+
 if ! echo $sample_file | grep -q -e '-[0-9][0-9]'; then
     printf "Sample file should end in - followed by 2 digits.\n"
     exit 1
@@ -55,7 +57,7 @@ for file in ${prefix}[0-9][0-9]; do
 	printf "$log_dir/$file.out already exists.  Move or remove and try again.\n"
     elif [ $(cat $file | wc -l) != 0 ]; then
 	echo $file
-	nohup ./AWS-scripts/ad2vcf.sh $file $vcf_dir \
+	nohup ./AWS-scripts/ad2vcf.sh $file $vcf_dir $mapq_min \
 	    > $log_dir/$file.out 2> $log_dir/$file.err &
 	# Offset fusera mounts
 	sleep 1
