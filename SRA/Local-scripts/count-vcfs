@@ -14,11 +14,12 @@
 ##########################################################################
 
 cd ~/Data/TOPMed/Jobs/Haplohseq-analysis/SRA
-for sample_group in whi bjm group3 group4; do
+for sample_group in array whi bjm group3 group4; do
     for vcf_dir in VCFs-$sample_group-*; do
 	raw=$(find $vcf_dir -maxdepth 1 -name '*.vcf.xz' | wc -l)
-	processed=$(find $vcf_dir/Done -maxdepth 1 -name '*.vcf.xz' | wc -l)
-	printf "%s: %8u %8u\n" $vcf_dir $raw $processed
+	mapq0=$(find $vcf_dir/Done-MAPQ-0/ -maxdepth 1 -name '*.vcf.xz' | wc -l)
+	mapq10=$(find $vcf_dir/Done-MAPQ-10/ -maxdepth 1 -name '*.vcf.xz' 2> /dev/null | wc -l)
+	printf "%-22s %8u %8u %8u\n" $vcf_dir $raw $mapq0 $mapq10
     done
 done
-printf "Total completed: $(find VCFs-*/Done -maxdepth 1 -name '*.vcf.xz' | wc -l)\n"
+printf "Total completed: $(find VCFs-*/Done* -maxdepth 1 -name '*.vcf.xz' | wc -l)\n"
