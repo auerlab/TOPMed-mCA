@@ -47,19 +47,20 @@ mkdir -p $output_dir
 # some files or files are added when under heavy load. Denerate a static list
 # VCF-list.txt in the calling script and use it here.
 # Same results using find or ls|grep
-# filename=$(ls | grep 'combined.*-ad\.vcf\.xz' \
-#      | awk -v i=$SLURM_ARRAY_TASK_ID 'NR == i { print $0 }')
+my_vcf=$(ls | grep 'combined.*-ad\.vcf\.xz' \
+     | awk -v i=$SLURM_ARRAY_TASK_ID 'NR == i { print $0 }')
 # This works fine and saves time when NFS is heavily loaded
-filename=$(awk -v i=$SLURM_ARRAY_TASK_ID 'NR == i { print $0 }' VCF-list.txt)
+# my_vcf=$(awk -v i=$SLURM_ARRAY_TASK_ID 'NR == i { print $0 }' VCF-list.txt)
+
 # Use local disk for uncompressed files to offload NFS
-uncompressed=/tmp/${filename%.xz}
-filename_prefix=`echo $filename | cut -d - -f 1`
-sample=${filename_prefix##*.}
+uncompressed=/tmp/${my_vcf%.xz}
+my_vcf_prefix=`echo $my_vcf | cut -d - -f 1`
+sample=${my_vcf_prefix##*.}
 hostname
 printf "TASK ID:      $SLURM_ARRAY_TASK_ID\n"
-printf "Filename:     $filename\n"
+printf "VCF:          $my_vcf\n"
 printf "Uncompressed: $uncompressed\n"
-printf "Prefix:       $filename_prefix\n"
+printf "Prefix:       $my_vcf_prefix\n"
 printf "Sample:       $sample\n"
 printf "Output dir:   $output_dir\n"
 
@@ -77,13 +78,13 @@ printf "Uncompressing...\n"
 # Buffering issue when using redirection?  Does stdout pass through SLURM?
 # Removing $uncompressed beforehand fixes the issue
 rm -f $uncompressed
-xzcat < $filename | sed -E 's|,[0-9]+:|:|' > $uncompressed
+xzcat < $my_vcf | sed -E 's|,[0-9]+:|:|' > $uncompressed
 sync
 
 # Generate hap file from VCF
 printf "\nSTEP 1: GENERATING HAPLOTYPE FILES...\n"
 printf "Generating .hap file...\n"
-vcf2hap $sample < $uncompressed > $filename_prefix-ad.hap
+vcf2hap $sample < $uncompressed > $my_vcf_prefix-ad.hap
 sync
 
 # Identify allelic imbalance (AI) given a tumor
@@ -99,28 +100,28 @@ sync
 
 # prevelance = 0.01 per Paul Scheet
 printf "\nSTEP 2: IDENTIFYING REGIONS OF AI ...\n"
-if [ -e $output_dir/$filename_prefix.posterior.dat ]; then
+if [ -e $output_dir/$my_vcf_prefix.posterior.dat ]; then
     printf "haplohseq already done.\n"
 else
     time haplohseq \
 	--vcf $uncompressed \
-	--phased $filename_prefix-ad.hap \
+	--phased $my_vcf_prefix-ad.hap \
 	--event_prevalence 0.01 \
 	-d $output_dir \
-	-p $filename_prefix
+	-p $my_vcf_prefix
 fi
 
 # Save space
-rm -f $uncompressed $filename_prefix-ad.hap
+rm -f $uncompressed $my_vcf_prefix-ad.hap
 exit 0
 
 # Should not be needed
-if [ -e $output_dir/${filename}_haplohseq.png ]; then
+if [ -e $output_dir/${my_vcf}_haplohseq.png ]; then
     printf "Plotting already done.\n"
 else
     printf "\nSTEP 3: PLOTTING HAPLOHSEQ GENOMIC AI PROFILE ...\n"
     time Rscript /usr/local/share/examples/haplohseq/scripts/haplohseq_plot.R \
-	--file $output_dir/$filename_prefix.posterior.dat \
+	--file $output_dir/$my_vcf_prefix.posterior.dat \
 	--out $output_dir \
-	--prefix ${filename}_haplohseq
+	--prefix ${my_vcf}_haplohseq
 fi

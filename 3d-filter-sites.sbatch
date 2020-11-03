@@ -39,12 +39,13 @@ separation=$3
 : ${SLURM_ARRAY_TASK_ID:=1}
 
 vcf_dir=AD-VCFs-$sample_group
-vcf_list=$vcf_dir/VCF-list.txt
+vcf_list=VCF-list.txt
 
-my_vcf=$(cat $vcf_list | awk -v task=$SLURM_ARRAY_TASK_ID 'NR == task')
+cd $vcf_dir
+my_vcf=$(awk -v task=$SLURM_ARRAY_TASK_ID 'NR == task' $vcf_list)
+
 printf "Task $SLURM_ARRAY_TASK_ID processing $my_vcf on $(hostname)...\n"
 base=$(basename $my_vcf)
-cd $vcf_dir
 outfile=MAF-$maf-${separation}nt/$base
 xzcat $my_vcf | awk -v separation=$separation -f ../filter-sites.awk \
     | xz > $outfile
