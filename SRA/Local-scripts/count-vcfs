@@ -14,6 +14,7 @@
 ##########################################################################
 
 cd ~/Data/TOPMed/Jobs/Haplohseq-analysis/SRA
+printf "%-22s %8s %8s %8s\n" "Group" "Raw" "MAPQ 0" "MAPQ 10"
 for sample_group in array whi bjm group3 group4; do
     for vcf_dir in VCFs-$sample_group-*; do
 	raw=$(find $vcf_dir -maxdepth 1 -name '*.vcf.xz' | wc -l)
