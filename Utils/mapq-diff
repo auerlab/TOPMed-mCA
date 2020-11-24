@@ -1,0 +1,38 @@
+#!/bin/sh -e
+
+##########################################################################
+#   Script description:
+#       Compare ad2vcf results for different mapq values
+#       
+#   History:
+#   Date        Name        Modification
+#   2020-11-04  Jason Bacon Begin
+##########################################################################
+
+usage()
+{
+    printf "Usage: $0 sample-ID\n"
+    exit 1
+}
+
+
+##########################################################################
+#   Main
+##########################################################################
+
+if [ $# != 1 ]; then
+    usage
+fi
+sample=$1
+pwd
+
+for mapq in 0-unmapped 10; do
+    if [ ! -e $sample-$mapq-ad.vcf ]; then
+	xzcat AD-VCFs-array-MAPQ-$mapq/combined.$sample-ad.vcf.xz \
+	    > $sample-$mapq-ad.vcf
+    fi
+done
+diff $sample-0-unmapped-ad.vcf $sample-10-ad.vcf > $sample.diff || true
+grep '^>' $sample.diff > $sample-10-ad.diff
+wc -l $sample-*.*
+

@@ -12,8 +12,8 @@
 
 usage()
 {
-    printf "Usage: $0 sample-group min-allele-frequency min-separation\n"
-    printf "Example: $0 whi 0.05 1000\n"
+    printf "Usage: $0 sample-group MAPQ-min min-allele-frequency min-separation\n"
+    printf "Example: $0 whi 10 0.05 1000\n"
     exit 1
 }
 
@@ -22,12 +22,13 @@ usage()
 #   Main
 ##########################################################################
 
-if [ $# != 3 ]; then
+if [ $# != 4 ]; then
     usage
 fi
 sample_group=$1
-maf=$2              # Minimum allele frequency
-separation=$3       # Min distance between events
+mapq_min=$2
+maf=$3              # Minimum allele frequency
+separation=$4       # Min distance between events
 
 # Filter using database of genomic variants
 dgv_gff=DGV.GS.hg38.gff3
@@ -35,7 +36,7 @@ if [ ! -e $dgv_gff ]; then
     curl -O http://dgv.tcag.ca/dgv/docs/$dgv_gff
 fi
 
-vcf_dir=AD-VCFs-$sample_group
+vcf_dir=AD-VCFs-$sample_group-MAPQ-$mapq_min
 vcf_list=$vcf_dir/VCF-list.txt
 
 ls $vcf_dir | grep '.*-ad\.vcf\.xz' > $vcf_list
@@ -45,4 +46,4 @@ printf "Samples: $sample_count\n"
 
 mkdir -p $vcf_dir/MAF-$maf-${separation}nt
 sbatch --array=1-$sample_count%50 \
-    3d-filter-sites.sbatch $sample_group $maf $separation
+    3d-filter-sites.sbatch $sample_group $mapq_min $maf $separation

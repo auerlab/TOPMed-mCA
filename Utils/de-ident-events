@@ -25,7 +25,8 @@ if [ $# != 1 ]; then
 fi
 dir=$1
 
-events_dir=$(echo $dir | cut -d / -f 1)-deidentified
+events_dir=${dir%/Haplo-output*}
+events_dir=$(echo $events_dir | sed -e 's|/|-|g')
 mkdir -p $events_dir
 sn=1
 unconverted=0

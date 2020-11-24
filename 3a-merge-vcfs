@@ -11,7 +11,7 @@
 
 usage()
 {
-    printf "Usage: $0 sample-group\n"
+    printf "Usage: $0 sample-group MAPQ-min\n"
     exit 1
 }
 
@@ -20,15 +20,16 @@ usage()
 #   Main
 ##########################################################################
 
-if [ $# != 1 ]; then
+if [ $# != 2 ]; then
     usage
 fi
 sample_group=$1
+mapq_min=$2
 
-combined_dir=AD-VCFs-$sample_group
+combined_dir=AD-VCFs-$sample_group-MAPQ-$mapq_min
 mkdir -p $combined_dir
 printf "Linking to $combined_dir...\n"
-find SRA/VCFs-$sample_group-samples-[0-9]*/Done -name '*.vcf.xz' \
+find SRA/VCFs-$sample_group-samples-[0-9]*/Done-MAPQ-$mapq_min -name '*.vcf.xz' \
     -exec ln -f '{}' $combined_dir \;
 
 master_list=$combined_dir/vcfs.txt

@@ -2,8 +2,7 @@
 
 ##########################################################################
 #   Script description:
-#       Filter VCFs for sites with MAF >= 0.01 and separated by 1000kb
-#       or more.
+#       Filter VCFs for sites with MAF and min separation
 #
 #       Don't run this directly: Use
 #           ./3d-filter-sites sample-group
@@ -20,7 +19,7 @@
 
 usage()
 {
-    printf "Usage: $0 sample-group (e.g. whi, bjm) MAF min-separation\n"
+    printf "Usage: $0 sample-group (e.g. whi, bjm) MAPQ-min MAF min-separation\n"
     exit 1
 }
 
@@ -29,16 +28,17 @@ usage()
 #   Main
 ##########################################################################
 
-if [ $# != 3 ]; then
+if [ $# != 4 ]; then
     usage
 fi
 sample_group=$1
-maf=$2
-separation=$3
+mapq_min=$2
+maf=$3
+separation=$4
 
 : ${SLURM_ARRAY_TASK_ID:=1}
 
-vcf_dir=AD-VCFs-$sample_group
+vcf_dir=AD-VCFs-$sample_group-MAPQ-$mapq_min
 vcf_list=VCF-list.txt
 
 cd $vcf_dir
