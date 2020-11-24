@@ -1,0 +1,27 @@
+#!/bin/sh -e
+
+##########################################################################
+#   Script description:
+#       Back up ad2vcf results to peregrine and mortimer
+#       
+#   History:
+#   Date        Name        Modification
+#   2020-11-24  Jason Bacon Begin
+##########################################################################
+
+##########################################################################
+#   Main
+##########################################################################
+
+# Back up results immediately to 2 other places
+printf "Backing up to Peregrine...\n"
+rsync -avx \
+    --exclude "VCFs-*-samples-*/*.xz" VCFs-*-* \
+    peregrine.hpc.uwm.edu:Data/TOPMed/Jobs/Haplohseq-analysis/SRA \
+    > Transfer-logs/peregrine-backup.log 2>&1
+
+printf "Backing up to Mortimer...\n"
+rsync -avx -e 'ssh -p 22005' \
+    --exclude "VCFs-*-samples-*/*.xz" VCFs-*-* \
+    mortimer.hpc.uwm.edu:/raid-05/SPH/pauer/bacon/TOPMed/Jobs/Haplohseq-analysis/SRA \
+    > Transfer-logs/mortimer-backup.log 2>&1

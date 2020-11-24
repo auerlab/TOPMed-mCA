@@ -46,15 +46,4 @@ done
 printf "%-30s" "All"
 find VCFs-$sample_group-samples-0*/Done -name '*.xz' | wc -l
 
-# Back up results immediately to 2 other places
-printf "Backing up to Peregrine...\n"
-rsync -avx \
-    --exclude "VCFs-$sample_group-samples-*/*.xz" VCFs-$sample_group-* \
-    peregrine.hpc.uwm.edu:Data/TOPMed/Jobs/Haplohseq-analysis/SRA \
-    > Transfer-logs/peregrine-backup.log 2>&1
-
-printf "Backing up to Mortimer...\n"
-rsync -avx -e 'ssh -p 22005' \
-    --exclude "VCFs-$sample_group-samples-*/*.xz" VCFs-$sample_group-* \
-    mortimer.hpc.uwm.edu:/raid-05/SPH/pauer/bacon/TOPMed/Jobs/Haplohseq-analysis/SRA \
-    > Transfer-logs/mortimer-backup.log 2>&1
+Local-scripts/backup-vcfs
