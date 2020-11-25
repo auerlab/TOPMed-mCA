@@ -33,8 +33,8 @@ unconverted=0
 converted=0
 map_file=$dir/ID-map.txt
 rm -f $map_file
-for file in $(find $dir -maxdepth 1 -name 'combined.NWD*.events.dat'); do
-    base=$(basename $file)
+for event_file in $(find $dir -maxdepth 1 -name 'combined.NWD*.events.dat'); do
+    base=$(basename $event_file)
     # hash=$(printf "%04s" $sn)
     nwid=$(echo $base | cut -d . -f 2)
     # hash=$(sed -e 's|"||g' ../Misc/WHI_LOH_events_array.csv \
@@ -46,10 +46,17 @@ for file in $(find $dir -maxdepth 1 -name 'combined.NWD*.events.dat'); do
 	unconverted=$((unconverted+1))
     else
 	printf "%s %s\n" $nwid $hash >> $map_file
-	deident=$(basename $file | sed -E "s|NWD[0-9]+|$hash|")
-	printf "$file -> $deident\n"
+	
+	deident=$(basename $event_file | sed -E "s|NWD[0-9]+|$hash|")
+	printf "$event_file -> $deident\n"
+	ln -f $event_file $events_dir/$deident
+
+	param_file=$(echo $event_file | sed -e 's|\.events\.|.param.|')
+	deident=$(basename $param_file | sed -E "s|NWD[0-9]+|$hash|")
+	printf "$param_file -> $deident\n"
+	ln -f $param_file $events_dir/$deident
+	
 	converted=$((converted+1))
-	ln -f $file $events_dir/$deident
     fi
     sn=$((sn + 1))
 done
