@@ -1,5 +1,6 @@
 
-These ad2vcf runs filtered out unmapped reads using 
+The whi, bjm, group3, group4, and array ad2vcf runs filtered out unmapped
+reads using
 
 samtools view --input-fmt-option required_fields=0x208
 
