@@ -98,6 +98,11 @@ sync
 #  --vcf example_input/tumor_exome.vcf \
 #  -o example_output/tumor_exome
 
+# Paul Auer 2020-12-01:
+#   --event_mb 50   (default is 20)
+#   --est_normal_emissions
+#   --est_aberrant_emissions
+
 # prevelance = 0.01 per Paul Scheet
 printf "\nSTEP 2: IDENTIFYING REGIONS OF AI ...\n"
 if [ -e $output_dir/$my_vcf_prefix.posterior.dat ]; then
@@ -107,6 +112,9 @@ else
 	--vcf $uncompressed \
 	--phased $my_vcf_prefix-ad.hap \
 	--event_prevalence 0.01 \
+	--event_mb 50 \
+	--est_normal_emissions \
+	--est_aberrant_emissions \
 	-d $output_dir \
 	-p $my_vcf_prefix
 fi

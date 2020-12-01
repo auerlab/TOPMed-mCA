@@ -45,5 +45,6 @@ sample_count=$(printf "%d" $sample_count)   # Strip leading space
 printf "Samples: $sample_count\n"
 
 mkdir -p $vcf_dir/MAF-$maf-${separation}nt
+mkdir -p $vcf_dir/MAF-$maf-${separation}nt-dgv
 sbatch --array=1-$sample_count%50 \
     3d-filter-sites.sbatch $sample_group $mapq_min $maf $separation

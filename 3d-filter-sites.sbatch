@@ -13,6 +13,8 @@
 ##########################################################################
 
 #SBATCH --mem=100
+# 4 processes, but the xz bottleneck limits the total CPU to about 160%
+# even if we give it 4 cores
 #SBATCH --ntasks=2
 #SBATCH --output=SLURM-outputs/filter-sites-%A_%a.out
 #SBATCH --error=SLURM-outputs/filter-sites-%A_%a.err
@@ -47,5 +49,20 @@ my_vcf=$(awk -v task=$SLURM_ARRAY_TASK_ID 'NR == task' $vcf_list)
 printf "Task $SLURM_ARRAY_TASK_ID processing $my_vcf on $(hostname)...\n"
 base=$(basename $my_vcf)
 outfile=MAF-$maf-${separation}nt/$base
-xzcat $my_vcf | awk -v separation=$separation -f ../filter-sites.awk \
+outfile_dgv=MAF-$maf-${separation}nt-dgv/$base
+
+# TODO: Filter sites that overlap DGV.GS.hg38.gff3
+# Maybe add to filter-sites.awk?
+# bedtools needs a basic header to identify the file type
+
+printf "Filtering with DGV...\n"
+(printf "##fileformat=VCFv4.3\n"; xzcat $my_vcf) \
+    | bedtools subtract -A -a stdin -b ../DGV.GS.hg38.gff3 \
+    | mawk -v separation=$separation -v maf=$maf -f ../filter-sites.awk \
+    | xz > $outfile_dgv
+
+printf "Filtering without DGV...\n"
+(printf "##fileformat=VCFv4.3\n"; xzcat $my_vcf) \
+    | mawk -v separation=$separation -v maf=$maf -f ../filter-sites.awk \
     | xz > $outfile
+

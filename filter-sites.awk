@@ -15,9 +15,12 @@ BEGIN {
     # Force $1 != chr for first record
     chr = "";
     last_kept_pos = 0;
+    # Make sure output separator is TAB
+    OFS=FS;
 }
 {
     # printf("===\nChecking %s %s\n", $1, $2);
+    # Separate MAF file for each chromosome
     # chr1, chr2, ...
     if ( $1 != chr )
     {
@@ -25,7 +28,7 @@ BEGIN {
 	chr = $1;
 	
 	# File with positions where MAF meets criteria
-	maf_file = "../MAF-0.01/" chr "-maf-sites.txt"
+	maf_file = "../MAF-" maf "/" chr "-maf-sites.txt"
 	
 	# Ensure that next_ok_maf_pos < $2 when starting new chromosome
 	next_ok_maf_pos = -1;
@@ -41,7 +44,7 @@ BEGIN {
 	# printf("Read %s from %s.\n", next_ok_maf_pos, maf_file);
     }
     
-    # Also filter out sites < 1000kb apart
+    # Filter out sites < $separation apart
     distance = $2 - last_kept_pos;
     if ( ($2 == next_ok_maf_pos) && (distance >= separation) )
     {

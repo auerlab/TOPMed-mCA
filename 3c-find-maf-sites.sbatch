@@ -25,7 +25,7 @@ else
     chr=$SLURM_ARRAY_TASK_ID
 fi
 
-maf=0.01
+maf=0.05
 filtered_dir=MAF-$maf
 mkdir -p $filtered_dir
 bcftools view -H -q ${maf}:minor \
