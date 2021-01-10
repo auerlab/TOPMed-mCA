@@ -44,7 +44,7 @@ vcf_dir=AD-VCFs-$sample_group-MAPQ-$mapq_min
 vcf_list=VCF-list.txt
 
 cd $vcf_dir
-my_vcf=$(awk -v task=$SLURM_ARRAY_TASK_ID 'NR == task' $vcf_list)
+my_vcf=$(mawk -v task=$SLURM_ARRAY_TASK_ID 'NR == task' $vcf_list)
 
 printf "Task $SLURM_ARRAY_TASK_ID processing $my_vcf on $(hostname)...\n"
 base=$(basename $my_vcf)
@@ -60,9 +60,10 @@ printf "Filtering with DGV...\n"
     | bedtools subtract -A -a stdin -b ../DGV.GS.hg38.gff3 \
     | mawk -v separation=$separation -v maf=$maf -f ../filter-sites.awk \
     | xz > $outfile_dgv
+exit
 
+# Only for comparison to see the effects of DGV filtering
 printf "Filtering without DGV...\n"
 (printf "##fileformat=VCFv4.3\n"; xzcat $my_vcf) \
     | mawk -v separation=$separation -v maf=$maf -f ../filter-sites.awk \
     | xz > $outfile
-

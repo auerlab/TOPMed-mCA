@@ -1,9 +1,9 @@
 #############################################################################
 #   Description:
-#       Filter VCFs for sites with MAF >= 0.01 and separated by 1000kb
+#       Filter VCFs for sites with MAF >= N and separated by 1000kb
 #       or more
 #
-#       MAF file contains a list of sites with MAF >= 0.01 from
+#       MAF file contains a list of sites with MAF >= N from
 #       3b-find-maf-sites.sbatch
 #
 #   History: 
@@ -44,7 +44,7 @@ BEGIN {
 	# printf("Read %s from %s.\n", next_ok_maf_pos, maf_file);
     }
     
-    # Filter out sites < $separation apart
+    # Filter sites first by MAF, then ensure min separation
     distance = $2 - last_kept_pos;
     if ( ($2 == next_ok_maf_pos) && (distance >= separation) )
     {

@@ -14,7 +14,13 @@
 
 usage()
 {
-    printf "Usage: $0 ad-vcf-dir [sbatch flags]\n"
+    cat << EOM
+
+Usage: $0 ad-vcf-dir [extra sbatch flags]
+
+Example: $0 AD-VCFs-whi-MAPQ-0/MAF-0.05-1000nt-dgv
+
+EOM
     exit 1
 }
 

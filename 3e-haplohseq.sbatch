@@ -39,18 +39,17 @@ vcf_dir=$1
 : ${SLURM_ARRAY_TASK_ID:=1}
 
 cd $vcf_dir
-output_dir=Haplo-output
-mkdir -p $output_dir
 
 # Using ls here was resulting in some jobs getting the same filename for
 # some reason.  It's a weird NFS issue where directory listing are missing
-# some files or files are added when under heavy load. Denerate a static list
+# some files or files are added when under heavy load. Generate a static list
 # VCF-list.txt in the calling script and use it here.
 # Same results using find or ls|grep
-my_vcf=$(ls | grep 'combined.*-ad\.vcf\.xz' \
-     | awk -v i=$SLURM_ARRAY_TASK_ID 'NR == i { print $0 }')
+# my_vcf=$(ls | grep 'combined.*-ad\.vcf\.xz' \
+#    | awk -v i=$SLURM_ARRAY_TASK_ID 'NR == i { print $0 }')
+
 # This works fine and saves time when NFS is heavily loaded
-# my_vcf=$(awk -v i=$SLURM_ARRAY_TASK_ID 'NR == i { print $0 }' VCF-list.txt)
+my_vcf=$(awk -v i=$SLURM_ARRAY_TASK_ID 'NR == i { print $0 }' VCF-list.txt)
 
 # Use local disk for uncompressed files to offload NFS
 uncompressed=/tmp/${my_vcf%.xz}
@@ -63,6 +62,8 @@ printf "Uncompressed: $uncompressed\n"
 printf "Prefix:       $my_vcf_prefix\n"
 printf "Sample:       $sample\n"
 printf "Output dir:   $output_dir\n"
+printf "Output dir:   $output_dir_emb50\n"
+printf "Output dir:   $output_dir_defaults\n"
 
 # ../../../local/bin version should be built with portable optimizations
 # On FreeBSD, can also use ports version optimized for each compute node
@@ -103,10 +104,66 @@ sync
 #   --est_normal_emissions
 #   --est_aberrant_emissions
 
+output_dir=Haplo-output-est     # Others below depend on this
+
+output_dir_emb30=$output_dir-event_mb-30-est
+mkdir -p $output_dir_emb30
+if [ -e $output_dir_emb30/$my_vcf_prefix.posterior.dat ]; then
+    printf "haplohseq --event_mb 30 already done.\n"
+else
+    time haplohseq \
+	--vcf $uncompressed \
+	--phased $my_vcf_prefix-ad.hap \
+	--event_prevalence 0.1 \
+	--event_mb 30 \
+	--vcf_min_depth 15 \
+	--est_normal_emissions \
+	--est_aberrant_emissions \
+	-d $output_dir_emb30 \
+	-p $my_vcf_prefix
+fi
+
+# Save space
+rm -f $uncompressed $my_vcf_prefix-ad.hap
+exit
+
+##########################################################################
+#   Old test runs for comparison with array data
+##########################################################################
+
+output_dir_defaults=$output_dir-defaults
+mkdir -p $output_dir_defaults
 # prevelance = 0.01 per Paul Scheet
 printf "\nSTEP 2: IDENTIFYING REGIONS OF AI ...\n"
+if [ -e $output_dir_defaults/$my_vcf_prefix.posterior.dat ]; then
+    printf "haplohseq with defaults already done.\n"
+else
+    time haplohseq \
+	--vcf $uncompressed \
+	--phased $my_vcf_prefix-ad.hap \
+	--event_prevalence 0.01 \
+	-d $output_dir_defaults \
+	-p $my_vcf_prefix
+fi
+
+mkdir -p $output_dir
 if [ -e $output_dir/$my_vcf_prefix.posterior.dat ]; then
-    printf "haplohseq already done.\n"
+    printf "haplohseq --est_*_emissions already done.\n"
+else
+    time haplohseq \
+	--vcf $uncompressed \
+	--phased $my_vcf_prefix-ad.hap \
+	--event_prevalence 0.01 \
+	--est_normal_emissions \
+	--est_aberrant_emissions \
+	-d $output_dir \
+	-p $my_vcf_prefix
+fi
+
+output_dir_emb50=$output_dir-event_mb-50-est
+mkdir -p $output_dir_emb50
+if [ -e $output_dir_emb50/$my_vcf_prefix.posterior.dat ]; then
+    printf "haplohseq --event_mb 50 already done.\n"
 else
     time haplohseq \
 	--vcf $uncompressed \
@@ -115,15 +172,12 @@ else
 	--event_mb 50 \
 	--est_normal_emissions \
 	--est_aberrant_emissions \
-	-d $output_dir \
+	-d $output_dir_emb50 \
 	-p $my_vcf_prefix
 fi
 
-# Save space
-rm -f $uncompressed $my_vcf_prefix-ad.hap
-exit 0
-
 # Should not be needed
+exit 0
 if [ -e $output_dir/${my_vcf}_haplohseq.png ]; then
     printf "Plotting already done.\n"
 else

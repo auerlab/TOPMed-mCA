@@ -1,0 +1,4 @@
+#!/bin/sh
+
+egrep -v 'Task|Filtering' SLURM-outputs/filter-sites-3196771_*.out
+fgrep -v Adding SLURM-outputs/filter-sites-3196771_*.err

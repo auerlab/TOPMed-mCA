@@ -11,7 +11,7 @@
 
 usage()
 {
-    printf "Usage: $0 haplohseq-output-dir\n"
+    printf "Usage: $0 sample-group\n"
     exit 1
 }
 
@@ -23,44 +23,46 @@ usage()
 if [ $# != 1 ]; then
     usage
 fi
-dir=$1
+sample_group=$1
 
-events_dir=${dir%/Haplo-output*}
-events_dir=$(echo $events_dir | sed -e 's|/|-|g')
-mkdir -p $events_dir
-sn=1
-unconverted=0
-converted=0
-map_file=$dir/ID-map.txt
-rm -f $map_file
-for event_file in $(find $dir -maxdepth 1 -name 'combined.NWD*.events.dat'); do
-    base=$(basename $event_file)
-    # hash=$(printf "%04s" $sn)
-    nwid=$(echo $base | cut -d . -f 2)
-    # hash=$(sed -e 's|"||g' ../Misc/WHI_LOH_events_array.csv \
-    #     | awk -F , -v nwid=$nwid '$10 == nwid { print $1 }' | uniq)
-    hash=$(awk -F '[,.]' -v nwid=$nwid '$1 == nwid { print $2 }' \
-	Misc/whi-filenames.csv | uniq)
-    if [ 0$hash = 0 ]; then
-	# printf "No conversion found for $nwid.\n"
-	unconverted=$((unconverted+1))
-    else
-	printf "%s %s\n" $nwid $hash >> $map_file
-	
-	deident=$(basename $event_file | sed -E "s|NWD[0-9]+|$hash|")
-	printf "$event_file -> $deident\n"
-	ln -f $event_file $events_dir/$deident
-
-	param_file=$(echo $event_file | sed -e 's|\.events\.|.param.|')
-	deident=$(basename $param_file | sed -E "s|NWD[0-9]+|$hash|")
-	printf "$param_file -> $deident\n"
-	ln -f $param_file $events_dir/$deident
-	
-	converted=$((converted+1))
-    fi
-    sn=$((sn + 1))
+for dir in AD-VCFs-$sample_group-MAPQ-*/MAF-*/Haplo*; do
+    events_dir=$(echo $dir | sed -e 's|/|-|g')
+    mkdir -p $events_dir
+    sn=1
+    unconverted=0
+    converted=0
+    map_file=$dir/ID-map.txt
+    rm -f $map_file
+    for event_file in $(find $dir -maxdepth 1 -name 'combined.NWD*.events.dat'); do
+	base=$(basename $event_file)
+	# hash=$(printf "%04s" $sn)
+	nwid=$(echo $base | cut -d . -f 2)
+	# hash=$(sed -e 's|"||g' ../Misc/WHI_LOH_events_array.csv \
+	#     | awk -F , -v nwid=$nwid '$10 == nwid { print $1 }' | uniq)
+	hash=$(awk -F '[,.]' -v nwid=$nwid '$1 == nwid { print $2 }' \
+	    Misc/whi-filenames.csv | uniq)
+	if [ 0$hash = 0 ]; then
+	    # printf "No conversion found for $nwid.\n"
+	    unconverted=$((unconverted+1))
+	else
+	    printf "%s %s\n" $nwid $hash >> $map_file
+	    
+	    deident=$(basename $event_file | sed -E "s|NWD[0-9]+|$hash|")
+	    printf "$event_file -> $deident\n"
+	    ln -f $event_file $events_dir/$deident
+    
+	    param_file=$(echo $event_file | sed -e 's|\.events\.|.param.|')
+	    deident=$(basename $param_file | sed -E "s|NWD[0-9]+|$hash|")
+	    printf "$param_file -> $deident\n"
+	    ln -f $param_file $events_dir/$deident
+	    
+	    converted=$((converted+1))
+	fi
+	sn=$((sn + 1))
+    done
+    printf "Unconverted: $unconverted  Converted: $converted\n"
+    tar Jcvf ~/www/Temp/$events_dir.txz $events_dir
+    rm -rf $events_dir
+    chmod 644 ~/www/Temp/$events_dir.txz
+    ls -l ~/www/Temp
 done
-printf "Unconverted: $unconverted  Converted: $converted\n"
-tar Jcvf ~/www/Temp/$events_dir.txz $events_dir
-chmod 644 ~/www/Temp/$events_dir.txz
-ls -l ~/www/Temp

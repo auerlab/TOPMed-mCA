@@ -13,7 +13,7 @@
 usage()
 {
     printf "Usage: $0 sample-group MAPQ-min min-allele-frequency min-separation\n"
-    printf "Example: $0 whi 10 0.05 1000\n"
+    printf "Example: $0 whi 0 0.05 1000\n"
     exit 1
 }
 
@@ -30,6 +30,12 @@ mapq_min=$2
 maf=$3              # Minimum allele frequency
 separation=$4       # Min distance between events
 
+if [ ! -d MAF-$maf ]; then
+    printf "Missing MAF-$maf directory.\n"
+    printf "Run 3c-find-maf-sites.sbatch first or specify MAF correctly.\n"
+    exit 1
+fi
+
 # Filter using database of genomic variants
 dgv_gff=DGV.GS.hg38.gff3
 if [ ! -e $dgv_gff ]; then
@@ -44,7 +50,9 @@ sample_count=$(cat $vcf_list | wc -l)
 sample_count=$(printf "%d" $sample_count)   # Strip leading space
 printf "Samples: $sample_count\n"
 
-mkdir -p $vcf_dir/MAF-$maf-${separation}nt
+# Only for comparison to see the effects of DGV filtering
+# mkdir -p $vcf_dir/MAF-$maf-${separation}nt
+
 mkdir -p $vcf_dir/MAF-$maf-${separation}nt-dgv
 sbatch --array=1-$sample_count%50 \
     3d-filter-sites.sbatch $sample_group $mapq_min $maf $separation
