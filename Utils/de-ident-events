@@ -42,7 +42,7 @@ for dir in AD-VCFs-$sample_group-MAPQ-*/MAF-*/Haplo*; do
 	hash=$(awk -F '[,.]' -v nwid=$nwid '$1 == nwid { print $2 }' \
 	    Misc/whi-filenames.csv | uniq)
 	if [ 0$hash = 0 ]; then
-	    # printf "No conversion found for $nwid.\n"
+	    printf "No conversion found for $nwid.\n"
 	    unconverted=$((unconverted+1))
 	else
 	    printf "%s %s\n" $nwid $hash >> $map_file
