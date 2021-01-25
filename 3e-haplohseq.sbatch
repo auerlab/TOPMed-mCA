@@ -40,15 +40,7 @@ vcf_dir=$1
 
 cd $vcf_dir
 
-# Using ls here was resulting in some jobs getting the same filename for
-# some reason.  It's a weird NFS issue where directory listing are missing
-# some files or files are added when under heavy load. Generate a static list
-# VCF-list.txt in the calling script and use it here.
-# Same results using find or ls|grep
-# my_vcf=$(ls | grep 'combined.*-ad\.vcf\.xz' \
-#    | awk -v i=$SLURM_ARRAY_TASK_ID 'NR == i { print $0 }')
-
-# This works fine and saves time when NFS is heavily loaded
+# Generate a static list VCF-list.txt in the calling script and use it here.
 my_vcf=$(awk -v i=$SLURM_ARRAY_TASK_ID 'NR == i { print $0 }' VCF-list.txt)
 
 # Use local disk for uncompressed files to offload NFS
