@@ -100,7 +100,7 @@ output_dir=Haplo-output-est     # Others below depend on this
 
 output_dir_emb30=$output_dir-event_mb-30-est
 mkdir -p $output_dir_emb30
-if [ -e $output_dir_emb30/$my_vcf_prefix.posterior.dat ]; then
+if [ -e $output_dir_emb30/$my_vcf_prefix.events.dat ]; then
     printf "haplohseq --event_mb 30 already done.\n"
 else
     time haplohseq \
@@ -116,7 +116,8 @@ else
 fi
 
 # Save space
-rm -f $uncompressed $my_vcf_prefix-ad.hap
+rm -f $uncompressed $my_vcf_prefix-ad.hap \
+    $output_dir_emb30/$my_vcf_prefix.posterior.dat
 exit
 
 ##########################################################################
