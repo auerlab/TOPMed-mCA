@@ -116,8 +116,10 @@ else
 fi
 
 # Save space
-rm -f $uncompressed $my_vcf_prefix-ad.hap \
-    $output_dir_emb30/$my_vcf_prefix.posterior.dat
+rm -f $uncompressed $my_vcf_prefix-ad.hap
+
+# Usually want to do this, but occasionally need to look at posterior files
+# rm -f $output_dir_emb30/$my_vcf_prefix.posterior.dat
 exit
 
 ##########################################################################
