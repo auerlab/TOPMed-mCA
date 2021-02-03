@@ -30,10 +30,25 @@ usage()
 #   Main
 ##########################################################################
 
-if [ $# != 1 ]; then
+if [ $# != 5 ]; then
     usage
 fi
 vcf_dir=$1
+ep=$2
+emb=$3
+vmd=$4
+est=$5
+case $est in
+y)
+    est_flags='--est_normal_emissions --est_aberrant_emissions'
+    ;;
+n)
+    est_flags=''
+    ;;
+*)
+    usage
+    ;;
+esac
 
 # Dummy value for testing outside SLURM env
 : ${SLURM_ARRAY_TASK_ID:=1}
@@ -96,22 +111,19 @@ sync
 #   --est_normal_emissions
 #   --est_aberrant_emissions
 
-output_dir=Haplo-output-est     # Others below depend on this
-
-output_dir_emb30=$output_dir-event_mb-30-est
-mkdir -p $output_dir_emb30
-if [ -e $output_dir_emb30/$my_vcf_prefix.events.dat ]; then
+output_dir=Haplo-ep-$ep-emb-$emb-vmd-$vmd-est-$est
+mkdir -p $output_dir
+if [ -e $output_dir/$my_vcf_prefix.events.dat ]; then
     printf "haplohseq --event_mb 30 already done.\n"
 else
     time haplohseq \
 	--vcf $uncompressed \
 	--phased $my_vcf_prefix-ad.hap \
-	--event_prevalence 0.1 \
-	--event_mb 30 \
-	--vcf_min_depth 15 \
-	--est_normal_emissions \
-	--est_aberrant_emissions \
-	-d $output_dir_emb30 \
+	--event_prevalence $ep \
+	--event_mb $emb \
+	--vcf_min_depth $vmd \
+	$est_flags \
+	-d $output_dir \
 	-p $my_vcf_prefix
 fi
 
@@ -120,56 +132,6 @@ rm -f $uncompressed $my_vcf_prefix-ad.hap
 
 # Usually want to do this, but occasionally need to look at posterior files
 # rm -f $output_dir_emb30/$my_vcf_prefix.posterior.dat
-exit
-
-##########################################################################
-#   Old test runs for comparison with array data
-##########################################################################
-
-output_dir_defaults=$output_dir-defaults
-mkdir -p $output_dir_defaults
-# prevelance = 0.01 per Paul Scheet
-printf "\nSTEP 2: IDENTIFYING REGIONS OF AI ...\n"
-if [ -e $output_dir_defaults/$my_vcf_prefix.posterior.dat ]; then
-    printf "haplohseq with defaults already done.\n"
-else
-    time haplohseq \
-	--vcf $uncompressed \
-	--phased $my_vcf_prefix-ad.hap \
-	--event_prevalence 0.01 \
-	-d $output_dir_defaults \
-	-p $my_vcf_prefix
-fi
-
-mkdir -p $output_dir
-if [ -e $output_dir/$my_vcf_prefix.posterior.dat ]; then
-    printf "haplohseq --est_*_emissions already done.\n"
-else
-    time haplohseq \
-	--vcf $uncompressed \
-	--phased $my_vcf_prefix-ad.hap \
-	--event_prevalence 0.01 \
-	--est_normal_emissions \
-	--est_aberrant_emissions \
-	-d $output_dir \
-	-p $my_vcf_prefix
-fi
-
-output_dir_emb50=$output_dir-event_mb-50-est
-mkdir -p $output_dir_emb50
-if [ -e $output_dir_emb50/$my_vcf_prefix.posterior.dat ]; then
-    printf "haplohseq --event_mb 50 already done.\n"
-else
-    time haplohseq \
-	--vcf $uncompressed \
-	--phased $my_vcf_prefix-ad.hap \
-	--event_prevalence 0.01 \
-	--event_mb 50 \
-	--est_normal_emissions \
-	--est_aberrant_emissions \
-	-d $output_dir_emb50 \
-	-p $my_vcf_prefix
-fi
 
 # Should not be needed
 exit 0

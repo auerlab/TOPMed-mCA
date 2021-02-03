@@ -16,9 +16,9 @@ usage()
 {
     cat << EOM
 
-Usage: $0 ad-vcf-dir [extra sbatch flags]
+Usage: $0 ad-vcf-dir prevalence mb min-depth est [extra sbatch flags]
 
-Example: $0 AD-VCFs-whi-MAPQ-0/MAF-0.05-1000nt-dgv
+Example: $0 AD-VCFs-whi-MAPQ-0/MAF-0.05-1000nt-dgv 0.1 30 15 y|n [sbatch flags]
 
 EOM
     exit 1
@@ -33,11 +33,23 @@ if [ $# -lt 1 ]; then
     usage
 fi
 vcf_dir=$1
-shift
+ep=$2
+emb=$3
+vmd=$4
+est=$5
+case $est in
+y|n)
+    ;;
+*)
+    usage
+    ;;
+esac
+shift; shift; shift; shift; shift
 
 ls $vcf_dir | grep '.*\.vcf\.xz' > $vcf_dir/VCF-list.txt
 sample_count=$(cat $vcf_dir/VCF-list.txt | wc -l)
 sample_count=$(printf "%d" $sample_count)   # Strip leading space
 
 set -x
-sbatch --array=1-$sample_count%100 "$@" 3e-haplohseq.sbatch $vcf_dir
+sbatch --array=1-$sample_count%100 "$@" 3e-haplohseq.sbatch \
+    $vcf_dir $ep $emb $vmd $est
