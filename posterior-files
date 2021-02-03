@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# For Justin wong request Jan 2021
+while read hash; do
+    nwd=$(awk -F '[,.]' -v hash=$hash '$2 == hash { print $1 }' Misc/whi-filenames.csv)
+    echo $hash $nwd
+    cp AD-VCFs-whi-MAPQ-0/MAF-0.05-1000nt-dgv/Haplo-output-est-event_mb-30-est/combined.$nwd.posterior.dat \
+	$hash.posterior.dat
+done < posterior.txt
+umask 022
+tar -Jcvf ~/www/Temp/posterior.txz *.posterior.dat
+rm *.posterior.dat

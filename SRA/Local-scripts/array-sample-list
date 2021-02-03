@@ -1,10 +1,14 @@
 #!/bin/sh -e
 
-cd ~/Data/TOPMed/Jobs/Haplohseq-analysis
-pwd
-temp_array=array-temp.txt
-awk -F , '$1 !~ "sampleID" { printf("%s - WHI\n", $10); }' \
-    Misc/WHI_LOH_events_array.csv | tr -d '"' | sort -u > $temp_array
+proper_cmd=SRA/Local-scripts/array-sample-list
+if [ $0 != $proper_cmd ]; then
+    printf "$0 must be run as $proper_cmd.\n"
+    exit 1
+fi
+name=array
+temp_array=$name-temp.txt
+awk -F , '$1 !~ "nwid" { printf("%s - WHI\n", $1); }' \
+    Misc/whi-filenames.csv | tr -d '"' | sort -u > $temp_array
 
 run_table=temp-runtable.txt
 xzcat SRA/TOPMed_SraRunTable_20200920.txt.xz > $run_table
@@ -15,6 +19,7 @@ while read line; do
     if [ -e Split-vcfs/Combined/combined.$sample.vcf.xz ]; then
 	printf "%s %s WHI\n" $sample $srr
     fi
-done < $temp_array > SRA/Sample-lists/array-samples.txt
-wc -l SRA/Sample-lists/array-samples.txt
+done < $temp_array > SRA/Sample-lists/$name-samples.txt
+wc -l SRA/Sample-lists/$name-samples.txt
 rm -f $run_table $temp_array
+printf "Now run split-sample-list to evenly divide the list for ad2vcf.\n"

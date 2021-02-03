@@ -1,6 +1,10 @@
 #!/bin/sh -e
 
-cd ~/Data/TOPMed/Jobs/Haplohseq-analysis/SRA
+proper_cmd=Local-scripts/bjm-sample-list
+if [ $0 != $proper_cmd ]; then
+    printf "$0 must be run as $proper_cmd.\n"
+    exit 1
+fi
 xzcat TOPMed_SraRunTable_20200729.txt.xz | \
     awk '($1 == "BioMe" || $1 == "JHS" || $1 == "MESA") && ($2 != "phs000920" && $2 != "phs000921") { print $3,$4,$1 }' \
     > Sample-lists/bjm-samples.unchecked
@@ -15,3 +19,4 @@ while read line; do
 done < Sample-lists/bjm-samples.unchecked
 diff Sample-lists/bjm-samples.unchecked Sample-lists/bjm-samples.txt || true
 wc -l Sample-lists/bjm-samples.unchecked Sample-lists/bjm-samples.txt
+printf "Now run split-sample-list to evenly divide the list for ad2vcf.\n"

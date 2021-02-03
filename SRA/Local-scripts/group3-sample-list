@@ -6,9 +6,13 @@
 #   Run this after create-sample-groups and before split-sample-list
 ##########################################################################
 
+proper_cmd=Local-scripts/group3-sample-list
+if [ $0 != $proper_cmd ]; then
+    printf "$0 must be run as $proper_cmd.\n"
+    exit 1
+fi
 run_table=TOPMed_SraRunTable_20200920.txt.xz
-cd ~/Data/TOPMed/Jobs/Haplohseq-analysis/SRA
-printf "Samples listed in $run_table: 24731\n"
+printf "Samples listed in $run_table: 24729\n"
 xzcat $run_table | \
     awk '( $1 == "EOCOPD" || $1 == "COPDGene" || $1 == "CFS" || $1 == "Amish" || $1 == "FHS" || $1 == "CRA" || $1 == "HVH" || $1 == "Partners" || $1 == "VU_AF" || $1 == "WGHS" || $1 == "MGH_AF" || $1 == "BAGS" || $1 == "CCAF") && $2 != "phs000920" && $2 != "phs000921" { print $3,$4,$1 }' \
     > Sample-lists/group3-samples.unchecked
@@ -27,3 +31,4 @@ done < Sample-lists/group3-samples.unchecked
 rm -f TOPMed_SraRunTable_20200920.txt
 diff Sample-lists/group3-samples.unchecked Sample-lists/group3-samples.txt || true
 wc -l Sample-lists/group3-samples.unchecked Sample-lists/group3-samples.txt
+printf "Now run split-sample-list to evenly divide the list for ad2vcf.\n"

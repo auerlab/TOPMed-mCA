@@ -22,12 +22,18 @@ usage()
 #   Main
 ##########################################################################
 
+proper_cmd=SRA/Local-scripts/split-sample-list
+if [ $0 != $proper_cmd ]; then
+    printf "$0 must be run as $proper_cmd.\n"
+    exit 1
+fi
 if [ $# != 2 ]; then
     usage
 fi
 master_list=$1
 chunks=$2
 
+set -x
 total_lines=$(cat $master_list | wc -l)
 lines=$(($total_lines / $chunks + 1))
 split -d -l $lines $master_list ${master_list%.*}-
