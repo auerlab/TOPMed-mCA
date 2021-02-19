@@ -17,6 +17,17 @@
 #SBATCH --output=SLURM-outputs/find-maf-sites-%A_%a.out
 #SBATCH --error=SLURM-outputs/find-maf-sites-%A_%a.err
 
+usage()
+{
+    printf "Usage: $0 MAF\n"
+    exit 1
+}
+
+if [ $# != 1 ]; then
+    usage
+fi
+maf=$1
+
 : ${SLURM_ARRAY_TASK_ID:=1}
 
 if [ $SLURM_ARRAY_TASK_ID = 23 ]; then
@@ -25,7 +36,6 @@ else
     chr=$SLURM_ARRAY_TASK_ID
 fi
 
-maf=0.05
 filtered_dir=MAF-$maf
 mkdir -p $filtered_dir
 bcftools view -H -q ${maf}:minor \
