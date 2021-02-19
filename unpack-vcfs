@@ -1,0 +1,44 @@
+#!/bin/sh -e
+
+##########################################################################
+#   Script description:
+#       Unpack VCF files to allow opening all of them at once without
+#       an xzcat process for each one
+#       
+#   History:
+#   Date        Name        Modification
+#   2021-02-08  Jason Bacon Begin
+##########################################################################
+
+usage()
+{
+    printf "Usage: $0 sample-group MAPQ-min\n"
+    printf "Example: $0 whi 0\n"
+    exit 1
+}
+
+
+##########################################################################
+#   Main
+##########################################################################
+
+if [ $# != 2 ]; then
+    usage
+fi
+sample_group=$1
+mapq_min=$2
+
+vcf_dir=AD-VCFs-$sample_group-MAPQ-$mapq_min
+vcf_list=$vcf_dir/VCF-list.txt
+
+ls $vcf_dir | grep '.*-ad\.vcf\.xz' > $vcf_list
+sample_count=$(cat $vcf_list | wc -l)
+sample_count=$(printf "%d" $sample_count)   # Strip leading space
+printf "Samples: $sample_count\n"
+
+# Only for comparison to see the effects of DGV filtering
+# mkdir -p $vcf_dir/MAF-$maf-${separation}nt
+
+set -x
+mkdir -p $vcf_dir/Uncompressed
+sbatch --array=1-$sample_count%18 unpack-vcfs.sbatch $sample_group $mapq_min

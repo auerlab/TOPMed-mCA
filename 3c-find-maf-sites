@@ -2,19 +2,16 @@
 
 ##########################################################################
 #   Script description:
-#       
-#   Arguments:
-#       
-#   Returns:
+#       Generate variant site lists for a given minimum allele frequency
 #       
 #   History:
 #   Date        Name        Modification
-#   2020-09-24  Jason Bacon Begin
+#   2021-02-11  Jason Bacon Begin
 ##########################################################################
 
 usage()
 {
-    printf "Usage: $0 hash\n"
+    printf "Usage: $0 MAF\n"
     exit 1
 }
 
@@ -26,16 +23,5 @@ usage()
 if [ $# != 1 ]; then
     usage
 fi
-hash=$1
-
-nwid=$(awk -v hash=$hash '$2 == hash { print $1 }' de-ident-mappings.txt)
-printf "$nwid\n"
-xzcat AD-VCFs-whi/combined.$nwid-ad.vcf.xz | tail -n 1
-printf "Scanning logs...\n"
-set +e
-logs=$(find SLURM-outputs -name haplohseq\*.out | xargs fgrep -l $nwid)
-echo $logs
-for log in $logs; do
-    cat $log
-    cat ${log%.out}.err
-done
+maf=$1
+sbatch 3c-find-maf-sites.sbatch $maf

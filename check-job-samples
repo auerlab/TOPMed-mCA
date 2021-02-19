@@ -1,7 +1,0 @@
-#!/bin/sh -e
-
-printf "Last full run:\n"
-find SLURM-outputs -name haplohseq-304\*.out \
-    | xargs awk '$1 == "Sample:" { print $2 }' | sort | uniq -d
-
-# squeue -t pd

@@ -1,0 +1,20 @@
+#!/bin/sh -e
+
+sample=NWD997886
+sample=NWD480677
+
+for maf in 0.01 0.05; do
+    printf "\nMAF = $maf:\n"
+    
+    printf "Total sites in dbGap BCF files meeting MAF: %10s\n" \
+	$(cat MAF-$maf/chr*|wc -l)
+    
+    printf "Sites in VCF before filtering:              %10s\n" \
+	$(xzcat AD-VCFs-array-MAPQ-0/combined.$sample-ad.vcf.xz | wc -l)
+
+    printf "Sites after MAF and separation filtering:   %10s\n" \
+	$(xzcat AD-VCFs-array-MAPQ-0/MAF-$maf-1000nt/combined.$sample-ad.vcf.xz | wc -l)
+
+    printf "After DGV, MAF, and separation filtering:   %10s\n" \
+	$(xzcat AD-VCFs-array-MAPQ-0/MAF-$maf-1000nt-dgv/combined.$sample-ad.vcf.xz | wc -l)
+done
