@@ -1,0 +1,19 @@
+#!/bin/sh -e
+
+infile=AD-VCFs-array-MAPQ-0/combined.NWD573756-ad.vcf.xz
+outfile=${infile%.vcf.xz}-filterd.vcf.xz
+germline=79852-germline-structural-variants/all.bed
+
+(printf "##fileformat=VCFv4.3\n"; xzcat $infile) \
+    | bedtools subtract -A -a stdin -b $germline | xz > $outfile
+
+xzcat $infile | wc -l
+xzcat $outfile | wc -l
+
+xzcat $infile | head
+cat $germline | head
+xzcat $outfile | head
+
+archive=~/www/Temp/germline-test.txz
+tar -Jcvf $archive $infile $outfile $germline
+chmod 644 $archive

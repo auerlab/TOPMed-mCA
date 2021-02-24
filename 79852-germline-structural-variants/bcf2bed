@@ -1,0 +1,6 @@
+#!/bin/sh -e
+
+for file in *.bcf; do
+    echo $file
+    bcftools view -H $file | mawk -f extract-range.awk > ${file%.bcf}.bed
+done
