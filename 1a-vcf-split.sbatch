@@ -95,7 +95,8 @@ while [ $first -le $total_samples ]; do
     printf "Processing columns $first through $last...\n"
     bcftools view --min-ac 2 --exclude-types indels \
 	../../phased/$bcf \
-	| vcf-split --het-only $output_dir/chr$chromosome. $first $last
+	| vcf-split --het-only --output-fields chrom,pos,ref,alt,format \
+	    $output_dir/chr$chromosome. $first $last
     
     first=$(($first + $segment_size))
 done

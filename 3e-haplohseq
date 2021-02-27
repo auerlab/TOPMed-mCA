@@ -16,9 +16,9 @@ usage()
 {
     cat << EOM
 
-Usage: $0 ad-vcf-dir prevalence mb min-depth est [extra sbatch flags]
+Usage: $0 ad-vcf-dir prevalence emb min-depth est(=y|n) [extra sbatch flags]
 
-Example: $0 AD-VCFs-whi-MAPQ-0/MAF-0.05-1000nt-dgv 0.1 30 15 y|n [sbatch flags]
+Example: $0 AD-VCFs-whi-MAPQ-0/MAF-0.05-1000nt-dgv 0.01 30 10 y [sbatch flags]
 
 EOM
     exit 1

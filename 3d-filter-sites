@@ -37,10 +37,10 @@ if [ ! -d MAF-$maf ]; then
 fi
 
 # Filter using database of genomic variants
-dgv_gff=DGV.GS.hg38.gff3
-if [ ! -e $dgv_gff ]; then
-    curl -O http://dgv.tcag.ca/dgv/docs/$dgv_gff
-fi
+# dgv_gff=DGV.GS.hg38.gff3
+# if [ ! -e $dgv_gff ]; then
+#     curl -O http://dgv.tcag.ca/dgv/docs/$dgv_gff
+# fi
 
 vcf_dir=AD-VCFs-$sample_group-MAPQ-$mapq_min
 vcf_list=$vcf_dir/VCF-list.txt
@@ -53,6 +53,6 @@ printf "Samples: $sample_count\n"
 # Only for comparison to see the effects of DGV filtering
 # mkdir -p $vcf_dir/MAF-$maf-${separation}nt
 
-mkdir -p $vcf_dir/MAF-$maf-${separation}nt-dgv
+mkdir -p $vcf_dir/MAF-$maf-${separation}nt-sv
 sbatch --array=1-$sample_count%50 \
     3d-filter-sites.sbatch $sample_group $mapq_min $maf $separation

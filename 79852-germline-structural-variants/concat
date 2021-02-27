@@ -1,3 +1,0 @@
-#!/bin/sh -e
-
-cat $(ls *.bed | sort -t r -k 3 -n) > all.bed

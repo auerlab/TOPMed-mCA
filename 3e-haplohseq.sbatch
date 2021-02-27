@@ -61,6 +61,7 @@ my_vcf=$(awk -v i=$SLURM_ARRAY_TASK_ID 'NR == i { print $0 }' VCF-list.txt)
 # Use local disk for uncompressed files to offload NFS
 uncompressed=/tmp/${my_vcf%.xz}
 my_vcf_prefix=`echo $my_vcf | cut -d - -f 1`
+output_dir=Haplo-ep-$ep-emb-$emb-vmd-$vmd-est-$est
 sample=${my_vcf_prefix##*.}
 hostname
 printf "TASK ID:      $SLURM_ARRAY_TASK_ID\n"
@@ -69,8 +70,6 @@ printf "Uncompressed: $uncompressed\n"
 printf "Prefix:       $my_vcf_prefix\n"
 printf "Sample:       $sample\n"
 printf "Output dir:   $output_dir\n"
-printf "Output dir:   $output_dir_emb50\n"
-printf "Output dir:   $output_dir_defaults\n"
 
 # ../../../local/bin version should be built with portable optimizations
 # On FreeBSD, can also use ports version optimized for each compute node
@@ -111,7 +110,6 @@ sync
 #   --est_normal_emissions
 #   --est_aberrant_emissions
 
-output_dir=Haplo-ep-$ep-emb-$emb-vmd-$vmd-est-$est
 mkdir -p $output_dir
 if [ -e $output_dir/$my_vcf_prefix.events.dat ]; then
     printf "haplohseq --event_mb 30 already done.\n"

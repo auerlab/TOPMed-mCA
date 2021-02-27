@@ -82,7 +82,8 @@ my_sample=\$(awk -v line=\$line 'NR == line { print \$1 }' \$split_file)
 
 sources=\$(ls chr*/chr*.\$my_sample.vcf.xz)
 printf "Combining \$sources...\n"
-xzcat \$sources | xz -cf > Combined/combined.\$my_sample.vcf.xz
+# FIXME: Strip headers from all but first file
+# xzcat \$sources | xz -cf > Combined/combined.\$my_sample.vcf.xz
 EOM
 
 cat $batch_file

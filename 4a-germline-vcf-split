@@ -1,0 +1,13 @@
+#!/bin/sh -e
+
+export PATH=~/Barracuda/TOPMed/local/bin:$PATH
+which vcf-split
+cd 79852-germline-structural-variants
+mkdir -p Split-vcfs
+for file in sv.freeze1.*.gt.only.bcf; do
+    chr=$(echo $file | cut -d . -f 3)
+    printf "$file $chr\n"
+    bcftools view $file \
+	| vcf-split --alt-only --output-fields chrom,id,pos,format \
+	    --sample-id-file ../Misc/whi-samples.txt Split-vcfs/$chr. 1 138134
+done

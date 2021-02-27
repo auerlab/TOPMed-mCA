@@ -1,19 +1,35 @@
 #!/bin/sh -e
 
-infile=AD-VCFs-array-MAPQ-0/combined.NWD573756-ad.vcf.xz
-outfile=${infile%.vcf.xz}-filterd.vcf.xz
-germline=79852-germline-structural-variants/all.bed
+sample=NWD997886
+hash=$(awk -F '[,.]' -v sample=$sample '$1 == sample { print $2 }' Misc/whi-filenames.csv)
+printf "$sample $hash\n"
 
-(printf "##fileformat=VCFv4.3\n"; xzcat $infile) \
-    | bedtools subtract -A -a stdin -b $germline | xz > $outfile
+cd AD-VCFs-array-MAPQ-0
+infile=$hash.vcf.xz
+outfile=${infile%.vcf.xz}-SV-filtered.vcf.xz
+germline=../79852-germline-structural-variants/Split-vcfs/combined.$sample.bed
+bed=$(basename $germline | sed -e "s|$sample|$hash|")
+
+# Bring everything to CWD for tar file
+rm -f $infile $bed
+ln combined.$sample-ad.vcf.xz $infile
+ln $germline $bed
+
+# Original split VCFs don't have a header and bedtools needs one to determine
+# file type on stdin
+set -x
+(printf "##fileformat=VCFv4.2\n"; xzcat $infile) \
+    | bedtools subtract -A -a - -b $bed | xz -3 > $outfile
+set +x
 
 xzcat $infile | wc -l
 xzcat $outfile | wc -l
 
-xzcat $infile | head
-cat $germline | head
-xzcat $outfile | head
+xzcat $infile | head -n 20
+cat $bed | head
+xzcat $outfile | head -n 20
 
 archive=~/www/Temp/germline-test.txz
-tar -Jcvf $archive $infile $outfile $germline
+tar -Jcvf $archive $infile $outfile $bed
 chmod 644 $archive
+rm -f $infile $bed

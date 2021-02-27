@@ -58,14 +58,27 @@ for event_file in $(find $dir -maxdepth 1 -name 'combined.NWD*.events.dat'); do
 	deident=$(basename $param_file | sed -E "s|NWD[0-9]+|$hash|")
 	printf "$param_file -> $deident\n"
 	ln -f $param_file $events_dir/$deident
+
+	posterior_file=$(echo $event_file | sed -e 's|\.events\.|.posterior.|')
+	deident=$(basename $posterior_file | sed -E "s|NWD[0-9]+|$hash|")
+	printf "$posterior_file -> $deident\n"
+	ln -f $posterior_file $events_dir/$deident
 	
 	converted=$((converted+1))
     fi
     sn=$((sn + 1))
 done
 printf "Unconverted: $unconverted  Converted: $converted\n"
-tar Jcvf ~/www/Temp/$events_dir.txz $events_dir
-rm -rf $events_dir
-chmod 644 ~/www/Temp/$events_dir.txz
-ls -l ~/www/Temp
 
+# Full archive with posterior files
+# Use low compression level or it will take hours for even 855 samples
+
+tar -Jcvf ~/www/Temp/$events_dir.txz --options xz:compression-level=1 $events_dir
+
+# Much smaller archive without posterior files
+rm -f $events_dir/*.posterior.dat
+tar -Jcvf ~/www/Temp/$events_dir-no-posterior.txz $events_dir
+
+rm -rf $events_dir
+chmod 644 ~/www/Temp/*
+ls -l ~/www/Temp
