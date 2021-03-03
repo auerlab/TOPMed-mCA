@@ -60,7 +60,7 @@ outfile_sv=MAF-$maf-${separation}nt-sv/$base
 germline=../79852-germline-structural-variants/Split-vcfs/combined.$sample.bed
 (printf "##fileformat=VCFv4.2\n"; xzcat $my_vcf) \
     | bedtools subtract -A -a stdin -b $germline \
-    | mawk -v separation=$separation -v maf=$maf -f ../3g-filter-sites.awk \
+    | mawk -v separation=$separation -v maf=$maf -f ../filter-sites.awk \
     | xz -3 > $outfile_sv
     
 # Previous we filtered out sites in the DGV (database of genomic variants)

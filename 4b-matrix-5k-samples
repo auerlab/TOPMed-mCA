@@ -1,0 +1,29 @@
+#!/bin/sh -e
+
+##########################################################################
+#   Script description:
+#       Generate a list of the first 5k samples in TOPMed
+#       
+#   History:
+#   Date        Name        Modification
+#   2021-03-03  Jason Bacon Begin
+##########################################################################
+
+usage()
+{
+    printf "Usage: $0\n"
+    exit 1
+}
+
+
+##########################################################################
+#   Main
+##########################################################################
+
+if [ $# != 0 ]; then
+    usage
+fi
+
+bcftools view ../../phased/freeze.8.chr9.pass_only.phased.bcf \
+    | grep -m 1 '^#CHROM' | cut -f 10-5009 | tr '\t' '\n' \
+    > 5k-samples.txt

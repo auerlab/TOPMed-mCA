@@ -2,17 +2,17 @@
 
 ##########################################################################
 #   Script description:
-#       Convert structural event BCFs to bed format for bedtools subtract
+#       Uncompress VCF files in preparation for running ad-matrix
+#       There are too many files to run an xzcat filter on all at once
 #       
 #   History:
 #   Date        Name        Modification
-#   2021-02-20  Jason Bacon Begin
+#   2021-03-03  Jason Bacon Begin
 ##########################################################################
 
 usage()
 {
     printf "Usage: $0 sample-list\n"
-    printf "sample-list is a simple text file with one sample per line.\n"
     exit 1
 }
 
@@ -25,9 +25,3 @@ if [ $# != 1 ]; then
     usage
 fi
 sample_list=$1
-cd 79852-germline-structural-variants/Split-vcfs
-for file in combined*.vcf.xz; do
-    bed=${file%.vcf.xz}.bed
-    printf "$file -> $bed...\n"
-    xzcat $file | grep -v '^#' | mawk -f ../../extract-range.awk > ${bed}
-done

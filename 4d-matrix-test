@@ -1,0 +1,9 @@
+#!/bin/sh -e
+
+save_cwd=$(pwd)
+cd ~/Data/TOPMed/ad-matrix
+make clean install
+cd $save_cwd
+export PATH=$HOME/Data/TOPMed/local/bin:$PATH
+cd AD-VCFs-whi-MAPQ-0/Uncompressed
+ad-matrix 5k-samples.txt ad-matrix

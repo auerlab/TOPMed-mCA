@@ -1,13 +1,41 @@
 #!/bin/sh -e
 
+##########################################################################
+#   Script description:
+#       Split germline structural event BCFs, outputting only specified
+#       samples and only those containing an ALT allele (1 in either copy)
+#       
+#   History:
+#   Date        Name        Modification
+#   2021-02-20  Jason Bacon Begin
+##########################################################################
+
+usage()
+{
+    printf "Usage: $0 sample-list\n"
+    printf "sample-list is a simple text file with one sample per line.\n"
+    exit 1
+}
+
+
+##########################################################################
+#   Main
+##########################################################################
+
+if [ $# != 1 ]; then
+    usage
+fi
+sample_list=$1
+
 export PATH=~/Barracuda/TOPMed/local/bin:$PATH
 which vcf-split
 cd 79852-germline-structural-variants
-mkdir -p Split-vcfs
+output_dir=Split-vcfs-$(basename $sample_list)
+mkdir -p $output_dir
 for file in sv.freeze1.*.gt.only.bcf; do
     chr=$(echo $file | cut -d . -f 3)
     printf "$file $chr\n"
     bcftools view $file \
 	| vcf-split --alt-only --output-fields chrom,id,pos,format \
-	    --sample-id-file ../Misc/whi-samples.txt Split-vcfs/$chr. 1 138134
+	    --sample-id-file ../$sample_list $output_dir/$chr. 1 138134
 done
