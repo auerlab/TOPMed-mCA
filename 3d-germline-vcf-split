@@ -22,20 +22,30 @@ usage()
 #   Main
 ##########################################################################
 
-if [ $# != 1 ]; then
+if [ $# != 0 ]; then
     usage
 fi
-sample_list=$1
+# sample_list=$1
 
 export PATH=~/Barracuda/TOPMed/local/bin:$PATH
 which vcf-split
+total_samples=$(bcftools view 79852-germline-structural-variants/sv.freeze1.chr9.gt.only.bcf | grep -m 1 '^#CHROM' | awk '{ print NF-9 }')
+printf "Total samples = $total_samples\n"
+
 cd 79852-germline-structural-variants
-output_dir=Split-vcfs-$(basename $sample_list)
+# output_dir=Split-vcfs-$(basename $sample_list)
+output_dir=Split-vcfs
 mkdir -p $output_dir
-for file in sv.freeze1.*.gt.only.bcf; do
-    chr=$(echo $file | cut -d . -f 3)
-    printf "$file $chr\n"
-    bcftools view $file \
-	| vcf-split --alt-only --output-fields chrom,id,pos,format \
-	    --sample-id-file ../$sample_list $output_dir/$chr. 1 138134
+for first_col in $(seq 1 10000 $total_samples); do
+    last_col=$(( first_col + 9999 ))
+    test $last_col -gt $total_samples && last_col=$total_samples
+    printf "Processing columns $first_col to $last_col...\n"
+    for file in sv.freeze1.*.gt.only.bcf; do
+	chr=$(echo $file | cut -d . -f 3)
+	printf "$file $chr\n"
+	bcftools view $file \
+	    | vcf-split --alt-only --output-fields chrom,id,pos,format \
+		$output_dir/$chr. $first_col $last_col
+		# --sample-id-file ../$sample_list $output_dir/$chr. 1 138134
+    done
 done

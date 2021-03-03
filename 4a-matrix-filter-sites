@@ -13,7 +13,7 @@
 usage()
 {
     printf "Usage: $0 sample-group MAPQ-min min-allele-frequency min-separation\n"
-    printf "Example: $0 whi 0 0.05 1000\n"
+    printf "Example: $0 whi 0 0.005\n"
     exit 1
 }
 
@@ -22,13 +22,12 @@ usage()
 #   Main
 ##########################################################################
 
-if [ $# != 4 ]; then
+if [ $# != 3 ]; then
     usage
 fi
 sample_group=$1
 mapq_min=$2
 maf=$3              # Minimum allele frequency
-separation=$4       # Min distance between events
 
 if [ ! -d MAF-$maf ]; then
     printf "Missing MAF-$maf directory.\n"
@@ -53,6 +52,6 @@ printf "Samples: $sample_count\n"
 # Only for comparison to see the effects of DGV filtering
 # mkdir -p $vcf_dir/MAF-$maf-${separation}nt
 
-mkdir -p $vcf_dir/MAF-$maf-${separation}nt-sv
+mkdir -p $vcf_dir/MAF-$maf
 sbatch --array=1-$sample_count%50 \
-    3d-filter-sites.sbatch $sample_group $mapq_min $maf $separation
+    4a-matrix-filter-sites.sbatch $sample_group $mapq_min $maf
