@@ -1,0 +1,8 @@
+#!/bin/sh -e
+
+cd 79852-germline-structural-variants/Split-vcfs
+for file in combined*.vcf.xz; do
+    bed=${file%.vcf.xz}.bed
+    printf "$file -> $bed...\n"
+    xzcat $file | grep -v '^#' | mawk -f ../../extract-range.awk > ${bed}
+done

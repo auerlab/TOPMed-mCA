@@ -1,0 +1,17 @@
+#!/bin/sh -e
+
+cd 79852-germline-structural-variants/Split-vcfs
+done=0
+for sample in $(cat ../../Misc/whi-samples.txt); do
+    chr=1
+    files=""
+    while [ $chr -le 22 ]; do
+	files="$files chr$chr.$sample.vcf"
+	chr=$((chr + 1))
+    done
+    combined=combined.$sample.vcf.xz
+    printf "===\n%u\nConcatenating $files to $combined...\n" $done
+    done=$((done + 1))
+    # Add only 1 copy of header
+    (head chr1.$sample.vcf | grep '^#' && grep --no-filename -v '^#' $files) | xz > $combined
+done
