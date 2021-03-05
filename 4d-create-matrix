@@ -1,0 +1,12 @@
+#!/bin/sh -e
+
+save_cwd=$(pwd)
+cd ~/Barracuda/TOPMed/ad-matrix
+make clean install
+cd $save_cwd
+export PATH=$HOME/Barracuda/TOPMed/local/bin:$PATH
+
+cd AD-VCFs-whi-MAPQ-0/Uncompressed
+which ad-matrix
+ls combined.*.vcf > VCF-list.txt
+ad-matrix VCF-list.txt ad-matrix

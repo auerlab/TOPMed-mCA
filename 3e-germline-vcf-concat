@@ -2,8 +2,8 @@
 
 ##########################################################################
 #   Script description:
-#       Concatenate germline structural event BCFs, outputting only specified
-#       samples and only those containing an ALT allele (1 in either copy)
+#       Concatenate germline structural event BCFs, only those containing
+#       an ALT allele ('1' in either copy)
 #       
 #   History:
 #   Date        Name        Modification
@@ -12,8 +12,7 @@
 
 usage()
 {
-    printf "Usage: $0 sample-list\n"
-    printf "sample-list is a simple text file with one sample per line.\n"
+    printf "Usage: $0\n"
     exit 1
 }
 
@@ -22,19 +21,18 @@ usage()
 #   Main
 ##########################################################################
 
-if [ $# != 1 ]; then
+if [ $# != 0 ]; then
     usage
 fi
 sample_list=$1
 
-dir=Split-vcfs-$(basename $sample_list)
-cd 79852-germline-structural-variants/$dir
+cd 79852-germline-structural-variants/Split-vcfs
 done=0
-for sample in $(cat ../../$sample_list); do
-    chr=1
+samples=$(bcftools view ../sv.freeze1.chr9.gt.only.bcf | grep -m 1 '^#CHROM' | cut -f 10-)
+for sample in $samples; do
     files=""
-    while [ $chr -le 22 ]; do
-	files="$files chr$chr.$sample.vcf"
+    for chr in $(seq 1 22) X; do
+	files="$files chr$chr/chr$chr.$sample.vcf"
 	chr=$((chr + 1))
     done
     combined=combined.$sample.vcf.xz

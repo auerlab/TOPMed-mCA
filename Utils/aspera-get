@@ -2,16 +2,20 @@
 
 ##########################################################################
 #   Script description:
-#       Generate a list of the first 5k samples in TOPMed
+#       
+#   Arguments:
+#       
+#   Returns:
 #       
 #   History:
 #   Date        Name        Modification
-#   2021-03-03  Jason Bacon Begin
+#   2019-10-11  Jason Bacon Begin
 ##########################################################################
 
 usage()
 {
-    printf "Usage: $0\n"
+    printf "Usage: $0 hash request-#\n"
+    printf "Get the hash from dbGaP download website.\n\n"
     exit 1
 }
 
@@ -20,14 +24,15 @@ usage()
 #   Main
 ##########################################################################
 
-if [ $# != 0 ]; then
+if [ $# != 2 ]; then
     usage
 fi
 
-# Take samples from WHI
-find AD-VCFs-whi-MAPQ-0 -mindepth 1 -maxdepth 1 -name combined.*.xz \
-    | awk -F '[.-]' '{ print $6 }' | head -n 5000 > 5k-samples.txt
-
-#bcftools view ../../phased/freeze.8.chr9.pass_only.phased.bcf \
-#    | grep -m 1 '^#CHROM' | cut -f 10-5009 | tr '\t' '\n' \
-#    > 5k-samples.txt
+hash="$1"
+request=$2
+set -x
+aspera_prefix=$HOME/.aspera/cli
+$aspera_prefix/bin/ascp -QTr -l 300M -k 1 \
+    -i $aspera_prefix/etc/asperaweb_id_dsa.openssh \
+    -W $hash \
+    dbtest@gap-upload.ncbi.nlm.nih.gov:data/instant/jtocino/$request .

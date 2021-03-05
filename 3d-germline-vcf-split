@@ -12,8 +12,7 @@
 
 usage()
 {
-    printf "Usage: $0 sample-list\n"
-    printf "sample-list is a simple text file with one sample per line.\n"
+    printf "Usage: $0\n"
     exit 1
 }
 
@@ -33,9 +32,16 @@ total_samples=$(bcftools view 79852-germline-structural-variants/sv.freeze1.chr9
 printf "Total samples = $total_samples\n"
 
 cd 79852-germline-structural-variants
-# output_dir=Split-vcfs-$(basename $sample_list)
 output_dir=Split-vcfs
 mkdir -p $output_dir
+cd $output_dir
+for chr in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X; do
+    mkdir -p chr$chr
+    printf "Moving chr$chr...\n"
+    find . -depth 1 -name "chr$chr.*" -exec ../../move-to-dir chr$chr '{}' +
+done
+exit
+
 for first_col in $(seq 1 10000 $total_samples); do
     last_col=$(( first_col + 9999 ))
     test $last_col -gt $total_samples && last_col=$total_samples

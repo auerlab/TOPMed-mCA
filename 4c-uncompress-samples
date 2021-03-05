@@ -25,3 +25,10 @@ if [ $# != 1 ]; then
     usage
 fi
 sample_list=$1
+
+cd AD-VCFs-whi-MAPQ-0
+mkdir -p Uncompressed
+for sample in $(cat ../$sample_list); do
+    echo $sample
+    xzcat combined.$sample-ad.vcf.xz > Uncompressed/combined.$sample-ad.vcf
+done
