@@ -6,6 +6,9 @@ which ad2vcf
 
 samples=$(ls ../../SRR6990379/*.cram | cut -d / -f 4 | cut -d . -f 1)
 echo $samples
+test_dir=Split-vcfs-test/Combined
+mkdir -p $test_dir
+
 for sample in $samples; do
 # for sample in NWD102903; do
     # 2 threads brings a significant gain over 1
@@ -14,14 +17,15 @@ for sample in $samples; do
     # Use 0x618 to include PHRED scores for stats, 0x218 to exclude
     # samtools view takes about twice as long to run when reporting PHREDs
     # PHRED code in ad2vcf is currently disabled
-    if [ ! -e Split-vcfs/Combined/combined.$sample-ad.vcf.xz ]; then
-	/usr/bin/time samtools view -@ 2 \
-	    --input-fmt-option required_fields=0x218 \
-	    ../../SRR6990379/$sample.b38.irc.v1.cram \
-	    | ad2vcf Split-vcfs/Combined/combined.$sample.vcf.xz
-    else
-	printf "$sample already done.\n"
+    if [ ! -e $test_dir/$sample.vcf.xz ]; then
+	cp Split-vcfs/Combined/combined.$sample.vcf.xz $test_dir
     fi
+    
+    /usr/bin/time samtools view -@ 2 \
+	--input-fmt-option required_fields=0x218 \
+	../../SRR6990379/$sample.b38.irc.v1.cram \
+	| ad2vcf $test_dir/combined.$sample.vcf.xz 0
+    
     printf "hts-ref count: "
     find $HOME/.cache/hts-ref | wc -l
     find $HOME/.cache/hts-ref > hts-ref-list.$sample

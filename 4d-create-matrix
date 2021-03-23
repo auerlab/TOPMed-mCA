@@ -1,12 +1,38 @@
 #!/bin/sh -e
 
+##########################################################################
+#   Script description:
+#       Generate matrix for selected samples
+#       
+#   History:
+#   Date        Name        Modification
+#   2021-03-06  Jason Bacon Begin
+##########################################################################
+
+usage()
+{
+    printf "Usage: $0 MAF\n"
+    exit 1
+}
+
+
+##########################################################################
+#   Main
+##########################################################################
+
+if [ $# != 1 ]; then
+    usage
+fi
+maf=$1
+
 save_cwd=$(pwd)
 cd ~/Barracuda/TOPMed/ad-matrix
 make clean install
 cd $save_cwd
 export PATH=$HOME/Barracuda/TOPMed/local/bin:$PATH
 
-cd AD-VCFs-whi-MAPQ-0/Uncompressed
+cd AD-VCFs-whi-MAPQ-0/MAF-$maf/Uncompressed
 which ad-matrix
 ls combined.*.vcf > VCF-list.txt
-ad-matrix VCF-list.txt ad-matrix
+wc -l VCF-list.txt
+ad-matrix VCF-list.txt ad-matrix-maf-$maf

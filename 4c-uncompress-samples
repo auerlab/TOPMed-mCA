@@ -12,7 +12,7 @@
 
 usage()
 {
-    printf "Usage: $0 sample-list\n"
+    printf "Usage: $0 sample-list MAF\n"
     exit 1
 }
 
@@ -21,14 +21,20 @@ usage()
 #   Main
 ##########################################################################
 
-if [ $# != 1 ]; then
+if [ $# != 2 ]; then
     usage
 fi
 sample_list=$1
+maf=$2
 
-cd AD-VCFs-whi-MAPQ-0
-mkdir -p Uncompressed
-for sample in $(cat ../$sample_list); do
-    echo $sample
-    xzcat combined.$sample-ad.vcf.xz > Uncompressed/combined.$sample-ad.vcf
-done
+dir=AD-VCFs-whi-MAPQ-0/MAF-$maf
+mkdir -p $dir/Uncompressed
+
+# Strip spaces inserted by wc
+count=$(cat $dir/$sample_list | wc -l | tr -d ' ')
+
+# This will be I/O intensive, so just run on a few samples at a time on the
+# local disk
+printf "Processing $count samples in $dir...\n"
+sbatch --array=1-${count}%4 --nodelist=barracuda 4c-uncompress-samples.sbatch \
+    $sample_list $maf

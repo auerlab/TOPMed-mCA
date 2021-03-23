@@ -84,9 +84,15 @@ for sample in $(awk '{ print $1 }' $sample_file); do
 			# Can't rely on exit status since samtools is unhappy
 			# when ad2vcf closes the pipe.  Reading trailing junk
 			# until EOF in ad2vcf would waste a lot of time.
+			#
+			# Used 0x208 by mistake for initial runs, should have
+			# been 0x218.  0x208 means MAPQ scores of either 0
+			# (unmapped) or 40 (mapped, true score unknown).
+			# This does not adversely affect haplohseq.  Keeping
+			# 0x208 for consistency.
 			set +e
 			time samtools view -@ 2 \
-			    --input-fmt-option required_fields=0x218 \
+			    --input-fmt-option required_fields=0x208 \
 			    $cram | ad2vcf $vcf_input $mapq_min
 			exit_status=$?
 			set -e

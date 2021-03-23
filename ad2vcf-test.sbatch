@@ -18,7 +18,7 @@ printf "My sample = $my_sample\n"
 # Make sure hts-ref is fully populated before running parallel jobs that
 # might attempt redundant downloads
 /usr/bin/time samtools view -@ 2 \
-    --input-fmt-option required_fields=0x208 \
+    --input-fmt-option required_fields=0x218 \
     ../../SRR6990379/$my_sample.b38.irc.v1.cram \
-    | ad2vcf Split-vcfs/Combined/combined.$my_sample.vcf.xz
+    | ad2vcf Split-vcfs/Combined/combined.$my_sample.vcf.xz 0
 

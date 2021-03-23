@@ -11,7 +11,7 @@
 
 usage()
 {
-    printf "Usage: $0\n"
+    printf "Usage: $0 MAF\n"
     exit 1
 }
 
@@ -20,14 +20,13 @@ usage()
 #   Main
 ##########################################################################
 
-if [ $# != 0 ]; then
+if [ $# != 1 ]; then
     usage
 fi
+maf=$1
 
 # Take samples from WHI
-find AD-VCFs-whi-MAPQ-0 -mindepth 1 -maxdepth 1 -name combined.*.xz \
-    | awk -F '[.-]' '{ print $6 }' | head -n 5000 > 5k-samples.txt
-
-#bcftools view ../../phased/freeze.8.chr9.pass_only.phased.bcf \
-#    | grep -m 1 '^#CHROM' | cut -f 10-5009 | tr '\t' '\n' \
-#    > 5k-samples.txt
+cd AD-VCFs-whi-MAPQ-0/MAF-$maf
+pwd
+find . -mindepth 1 -maxdepth 1 -name 'combined.*.xz' \
+    | awk -F '[.-]' '{ print $3 }' | head -n 5000 > 5k-samples.txt
