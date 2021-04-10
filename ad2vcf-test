@@ -6,7 +6,7 @@ which ad2vcf
 
 samples=$(ls ../../SRR6990379/*.cram | cut -d / -f 4 | cut -d . -f 1)
 echo $samples
-test_dir=Split-vcfs-test/Combined
+test_dir=Split-vcfs/Combined
 mkdir -p $test_dir
 
 for sample in $samples; do
@@ -17,10 +17,6 @@ for sample in $samples; do
     # Use 0x618 to include PHRED scores for stats, 0x218 to exclude
     # samtools view takes about twice as long to run when reporting PHREDs
     # PHRED code in ad2vcf is currently disabled
-    if [ ! -e $test_dir/$sample.vcf.xz ]; then
-	cp Split-vcfs/Combined/combined.$sample.vcf.xz $test_dir
-    fi
-    
     /usr/bin/time samtools view -@ 2 \
 	--input-fmt-option required_fields=0x218 \
 	../../SRR6990379/$sample.b38.irc.v1.cram \

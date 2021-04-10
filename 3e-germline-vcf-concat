@@ -29,9 +29,10 @@ sample_list=$1
 cd 79852-germline-structural-variants/Split-vcfs
 done=0
 samples=$(bcftools view ../sv.freeze1.chr9.gt.only.bcf | grep -m 1 '^#CHROM' | cut -f 10-)
+printf "Concatenating %s samples...\n" $(echo $samples | wc -w)
 for sample in $samples; do
     files=""
-    for chr in $(seq 1 22) X; do
+    for chr in $(seq 1 22); do
 	files="$files chr$chr/chr$chr.$sample.vcf"
 	chr=$((chr + 1))
     done
@@ -39,5 +40,5 @@ for sample in $samples; do
     printf "===\n%u\nConcatenating $files to $combined...\n" $done
     done=$((done + 1))
     # Add only 1 copy of header
-    (head chr1.$sample.vcf | grep '^#' && grep --no-filename -v '^#' $files) | xz > $combined
+    (head chr1/chr1.$sample.vcf | grep '^#' && grep --no-filename -v '^#' $files) | xz > $combined
 done

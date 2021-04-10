@@ -11,8 +11,7 @@
 
 usage()
 {
-    printf "Usage: $0 sample-list\n"
-    printf "sample-list is a simple text file with one sample per line.\n"
+    printf "Usage: $0\n"
     exit 1
 }
 
@@ -21,11 +20,11 @@ usage()
 #   Main
 ##########################################################################
 
-if [ $# != 1 ]; then
+if [ $# != 0 ]; then
     usage
 fi
-sample_list=$1
 cd 79852-germline-structural-variants/Split-vcfs
+pwd
 for file in combined*.vcf.xz; do
     bed=${file%.vcf.xz}.bed
     printf "$file -> $bed...\n"

@@ -35,12 +35,6 @@ cd 79852-germline-structural-variants
 output_dir=Split-vcfs
 mkdir -p $output_dir
 cd $output_dir
-for chr in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X; do
-    mkdir -p chr$chr
-    printf "Moving chr$chr...\n"
-    find . -depth 1 -name "chr$chr.*" -exec ../../move-to-dir chr$chr '{}' +
-done
-exit
 
 for first_col in $(seq 1 10000 $total_samples); do
     last_col=$(( first_col + 9999 ))
@@ -49,9 +43,9 @@ for first_col in $(seq 1 10000 $total_samples); do
     for file in sv.freeze1.*.gt.only.bcf; do
 	chr=$(echo $file | cut -d . -f 3)
 	printf "$file $chr\n"
+	mkdir -p $chr
 	bcftools view $file \
 	    | vcf-split --alt-only --output-fields chrom,id,pos,format \
-		$output_dir/$chr. $first_col $last_col
-		# --sample-id-file ../$sample_list $output_dir/$chr. 1 138134
+		$output_dir/$chr/$chr. $first_col $last_col
     done
 done

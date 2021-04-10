@@ -47,7 +47,6 @@ cd $vcf_dir
 my_vcf=$(mawk -v task=$SLURM_ARRAY_TASK_ID 'NR == task' $vcf_list)
 sample=$(echo $my_vcf | awk -F '[.-]' '{ print $2 }')
 pwd
-echo $sample
 
 printf "Task $SLURM_ARRAY_TASK_ID processing $my_vcf on $(hostname)...\n"
 base=$(basename $my_vcf)
@@ -58,6 +57,7 @@ outfile_sv=MAF-$maf-${separation}nt-sv/$base
 # bedtools needs a basic header to identify the file type
 
 germline=../79852-germline-structural-variants/Split-vcfs/combined.$sample.bed
+pwd
 (printf "##fileformat=VCFv4.2\n"; xzcat $my_vcf) \
     | bedtools subtract -A -a stdin -b $germline \
     | mawk -v separation=$separation -v maf=$maf -f ../3g-filter-sites.awk \

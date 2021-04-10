@@ -55,4 +55,4 @@ printf "Samples: $sample_count\n"
 
 mkdir -p $vcf_dir/MAF-$maf-${separation}nt-sv
 sbatch --array=1-$sample_count%50 \
-    3d-filter-sites.sbatch $sample_group $mapq_min $maf $separation
+    3g-filter-sites.sbatch $sample_group $mapq_min $maf $separation
