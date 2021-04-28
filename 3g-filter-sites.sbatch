@@ -49,6 +49,8 @@ sample=$(echo $my_vcf | awk -F '[.-]' '{ print $2 }')
 pwd
 
 printf "Task $SLURM_ARRAY_TASK_ID processing $my_vcf on $(hostname)...\n"
+printf "Sample group: %s\nMAPQ min: %s\nMAF: %s\nSeparation: %s\n" \
+	$sample_group $mapq_min $maf $separation
 base=$(basename $my_vcf)
 outfile_sv=MAF-$maf-${separation}nt-sv/$base
 
@@ -56,6 +58,7 @@ outfile_sv=MAF-$maf-${separation}nt-sv/$base
 # Maybe add to filter-sites.awk?
 # bedtools needs a basic header to identify the file type
 
+printf "Filtering germline structural variants...\n"
 germline=../79852-germline-structural-variants/Split-vcfs/combined.$sample.bed
 pwd
 (printf "##fileformat=VCFv4.2\n"; xzcat $my_vcf) \

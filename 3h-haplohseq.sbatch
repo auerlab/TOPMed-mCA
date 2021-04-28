@@ -21,7 +21,12 @@
 
 usage()
 {
-    printf "Usage: $0 ad-vcf-dir\n"
+    cat << EOM
+
+Usage: $0 ad-vcf-dir event-prevalence event-megabases VCF-min-depth \
+	estimate-parameters(=y|n)
+
+EOM
     exit 1
 }
 
@@ -64,12 +69,17 @@ my_vcf_prefix=`echo $my_vcf | cut -d - -f 1`
 output_dir=Haplo-ep-$ep-emb-$emb-vmd-$vmd-est-$est
 sample=${my_vcf_prefix##*.}
 hostname
-printf "TASK ID:      $SLURM_ARRAY_TASK_ID\n"
-printf "VCF:          $my_vcf\n"
-printf "Uncompressed: $uncompressed\n"
-printf "Prefix:       $my_vcf_prefix\n"
-printf "Sample:       $sample\n"
-printf "Output dir:   $output_dir\n"
+printf "TASK ID:        $SLURM_ARRAY_TASK_ID\n"
+printf "VCF:            $my_vcf\n"
+printf "Uncompressed:   $uncompressed\n"
+printf "Prefix:         $my_vcf_prefix\n"
+printf "Sample:         $sample\n"
+printf "Output dir:     $output_dir\n"
+printf "VCF dir:        $vcf_dir\n"
+printf "Event prev:     $ep\n"
+printf "Min MB:         $emb\n"
+printf "VCF min depth:  $vmd\n"
+printf "Estimate parms: $est\n"
 
 # ../../../local/bin version should be built with portable optimizations
 # On FreeBSD, can also use ports version optimized for each compute node

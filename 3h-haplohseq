@@ -16,7 +16,8 @@ usage()
 {
     cat << EOM
 
-Usage: $0 ad-vcf-dir prevalence emb min-depth est(=y|n) [extra sbatch flags]
+Usage: $0 ad-vcf-dir event-prevalence event-megabases VCF-min-depth
+	estimate-parameters(=y|n) [extra sbatch flags]
 
 Example: $0 AD-VCFs-whi-MAPQ-0/MAF-0.05-1000nt-dgv 0.01 30 10 y [sbatch flags]
 
