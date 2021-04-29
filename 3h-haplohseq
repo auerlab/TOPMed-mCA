@@ -52,5 +52,5 @@ sample_count=$(cat $vcf_dir/VCF-list.txt | wc -l)
 sample_count=$(printf "%d" $sample_count)   # Strip leading space
 
 set -x
-sbatch --array=1-$sample_count%100 "$@" 3h-haplohseq.sbatch \
+sbatch --array=1-$sample_count%160 "$@" 3h-haplohseq.sbatch \
     $vcf_dir $ep $emb $vmd $est
