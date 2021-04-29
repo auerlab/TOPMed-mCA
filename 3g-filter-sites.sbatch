@@ -62,15 +62,19 @@ printf "Filtering germline structural variants...\n"
 germline=../79852-germline-structural-variants/Split-vcfs/combined.$sample.bed
 
 # Assume samples with no structural variants should be tossed
-if [ ! -e $germline ]; then
-    printf "No structural variant file for sample $sample.\n"
-    exit 1
-fi
 pwd
-(printf "##fileformat=VCFv4.2\n"; xzcat $my_vcf) \
-    | bedtools subtract -A -a stdin -b $germline \
-    | mawk -v separation=$separation -v maf=$maf -f ../3g-filter-sites.awk \
-    | xz -3 > $outfile_sv
+if [ -e $germline ]; then
+    (printf "##fileformat=VCFv4.2\n"; xzcat $my_vcf) \
+	| bedtools subtract -A -a stdin -b $germline \
+	| mawk -v separation=$separation -v maf=$maf -f ../3g-filter-sites.awk \
+	| xz -3 > $outfile_sv
+else
+    printf "Note: No structural variant file for sample $sample.\n"
+    printf "Applying MAF and distance filters anyway.\n"
+    xzcat $my_vcf \
+	| mawk -v separation=$separation -v maf=$maf -f ../3g-filter-sites.awk \
+	| xz -3 > $outfile_sv
+fi
     
 # Previous we filtered out sites in the DGV (database of genomic variants)
 # This has been replaced by the dbGaP germline structural variants above

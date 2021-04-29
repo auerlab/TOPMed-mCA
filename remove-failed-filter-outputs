@@ -11,7 +11,7 @@
 
 usage()
 {
-    printf "Usage: $0 sample-group\n"
+    printf "Usage: $0 SLURM-ouputs-dir\n"
     exit 1
 }
 
@@ -23,9 +23,9 @@ usage()
 if [ $# != 1 ]; then
     usage
 fi
-group=$1
+slurm_dir=$1
 
-for sample in $(find SLURM-outputs-$group -name filter-sites-50052\*.err | 
+for sample in $(find $slurm_dir -name filter-sites-50052\*.err | 
     xargs cat | awk -F "[ .]" '{ print $9 }'); do
     echo $sample
     rm -i AD-VCFs-whi-MAPQ-0/MAF-0.01-1000nt-sv/*$sample*

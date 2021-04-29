@@ -11,7 +11,7 @@
 
 usage()
 {
-    printf "Usage: $0 sample-group\n"
+    printf "Usage: $0 SLURM-outputs-dir\n"
     exit 1
 }
 
@@ -23,8 +23,7 @@ usage()
 if [ $# != 1 ]; then
     usage
 fi
-group=$1
-slurm_dir=SLURM-outputs-$group
+slurm_dir=$1
 
 jobs=$(find $slurm_dir -name haplo\*.err | xargs grep -vH real \
     | awk -F '[-.]' '{ print $4 }' | sort | uniq)
