@@ -1,0 +1,39 @@
+#!/bin/sh -e
+
+##########################################################################
+#   Script description:
+#       Remove outputs from haplohseq jobs that had errors
+#       
+#   History:
+#   Date        Name        Modification
+#   2021-04-29  Jason Bacon Begin
+##########################################################################
+
+usage()
+{
+    printf "Usage: $0 sample-group\n"
+    exit 1
+}
+
+
+##########################################################################
+#   Main
+##########################################################################
+
+if [ $# != 1 ]; then
+    usage
+fi
+group=$1
+slurm_dir=SLURM-outputs-$group
+
+jobs=$(find $slurm_dir -name haplo\*.err | xargs grep -vH real \
+    | awk -F '[-.]' '{ print $4 }' | sort | uniq)
+for job in $jobs; do
+    echo $job
+    head $slurm_dir/haplohseq-$job.*
+    sample=$(awk '$1 == "Sample:" { print $2 }' $slurm_dir/haplohseq-$job.out)
+    read -p "Remove $sample? y/[n] " remove
+    if [ 0$remove = 0y ]; then
+	rm -i AD-VCFs-$group-MAPQ-0/MAF-0.01-1000nt-sv/Haplo-ep-0.01-emb-30-vmd-10-est-y/combined.$sample.*
+    fi
+done
