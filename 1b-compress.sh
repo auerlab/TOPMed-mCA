@@ -30,13 +30,13 @@ fi
 
 total_jobs=$1
 max_jobs=$2
-dir=Split-vcfs
+dir=Data/Split-vcfs
 
 vcf_list=vcf-list-all
 cd $dir
 pwd
 
-# Make sure not to clobber the files being used by current jobs!
+# Be sure not to clobber the files being used by current jobs!
 if [ -e $vcf_list ]; then
     cat << EOM
 

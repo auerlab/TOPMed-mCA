@@ -46,29 +46,19 @@
 # 21 is the smallest of the chromosomes for which errors were reported
 : ${SLURM_ARRAY_TASK_ID:=21}
 
-# If using Mortimer pkgsrc
-if [ -e /raid-01/UITS/bacon/Pkgsrc/pkg-2019Q4 ]; then
-    source /etc/bashrc
-    module load /raid-01/UITS/bacon/Pkgsrc/pkg-2019Q4/etc/modulefiles/pkgsrc/2019Q4
-fi
-
-# ../../../local/bin version should be built with portable optimizations
-# On FreeBSD, can also use ports version optimized for each compute node
-export PATH=../../local/bin:$PATH
 which bcftools vcf-split
 
 # Make output file names sort lexically by chromosome number
 if [ $SLURM_ARRAY_TASK_ID = 23 ]; then
     chromosome=X
-    bcf=freeze.8.chrX.pass_only.phased.bcf
 else
     chromosome=$(printf "%02d" $SLURM_ARRAY_TASK_ID)
-    bcf=freeze.8.chr$SLURM_ARRAY_TASK_ID.pass_only.phased.bcf
 fi
+bcf=freeze.8.chr$chromosome.pass_only.phased.bcf
 printf "Splitting VCF for chromosome $chromosome...\n"
 
 # Organize by chromosome to reduce # of files in each dir
-output_dir=Split-vcfs/chr$chromosome
+output_dir=Data/Split-vcfs/chr$chromosome
 mkdir -p $output_dir
 
 total_samples=137977
