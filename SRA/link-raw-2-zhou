@@ -1,0 +1,13 @@
+#!/bin/sh
+
+zhoudir=~zhou63/VCFs/
+#        mkdir -p $zhoudir
+for group in whi bjm group3 group4; do
+    for batch in $(seq -f '%02g' 0 9); do
+	dir=VCFs-$group-samples-$batch/Done-MAPQ-0
+	ls -d $dir
+	ln -f $dir/combined* $zhoudir 
+    done
+done
+find ~zhou63/VCFs/ -type d -exec chown zhou63:zhou63 '{}' \;
+find ~zhou63/VCFs/ -type f -exec chmod 644 '{}' +

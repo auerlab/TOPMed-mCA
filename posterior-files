@@ -6,7 +6,7 @@ while read hash; do
     echo $hash $nwd
     cp AD-VCFs-whi-MAPQ-0/MAF-0.05-1000nt-dgv/Haplo-output-est-event_mb-30-est/combined.$nwd.posterior.dat \
 	$hash.posterior.dat
-done < posterior.txt
+done < Save/posterior.txt
 umask 022
 tar -Jcvf ~/www/Temp/posterior.txz *.posterior.dat
 rm *.posterior.dat

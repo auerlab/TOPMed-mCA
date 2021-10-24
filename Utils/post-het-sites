@@ -1,0 +1,31 @@
+#!/bin/sh -e
+
+##########################################################################
+#   Script description:
+#       Post het sites for a specified sample
+#       
+#   History:
+#   Date        Name        Modification
+#   2021-01-21  Jason Bacon Begin
+##########################################################################
+
+usage()
+{
+    printf "Usage: $0 sample-hash\n"
+    exit 1
+}
+
+
+##########################################################################
+#   Main
+##########################################################################
+
+if [ $# != 1 ]; then
+    usage
+fi
+hash=$1
+nwd=$(awk -F '[,.]' -v hash=$hash '$2 == hash { print $1 }' Misc/whi-filenames.csv)
+echo $nwd
+umask 022
+xzcat AD-VCFs-whi/combined.$nwd-ad.vcf.xz | awk '{ print $1, $2 }' \
+    | xz > ~/www/Temp/$hash-hets.xz

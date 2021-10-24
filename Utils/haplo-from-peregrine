@@ -1,0 +1,9 @@
+#!/bin/sh -e
+
+# whi not present on peregrine
+for group in bjm group3 group4; do
+    printf "Syncing $group...\n"
+    hd=AD-VCFs-$group-MAPQ-0/MAF-0.01-1000nt-sv/Haplo-ep-0.01-emb-30-vmd-10-est-y
+    mkdir -p $hd
+    rsync -av peregrine.uits.uwm.edu:Data/TOPMed/Jobs/Haplohseq-analysis/$hd/ $hd/
+done

@@ -1,0 +1,4 @@
+#!/bin/sh
+
+#find SLURM-outputs -name haplo\*.out | xargs egrep -v 'Task|Filtering'
+find Data/SLURM-outputs -name haplo\*.err | xargs egrep -v 'user'
