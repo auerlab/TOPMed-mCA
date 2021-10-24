@@ -1,7 +1,7 @@
 #!/bin/sh -e
 
 # Uncomment to use latest test build, otherwise use ad2vcf in PATH
-export PATH=../../local/bin:${PATH}
+export PATH=~/Prog/Src/local/bin:${PATH}
 which ad2vcf
 
 samples=$(ls ../../SRR6990379/*.cram | cut -d / -f 4 | cut -d . -f 1)

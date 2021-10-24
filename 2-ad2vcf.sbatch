@@ -6,6 +6,16 @@
 #SBATCH --output=SLURM-outputs/ad2vcf-%A_%a.out
 #SBATCH --error=SLURM-outputs/ad2vcf-%A_%a.err
 
+cat << EOM
+
+This script was not used in the analysis, since the necessary CRAM files
+were not available on a cluster.
+
+The ad2vcf step was run on AWS using the scripts in the SRA directory.
+
+EOM
+exit
+
 # Cannot download all samples, so just use a few
 # Create array of filenames (1-based)
 # Make sure --array above matches the # of files
