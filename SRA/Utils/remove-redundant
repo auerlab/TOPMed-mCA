@@ -1,0 +1,12 @@
+#!/bin/sh -e
+
+for file in VCFs-*/combined*.vcf.xz; do
+    base=$(basename $file)
+    orig=../Split-vcfs/Combined/$base
+    if [ ! -e $orig ]; then
+	printf "Missing $orig.\n"
+    else
+	printf "Removing $file...\n"
+	rm $file
+    fi
+done

@@ -1,0 +1,8 @@
+#!/bin/sh -e
+
+dir=VCFs-array-samples-00/Done-MAPQ-0
+mkdir -p $dir
+for sample in $(awk '{ print $1 }' Sample-lists/array-samples.txt); do
+    echo $sample
+    ln -f VCFs-whi-samples-*/Done-MAPQ-0/combined.$sample-ad.vcf.xz $dir
+done
