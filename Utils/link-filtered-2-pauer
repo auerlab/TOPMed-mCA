@@ -1,0 +1,15 @@
+#!/bin/sh
+
+pauerdir=~pauer/Filtered-VCFs/
+mkdir -p $pauerdir
+printf "Removing old files...\n"
+find $pauerdir -type f -exec rm -f '{}' \;
+for group in whi bjm group3 group4; do
+    for batch in $(seq -f '%02g' 0 9); do
+	dir=Data/AD-VCFs-$group-MAPQ-0/MAF-0.01-1000nt-sv
+	printf "Linking $dir...\n"
+	find $dir -maxdepth 1 -name 'combined*.vcf.xz' -print -exec ln -f '{}' $pauerdir \;
+    done
+done
+find ~pauer/Filtered-VCFs/ -type d -exec chown pauer:pauer '{}' \;
+find ~pauer/Filtered-VCFs/ -type f -exec chmod 640 '{}' +

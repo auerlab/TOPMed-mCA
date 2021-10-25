@@ -12,4 +12,4 @@ for group in whi bjm group3 group4; do
     done
 done
 find ~zhou63/Filtered-VCFs/ -type d -exec chown zhou63:zhou63 '{}' \;
-find ~zhou63/Filtered-VCFs/ -type f -exec chmod 644 '{}' +
+find ~zhou63/Filtered-VCFs/ -type f -exec chmod 640 '{}' +
