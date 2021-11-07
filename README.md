@@ -11,6 +11,8 @@ Scripts used for exploration are found under Utils.
 
 Primary data are stored under Data.
 
+Analysis logs are under Logs.
+
 Metadata to be saved for replicating the analysis are under Save.
 
 Most software developed for this project can be installed via FreeBSD ports
