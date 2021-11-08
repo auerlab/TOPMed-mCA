@@ -1,6 +1,14 @@
 # Haplohseq-analysis
 Haplohseq analysis of TOPMed data
 
+UWM
+MCW
+MD Anderson Cancer Center
+Fred Hutchinson Cancer Research Center
+University of Washington
+University of Michigan
+National Heart Lung and Blood Institute 
+    
 Filtering reads based on MAPQ in ad2vcf resulted in very little improvement
 in the haplohseq results.  Reads for whi, bjm, group3, and group4 were
 filtered only for unmapped reads.
