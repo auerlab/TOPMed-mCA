@@ -21,6 +21,7 @@ through haplohseq, a tool that detects allelic imbalance in impure cell
 samples with potentially very low aberrant cell percentages.
 
 [https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5039922/](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5039922/)
+
 [https://sites.google.com/site/integrativecancergenomics/software/haplohseq](https://sites.google.com/site/integrativecancergenomics/software/haplohseq)
 
 ## Processing
