@@ -32,8 +32,8 @@ Haplohseq can also function using micro-array data.
 
 Variant calls for 137,977 human genomes from TOPMed were available on dbGaP
 in the form of BCF (binary variant format, a compressed version of VCF)
-files.  Unfortunately, BCF files do not contain allele frequencies and are in
-the wrong format for haplohseq (multi-sample, single-chromosome).
+files.  Unfortunately, these BCF files do not contain allele frequencies and
+are in the wrong format for haplohseq (multi-sample, single-chromosome).
 
 Hence, this pipeline was developed in order to reformat and augment the VCF
 data for use with haplohseq.  This includes the following high-level
