@@ -44,4 +44,4 @@ bmake clean deinstall reinstall
 
 EOM
 sudo su
-AWS-scripts/parallel-ad2vcf $path
+AWS-scripts/parallel-ad2vcf $path 0

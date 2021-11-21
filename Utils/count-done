@@ -1,6 +1,6 @@
 #!/bin/sh -e
 
-cd Split-vcfs
+cd Data/Split-vcfs
 for chr in $(seq -w 1 22) X; do
     done=$(find chr$chr -name '*.done' | wc -l)
     uncomp=$(find chr$chr -name '*.vcf' | wc -l)

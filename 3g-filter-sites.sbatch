@@ -12,6 +12,7 @@
 #   2020-08-19  Jason Bacon Begin
 ##########################################################################
 
+# --array is set by calling script based on size of vcf-list file
 #SBATCH --mem=100
 # 4 processes, but the xz bottleneck limits the total CPU to about 160%
 # even if we give it 4 cores
@@ -41,7 +42,7 @@ separation=$4
 : ${SLURM_ARRAY_TASK_ID:=1}
 
 vcf_dir=AD-VCFs-$sample_group-MAPQ-$mapq_min
-vcf_list=VCF-list.txt
+vcf_list=VCF-list.txt   # In $vcf_dir
 
 cd $vcf_dir
 my_vcf=$(mawk -v task=$SLURM_ARRAY_TASK_ID 'NR == task' $vcf_list)

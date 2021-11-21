@@ -33,60 +33,52 @@
 #
 # to get past this limit.
 
-##SBATCH --array=1-23 --cpus-per-task=2
-# Need to rerun 1-13, 14-X are done
-#SBATCH --array=1-13 --cpus-per-task=2
+#SBATCH --array=1-23 --cpus-per-task=2
 #SBATCH --mem=300
-#SBATCH --output=SLURM-outputs/vcf-split-%A_%a.out
-#SBATCH --error=SLURM-outputs/vcf-split-%A_%a.err
-#SBATCH --exclude=compute-[001-008,012]
+#SBATCH --output=Logs/1-vcf-split/slurm-%A_%a.out
+#SBATCH --error=Logs/1-vcf-split/slurm-%A_%a.err
 
 # If running outside scheduler, SLURM_ARRAY_TASK_ID will not be set.
 # Create a dummy task ID of 21 for single-sample testing on dev server.
 # 21 is the smallest of the chromosomes for which errors were reported
 : ${SLURM_ARRAY_TASK_ID:=21}
 
+hostname
+pwd
 which bcftools vcf-split
 
 # Make output file names sort lexically by chromosome number
 if [ $SLURM_ARRAY_TASK_ID = 23 ]; then
-    chromosome=X
+    one_digit_chrom=X
+    two_digit_chrom=X
 else
-    chromosome=$(printf "%02d" $SLURM_ARRAY_TASK_ID)
+    one_digit_chrom=$SLURM_ARRAY_TASK_ID
+    two_digit_chrom=$(printf "%02d" $SLURM_ARRAY_TASK_ID)
 fi
-bcf=freeze.8.chr$chromosome.pass_only.phased.bcf
-printf "Splitting VCF for chromosome $chromosome...\n"
+
+bcf=freeze.8.chr$one_digit_chrom.pass_only.phased.bcf
+printf "Splitting VCF for chromosome $two_digit_chrom...\n"
+
+cd Data
 
 # Organize by chromosome to reduce # of files in each dir
-output_dir=Data/Split-vcfs/chr$chromosome
+output_dir=1-vcf-split/chr$two_digit_chrom
 mkdir -p $output_dir
-
-total_samples=137977
-# Limited by open file descriptors.  Not sure how far to try and push it.
-# Depends on OS and hardware specs
-# 5 to 10 segments: Low CPU utilization on Peregrine at times
-# 5 did not do well on Mortimer either
-# Mortimer might do better with NFS over Infiniband
-# < 5 segments: "Too many open files" error on Peregrine:
-# Minimum for running all 23 chromosomes without being I/O-bound at once is 15
-segments=10
-
-# Integer division truncates, add 1 to round up segment size so the sum
-# doesn't fall short of total_samples
-segment_size=$(($total_samples / $segments + 1))
-
-first=1
-while [ $first -le $total_samples ]; do
-    last=$(($first + $segment_size - 1))
-    if [ $last -gt $total_samples ]; then
-	last=$total_samples
-    fi
+sample_id_file=samples.txt
+# More than 10k open files will generally reduce CPU utilization
+max_samples=1000
+if [ $(cat $sample_id_file | wc -l) -gt $max_samples ]; then
+    cat << EOM
     
-    printf "Processing columns $first through $last...\n"
-    bcftools view --min-ac 2 --exclude-types indels \
-	../../phased/$bcf \
-	| vcf-split --het-only --output-fields chrom,pos,ref,alt,format \
-	    $output_dir/chr$chromosome. $first $last
-    
-    first=$(($first + $segment_size))
-done
+$sample_id_file contains too many samples.  Please limit to $max_samples
+to prevent overloading the disk.
+
+EOM
+    exit 1
+fi
+
+bcftools view --min-ac 2 --exclude-types indels Raw-bcfs/$bcf \
+    | vcf-split --het-only --sample-id-file samples.txt \
+    --output-fields chrom,pos,ref,alt,format \
+    $output_dir/chr$two_digit_chrom. 1 137977
+

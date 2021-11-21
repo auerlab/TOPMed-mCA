@@ -1,3 +1,17 @@
-#!/bin/sh -e
+#!/bin/sh
 
-mkdir -p Data/SLURM-outputs Data/Split-vcfs Data/Filtered-vcfs
+# Universal
+mkdir -p Data Logs
+for stage in 1-vcf-split; do
+    mkdir -p Data/$stage Logs/$stage
+done
+
+# Local to UWM: Adjust to your site
+cd Data
+ln -s ../../../SRR6990379/ Alignments
+ln -s ../../../ncbi/dbGaP-13558/files/71699/topmed-dcc/exchange/phs000964_TOPMed_WGS_JHS/Combined_Study_Data/Genotypes/freeze.8/phased \
+    Raw-bcfs
+
+sample_id_file=samples.txt
+ls Alignments/*.cram | awk -F '[/\.]' '{ print $2 }' > $sample_id_file
+
