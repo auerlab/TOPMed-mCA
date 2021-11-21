@@ -106,7 +106,10 @@ freeze1).
 Most analysis was performed on a FreeBSD 12 HPC cluster using OpenZFS
 file system with lz4 compression.  The compression capabilities of ZFS
 significantly reduce disk usage and read/write time for uncompressed
-temporary files such as VCFs.
+temporary files such as VCFs.  This is especially helpful when splitting
+the multisample VCFs, since we cannot pipe thousands of VCF streams through
+xz processes at once.  We must write raw VCFs and compress them afterward
+with reasonable parallism.
 
 All output files were subsequently compressed in XZ format, which provides
 significantly better compression ratios than lz4, gzip, or bzip2.
