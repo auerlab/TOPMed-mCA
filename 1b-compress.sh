@@ -12,6 +12,12 @@
 #       complete, so that this script will know which VCFs are ready
 #       to compress.
 #
+#       All necessary tools are assumed to be in PATH.  If this is not
+#       the case, add whatever code is needed here to gain access.
+#       (Adding such code to your .bashrc or other startup script is
+#       generally a bad idea since it's too complicated to support
+#       every program with one environment.)
+#
 #   History:
 #   Date        Name        Modification
 #   2020-06-16  Jason Bacon Begin
@@ -32,6 +38,9 @@ if [ $# != 1 ]; then
     usage
 fi
 max_jobs=$1
+
+# Record software versions
+uname -a > Logs/1-vcf-split/os-version-compress-$SLURM_JOB_ID.txt 2>&1
 
 # Generate VCF file list from which jobs will extract their filename by
 # position using $SLURM_ARRAY_TASK_ID

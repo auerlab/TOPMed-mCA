@@ -1,7 +1,23 @@
 #!/bin/sh -e
 
+##########################################################################
+#   Script description:
+#       SLURM script for compressing VCF outputs.
+#
+#       Do not run this script directly.  Use 1b-compress.sh
+#       
+#   History:
+#   Date        Name        Modification
+#   2021-11-29  Jason Wayne BaconBegin
+##########################################################################
+
 #SBATCH --output=Logs/1-vcf-split/compress-%A_%a.out
 #SBATCH --error=Logs/1-vcf-split/compress-%A_%a.err
+
+# Set a default value for testing outside the SLURM environment
+: ${SLURM_ARRAY_TASK_ID:=1}
+
+hostname
 
 cd Data/1-vcf-split
 
