@@ -35,13 +35,19 @@
 
 #SBATCH --array=1-23 --cpus-per-task=2
 #SBATCH --mem=300
-#SBATCH --output=Logs/1-vcf-split/slurm-%A_%a.out
-#SBATCH --error=Logs/1-vcf-split/slurm-%A_%a.err
+#SBATCH --output=Logs/1-vcf-split/vcf-split-%A_%a.out
+#SBATCH --error=Logs/1-vcf-split/vcf-split-%A_%a.err
 
 # If running outside scheduler, SLURM_ARRAY_TASK_ID will not be set.
 # Create a dummy task ID of 21 for single-sample testing on dev server.
 # 21 is the smallest of the chromosomes for which errors were reported
 : ${SLURM_ARRAY_TASK_ID:=21}
+
+# Document software versions used for publication
+if [ $SLURM_ARRAY_TASK_ID = 1 ]; then
+    uname -a > Logs/1-vcf-split/os-version-$SLURM_JOB_ID.txt 2>&1
+    # vcf-split --version > Logs/1-vcf-split/vcf-split-version-$SLURM_JOB_ID.txt 2>&1
+fi
 
 hostname
 pwd
@@ -79,6 +85,6 @@ fi
 
 bcftools view --min-ac 2 --exclude-types indels Raw-bcfs/$bcf \
     | vcf-split --het-only --sample-id-file samples.txt \
-    --output-fields chrom,pos,ref,alt,format \
+    --fields chrom,pos,ref,alt,format \
     $output_dir/chr$two_digit_chrom. 1 137977
 

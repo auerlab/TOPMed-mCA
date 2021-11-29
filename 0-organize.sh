@@ -14,4 +14,3 @@ ln -s ../../../ncbi/dbGaP-13558/files/71699/topmed-dcc/exchange/phs000964_TOPMed
 
 sample_id_file=samples.txt
 ls Alignments/*.cram | awk -F '[/\.]' '{ print $2 }' > $sample_id_file
-
