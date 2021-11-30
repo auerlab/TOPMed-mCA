@@ -24,6 +24,9 @@ if [ ! -e $ref ]; then
     gunzip $ref.gz
 fi
 
+## Set the location of the mocha plugins if they are not in the default path
+# export BCFTOOLS_PLUGINS="/directory/containin/mochatools.so"
+
 ## Make sure you have this directory
 ## If you are on a networked filesystem, you make want to use local disk
 tmpdir=.
@@ -48,7 +51,6 @@ bcftools view -i 'MIN(FMT/AD)>=5' \
     | bcftools norm --no-version -Ob -o ${bcf} -d none -f ${ref}
 bcftools index -f ${bcf}
 
-# export BCFTOOLS_PLUGINS="/directory/containin/mochatools.so"
 echo "## annotate gc content"
 bcftools +mochatools ${bcf} -Ob -o ${newbcf} -- -t GC --fasta-ref ${ref}
 bcftools index -f ${newbcf}
