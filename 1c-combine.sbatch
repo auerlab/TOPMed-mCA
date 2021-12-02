@@ -20,14 +20,9 @@
 
 hostname
 
-cd Data/1-vcf-split
+my_sample=$(./select-sample.sh $SLURM_ARRAY_TASK_ID)
 
-# Pick a sample from the list based on SLURM_ARRAY_TASK_ID
-max_lines=$(cat sample-list-0000 | wc -l)
-split_file_num=$(( ($SLURM_ARRAY_TASK_ID - 1) / $max_lines ))
-split_file=$(printf "sample-list-%04d" $split_file_num)
-line=$(( ($SLURM_ARRAY_TASK_ID - 1) % $max_lines + 1 ))
-my_sample=$(awk -v line=$line 'NR == line { print $1 }' $split_file)
+cd Data/1-vcf-split
 
 sources=$(ls chr*/chr*.$my_sample.vcf.xz)
 printf "Combining:\n$sources...\n"

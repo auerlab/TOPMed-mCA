@@ -52,6 +52,7 @@ fi
 # Record software versions
 uname -a > ../../Logs/1-vcf-split/os-version-combine.txt 2>&1
 
+# Generate samples list for this and subsequent steps
 mkdir -p Combined
 printf "Finding samples...\n"
 find chr01 -name '*.vcf.xz' | cut -d . -f 2 > $sample_list
