@@ -2,11 +2,16 @@
 
 ##########################################################################
 #   Script description:
-#       Generate and launch a batch script to combine vcf-split outputs
-#       in parallel.
+#       Launch a batch job to combine vcf-split outputs in parallel.
 #       May need to increase SLURM MaxJobCount and MaxArraySize
 #       Also see SLURM high throughput tuning guide to avoid scheduler
 #       timeouts
+#
+#       All necessary tools are assumed to be in PATH.  If this is not
+#       the case, add whatever code is needed here to gain access.
+#       (Adding such code to your .bashrc or other startup script is
+#       generally a bad idea since it's too complicated to support
+#       every program with one environment.)
 #
 #   History:
 #   Date        Name        Modification
@@ -15,28 +20,23 @@
 
 usage()
 {
-    printf "Usage: $0 total-jobs max-parallel-jobs\n"
+    printf "Usage: $0 max-parallel-jobs\n"
     exit 1
 }
-
 
 ##########################################################################
 #   Main
 ##########################################################################
 
-if [ $# != 2 ]; then
+if [ $# != 1 ]; then
     usage
 fi
+max_jobs=$1
 
-total_jobs=$1
-max_jobs=$2
-dir=Split-vcfs
-
-sample_list=sample-list-all
-mkdir -p $dir
-cd $dir
+cd Data/1-vcf-split
 pwd
 
+sample_list=sample-list-all
 # Make sure not to clobber the files being used by current jobs!
 if [ -e $sample_list ]; then
     cat << EOM
@@ -48,15 +48,15 @@ Remove it to start again.
 EOM
     exit 1
 fi
-mkdir -p SLURM-combine-outputs Combined
+
+# Record software versions
+uname -a > ../../Logs/1-vcf-split/os-version-combine.txt 2>&1
+
+mkdir -p Combined
 printf "Finding samples...\n"
-if [ $total_jobs = all ]; then
-    find chr01 -name '*.vcf.xz' | cut -d . -f 2 > $sample_list
-    tj=$(cat $sample_list | wc -l)
-    total_jobs=$(echo $tj)   # Get rid of leading whitespace from wc
-else
-    find chr01 -name '*.vcf.xz' | cut -d . -f 2 | head -n $total_jobs > $sample_list
-fi
+find chr01 -name '*.vcf.xz' | cut -d . -f 2 > $sample_list
+tj=$(cat $sample_list | wc -l)
+total_jobs=$(echo $tj)   # Get rid of leading whitespace from wc
 
 # Split the find output into small chunks so each job has a quick awk search
 # It takes a few seconds to search a file with 1 million lines whereas
@@ -67,27 +67,9 @@ printf "Splitting...\n"
 split -l $max_lines -a 4 -d $sample_list sample-list-
 wc -l sample-list-[0-9]*
 
-batch_file=combine-tmp.sbatch
-cat << EOM > $batch_file
-#!/bin/sh -e
-
-#SBATCH --array=1-${total_jobs}%$max_jobs
-#SBATCH --output=SLURM-combine-outputs/combine-%A_%a.out
-#SBATCH --error=SLURM-combine-outputs/combine-%A_%a.err
-
-split_file_num=\$(( (SLURM_ARRAY_TASK_ID - 1) / $max_lines ))
-split_file=\$(printf "sample-list-%04d" \$split_file_num)
-line=\$(( (SLURM_ARRAY_TASK_ID - 1) % $max_lines + 1 ))
-my_sample=\$(awk -v line=\$line 'NR == line { print \$1 }' \$split_file)
-
-sources=\$(ls chr*/chr*.\$my_sample.vcf.xz)
-printf "Combining \$sources...\n"
-# FIXME: Strip headers from all but first file
-# xzcat \$sources | xz -cf > Combined/combined.\$my_sample.vcf.xz
-EOM
-
-cat $batch_file
+cd ../..
 read -p 'Submit? y/[n] ' submit
 if [ 0$submit = 0y ]; then
-    sbatch $batch_file
+    set -x
+    sbatch --array=1-${total_jobs}%$max_jobs 1c-combine.sbatch
 fi

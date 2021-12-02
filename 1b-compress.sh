@@ -39,15 +39,13 @@ if [ $# != 1 ]; then
 fi
 max_jobs=$1
 
-# Record software versions
-uname -a > Logs/1-vcf-split/os-version-compress-$SLURM_JOB_ID.txt 2>&1
-
 # Generate VCF file list from which jobs will extract their filename by
 # position using $SLURM_ARRAY_TASK_ID
 cd Data/1-vcf-split
 vcf_list=vcf-list-all
 
 # Be sure not to clobber the files being used by current jobs!
+# rm $vcf_list
 if [ -e $vcf_list ]; then
     cat << EOM
 
@@ -59,10 +57,15 @@ EOM
     exit 1
 fi
 
+# Record software versions
+uname -a > ../../Logs/1-vcf-split/os-version-compress.txt 2>&1
+
 # Completed vcf-split outputs are accompanied by a .vcf.done file
 # Search for .done files, but strip the .done from the name so the
 # list contains .vcf files
 printf "Finding VCFs...\n"
+printf "$(find chr* -name '*.vcf.done' | wc -l) done splitting\n"
+printf "$(find chr* -name '*.vcf' | wc -l) total VCFs\n"
 find chr* -name '*.vcf.done' | cut -d . -f 1-3 > $vcf_list
 
 tj=$(cat $vcf_list | wc -l)
@@ -80,4 +83,4 @@ wc -l vcf-list-[0-9]*
 
 cd ../..
 pwd
-# sbatch --array=1-${total_jobs}%$max_jobs 1b-compress.sbatch
+sbatch --array=1-${total_jobs}%$max_jobs 1b-compress.sbatch

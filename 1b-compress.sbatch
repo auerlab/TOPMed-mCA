@@ -21,10 +21,12 @@ hostname
 
 cd Data/1-vcf-split
 
-split_file_num=$(( (SLURM_ARRAY_TASK_ID - 1) / 1000 ))
+# Pick a sample from the list based on SLURM_ARRAY_TASK_ID
+split_file_num=$(( ($SLURM_ARRAY_TASK_ID - 1) / 1000 ))
 split_file=$(printf "vcf-list-%04d" $split_file_num)
-line=$(( (SLURM_ARRAY_TASK_ID - 1) % 1000 + 1 ))
+line=$(( ($SLURM_ARRAY_TASK_ID - 1) % 1000 + 1 ))
 my_vcf=$(awk -v line=$line 'NR == line { print $1 }' $split_file)
 
 printf "Compressing $my_vcf...\n"
 xz -f $my_vcf
+rm $my_vcf.done
