@@ -58,7 +58,6 @@ bcftools index -f ${newbcf}
 rm ${bcf}*
 
 ##output
-out=${outdir}/${vcf%.vcf.xz}.out
 otsv1=${out}.stats.tsv
 otsv2=${out}.mocha.tsv
 
