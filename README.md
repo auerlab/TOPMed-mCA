@@ -1,9 +1,9 @@
-# Haplohseq-analysis
+# TOPMed-mCA
 
 ## Overview
 
-This repository houses the pipeline for haplohseq analysis of TOPMed data
-presented in (paper to be named).
+This repository houses the tools for Mosaic Chromosomal Alteration (mCA)
+analysis of TOPMed whole genome sequence data presented in (paper to be named).
 
 The project is a collaboration among the following institutions:
 
@@ -15,14 +15,17 @@ The project is a collaboration among the following institutions:
 - University of Michigan
 - National Heart Lung and Blood Institute
 
-The aim of this pipeline is to process human genome data from the Sequence
+The aim of this analysis is to process human genome data from the Sequence
 Read Archive (SRA) and the database of Genotypes and Phenotypes (dbGaP)
 through haplohseq, a tool that detects allelic imbalance in impure cell
-samples with potentially very low aberrant cell percentages.
+samples with potentially very low aberrant cell percentages, and MoCha, a
+similar tool for detecting such alterations.
 
 [https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5039922/](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5039922/)
 
 [https://sites.google.com/site/integrativecancergenomics/software/haplohseq](https://sites.google.com/site/integrativecancergenomics/software/haplohseq)
+
+[https://software.broadinstitute.org/software/mocha/](https://software.broadinstitute.org/software/mocha/)
 
 ## Processing
 
@@ -101,18 +104,30 @@ freeze1).
 
 4. Run haplohseq on the filtered VCF files.
 
+5. Run MoCha on the filtered VCF files.
+
+6. Examine results and analyze in GWAS (Genome Wide Association) pipeline
+to identify potentially related phenotypes.
+
 ## General Notes
 
-Most analysis was performed on a FreeBSD 12 HPC cluster using OpenZFS
+Most computational analysis was performed on a [FreeBSD](https://FreeBSD.org)
+HPC cluster managed by [SPCM](https://github.com/outpaddling/SPCM).
+Code development and testing was performed on a FreeBSD workstation
+configured with
+[Desktop-installer](https://github.com/outpaddling/desktop-installer). 
+
+Storage utilized the OpenZFS
 file system with lz4 compression.  The compression capabilities of ZFS
 significantly reduce disk usage and read/write time for uncompressed
 temporary files such as VCFs.  This is especially helpful when splitting
 the multisample VCFs, since we cannot pipe thousands of VCF streams through
 xz processes at once.  We must write raw VCFs and compress them afterward
-with reasonable parallism.
+using reasonable parallism.
 
-All output files were subsequently compressed in XZ format, which provides
-significantly better compression ratios than lz4, gzip, or bzip2.
+All output files were subsequently compressed with xz, which provides
+significantly better compression ratios than lz4, gzip, or bzip2. 
+(Typically about 40% smaller than gzip).
 
 Filtering reads based on MAPQ in ad2vcf resulted in very little improvement
 in the haplohseq results.  Reads for whi, bjm, group3, and group4 were
