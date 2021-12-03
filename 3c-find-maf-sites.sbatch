@@ -29,6 +29,7 @@ fi
 maf=$1
 
 : ${SLURM_ARRAY_TASK_ID:=1}
+: ${SLURM_JOB_ID:=1}
 
 if [ $SLURM_ARRAY_TASK_ID = 23 ]; then
     chr=X

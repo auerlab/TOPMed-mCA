@@ -24,7 +24,7 @@
 
 # Document software versions used for publication
 if [ $SLURM_ARRAY_TASK_ID = 1 ]; then
-    uname -a > Logs/1-vcf-split/os-version-vcf-split-$SLURM_JOB_ID.txt 2>&1
+    uname -a > Logs/2-ad2vcf/os-version-$SLURM_JOB_ID.txt 2>&1
     samtools --version > Logs/2-ad2vcf/samtools-version-$SLURM_JOB_ID.txt 2>&1
     ad2vcf --version > Logs/2-ad2vcf/ad2vcf-version-$SLURM_JOB_ID.txt 2>&1
 fi

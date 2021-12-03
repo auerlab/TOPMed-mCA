@@ -16,6 +16,12 @@
 
 # Set a default value for testing outside the SLURM environment
 : ${SLURM_ARRAY_TASK_ID:=1}
+: ${SLURM_JOB_ID:=1}
+
+# Record software versions
+if [ $SLURM_ARRAY_TASK_ID = 1 ]; then
+    uname -a > Logs/1-vcf-split/os-version-compress-$SLURM_JOB_ID.txt 2>&1
+fi
 
 hostname
 

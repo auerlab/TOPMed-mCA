@@ -32,6 +32,7 @@ fi
 sample_group=$1
 
 : ${SLURM_ARRAY_TASK_ID:=1}
+: ${SLURM_JOB_ID:=1}
 
 my_list=`printf "AD-VCFs-%s/vcfs-%02s" $sample_group $((SLURM_ARRAY_TASK_ID - 1))`
 printf "Processing $my_list on $(hostname)...\n"

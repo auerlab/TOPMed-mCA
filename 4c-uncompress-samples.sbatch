@@ -31,6 +31,7 @@ sample_list=$1
 maf=$2
 
 : ${SLURM_ARRAY_TASK_ID:=10}
+: ${SLURM_JOB_ID:=1}
 
 cd AD-VCFs-whi-MAPQ-0/MAF-$maf
 my_sample=$(awk -v my_index=$SLURM_ARRAY_TASK_ID 'NR == my_index { print $0 }' $sample_list)

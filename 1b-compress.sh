@@ -57,9 +57,6 @@ EOM
     exit 1
 fi
 
-# Record software versions
-uname -a > ../../Logs/1-vcf-split/os-version-compress.txt 2>&1
-
 # Completed vcf-split outputs are accompanied by a .vcf.done file
 # Search for .done files, but strip the .done from the name so the
 # list contains .vcf files
