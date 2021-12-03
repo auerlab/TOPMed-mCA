@@ -19,7 +19,7 @@
 #SBATCH --output=Logs/2-ad2vcf/ad2vcf-%A_%a.out
 #SBATCH --error=Logs/2-ad2vcf/ad2vcf-%A_%a.err
 
-: ${SLURM_ARRAY_TASK_ID:=1}
+: ${SLURM_ARRAY_TASK_ID:=12}
 : ${SLURM_JOB_ID:=1}
 
 # Document software versions used for publication
@@ -42,7 +42,11 @@ printf "Processing $my_sample...\n"
 # ad2vcf will place the augmented VCF in the same dir as the source
 ln -sf ../1-vcf-split/Combined/combined.$my_sample.vcf.xz .
 set -x
-samtools view -@ 2 --input-fmt-option required_fields=0x218 \
-	../Alignments/$my_sample.b38.irc.v1.cram \
+# Filter out unmapped, secondary, qcfail, dup, and supplementary alignments
+# This was not done for the primary analysis
+samtools view -@ 2 \
+    --input-fmt-option required_fields=0x218 \
+    --excl-flags 0xF0C \
+    ../Alignments/$my_sample.b38.irc.v1.cram \
     | ad2vcf combined.$my_sample.vcf.xz 10
 rm combined.$my_sample.vcf.xz
