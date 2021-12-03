@@ -123,7 +123,7 @@ significantly reduce disk usage and read/write time for uncompressed
 temporary files such as VCFs.  This is especially helpful when splitting
 the multisample VCFs, since we cannot pipe thousands of VCF streams through
 xz processes at once.  We must write raw VCFs and compress them afterward
-using reasonable parallism.
+using reasonable parallelism.
 
 All output files were subsequently compressed with xz, which provides
 significantly better compression ratios than lz4, gzip, or bzip2. 
@@ -143,6 +143,19 @@ filtered only for unmapped reads.
 
 ## Software Requirements
 
-Most software developed for this project can be installed via FreeBSD ports
-on FreeBSD, dports on Dragonfly BSD, or pkgsrc on virtually any POSIX
-platform.
+All software required for this analysis can be installed on FreeBSD with
+the following command:
+
+```
+pkg install sra-tools bcftools vcf-split samtools mawk bedtools \
+    vcf2hap ad2vcf haplohseq bio-mocha
+```
+
+General tools such as awk, sed, sort, xz, etc. are included in the FreeBSD
+base installation.  Mawk outperforms BSD and GNU awk and may be used as
+a drop-in replacement to speed up some scripts, though this will have only
+a minor impact on overall analysis time.
+
+Most FreeBSD ports are also available in dports on Dragonfly BSD, and many
+are available in pkgsrc, a package manager with stringent quality assurance
+that supports virtually any POSIX platform.

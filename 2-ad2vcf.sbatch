@@ -20,11 +20,13 @@
 #SBATCH --error=Logs/2-ad2vcf/ad2vcf-%A_%a.err
 
 : ${SLURM_ARRAY_TASK_ID:=1}
+: ${SLURM_JOB_ID:=1}
 
 # Document software versions used for publication
 if [ $SLURM_ARRAY_TASK_ID = 1 ]; then
     uname -a > Logs/1-vcf-split/os-version-vcf-split-$SLURM_JOB_ID.txt 2>&1
-    vcf-split --version > Logs/1-vcf-split/vcf-split-version-$SLURM_JOB_ID.txt 2>&1
+    samtools --version > Logs/2-ad2vcf/samtools-version-$SLURM_JOB_ID.txt 2>&1
+    ad2vcf --version > Logs/2-ad2vcf/ad2vcf-version-$SLURM_JOB_ID.txt 2>&1
 fi
 
 # Make sure --array above matches the # of samples
