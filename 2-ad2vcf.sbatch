@@ -37,6 +37,10 @@ pwd
 which ad2vcf
 
 printf "Processing $my_sample...\n"
-samtools view -@ 2 --input-fmt-option required_fields=0x208 \
+# ad2vcf will place the augmented VCF in the same dir as the source
+ln -sf ../1-vcf-split/Combined/combined.$my_sample.vcf.xz .
+set -x
+samtools view -@ 2 --input-fmt-option required_fields=0x218 \
 	../Alignments/$my_sample.b38.irc.v1.cram \
-    | ad2vcf ../1-vcf-split/Combined/combined.$my_sample.vcf.xz 10
+    | ad2vcf combined.$my_sample.vcf.xz 10
+rm combined.$my_sample.vcf.xz
