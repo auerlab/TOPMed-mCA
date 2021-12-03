@@ -1,10 +1,10 @@
 #!/bin/sh -e
 
 ##########################################################################
-#   Script description:
-#       SLURM script for compressing VCF outputs.
 #
-#       Do not run this script directly.  Use 1b-compress.sh
+#   SLURM script for compressing VCF outputs.
+#
+#   Do not submit this script directly.  Use 1b-compress.sh.
 #       
 #   History:
 #   Date        Name        Modification

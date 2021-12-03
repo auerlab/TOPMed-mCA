@@ -4,7 +4,7 @@
 #   Script description:
 #       SLURM script for concatenating single-chromosome VCFs.
 #
-#       Do not run this script directly.  Use 1c-combine.sh.
+#       Do not submit this script directly.  Use 1c-combine.sh.
 #       
 #   History:
 #   Date        Name        Modification

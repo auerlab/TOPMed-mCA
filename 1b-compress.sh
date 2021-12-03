@@ -1,22 +1,22 @@
 #!/bin/sh -e
 
 ##########################################################################
-#   Script description:
-#       Launch a batch script to compress vcf-split outputs in parallel.
-#       May need to increase SLURM MaxJobCount and MaxArraySize
-#       Also see SLURM high throughput tuning guide to avoid scheduler
-#       timeouts.
 #
-#       This script searches can be run in parallel with vcf-split.
-#       The vcf-split script creates a .vcf.done file which the VCF is
-#       complete, so that this script will know which VCFs are ready
-#       to compress.
+#   Launch a batch script to compress vcf-split outputs in parallel.
+#   May need to increase SLURM MaxJobCount and MaxArraySize
+#   Also see SLURM high throughput tuning guide to avoid scheduler
+#   timeouts.
 #
-#       All necessary tools are assumed to be in PATH.  If this is not
-#       the case, add whatever code is needed here to gain access.
-#       (Adding such code to your .bashrc or other startup script is
-#       generally a bad idea since it's too complicated to support
-#       every program with one environment.)
+#   This script can be run in parallel with vcf-split. The vcf-split
+#   script creates a .vcf.done file indicating when a VCF is
+#   complete, so that this script will know which VCFs are ready
+#   to compress.
+#
+#   All necessary tools are assumed to be in PATH.  If this is not
+#   the case, add whatever code is needed here to gain access.
+#   (Adding such code to your .bashrc or other startup script is
+#   generally a bad idea since it's too complicated to support
+#   every program with one environment.)
 #
 #   History:
 #   Date        Name        Modification
@@ -51,7 +51,7 @@ if [ -e $vcf_list ]; then
 
 $vcf_list already exists.  Is a job already running?
 
-Remove it to start again.
+Wait for the job to finish and remove $vcf_list to start again.
 
 EOM
     exit 1
@@ -71,7 +71,7 @@ printf "Total files to compress = $total_jobs\n"
 
 # Split the find output into small chunks so each job has a quick awk search
 # It takes a few seconds to search a file with 1 million lines whereas
-# 10k lines is instantaneous.  This cut the compression of 1 million files
+# 1,000 lines is instantaneous.  This cut the compression of 1 million files
 # from 25 hours to 12.
 max_lines=1000
 printf "Splitting file list...\n"
@@ -79,5 +79,8 @@ split -l $max_lines -a 4 -d $vcf_list vcf-list-
 wc -l vcf-list-[0-9]*
 
 cd ../..
-pwd
-sbatch --array=1-${total_jobs}%$max_jobs 1b-compress.sbatch
+read -p 'Submit? y/[n] ' submit
+if [ 0$submit = 0y ]; then
+    set -x
+    sbatch --array=1-${total_jobs}%$max_jobs 1b-compress.sbatch
+fi
