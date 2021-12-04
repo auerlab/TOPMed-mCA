@@ -32,8 +32,8 @@ maf=$1
 
 # Document software versions used for publication
 if [ $SLURM_ARRAY_TASK_ID = 1 ]; then
-    uname -a > Logs/3-filter/os-version-find-MAFs-$SLURM_JOB_ID.txt 2>&1
-    bcftools --version > Logs/3-filter/bcftools-version-$SLURM_JOB_ID.txt
+    uname -a > Logs/3-filter/os-version-MAF-$SLURM_JOB_ID.txt 2>&1
+    bcftools --version > Logs/3-filter/bcftools-version-MAF-$SLURM_JOB_ID.txt
 fi
 
 hostname
