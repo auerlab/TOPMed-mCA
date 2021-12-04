@@ -1,11 +1,10 @@
 #!/bin/sh -e
 
 ##########################################################################
-#   Script description:
-#       Filter VCFs for sites with MAF and min separation
 #
-#       Don't run this directly: Use
-#           ./3d-filter-sites sample-group
+#   Filter VCFs for sites with MAF and min separation
+#
+#   Do not submit this script directly.  Use 3d-filter-sites.sh.
 #       
 #   History:
 #   Date        Name        Modification

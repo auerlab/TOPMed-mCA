@@ -1,8 +1,8 @@
 #!/bin/sh -e
 
 #SBATCH --mem=500
-#SBATCH --output=Logs/3-filter/gsv-split-%A_%a.out
-#SBATCH --error=Logs/3-filter/gsv-split-%A_%a.err
+#SBATCH --output=Logs/3-filter/gsv-split-%A.out
+#SBATCH --error=Logs/3-filter/gsv-split-%A.err
 
 ##########################################################################
 #
