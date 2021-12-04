@@ -1,13 +1,21 @@
 #!/bin/sh -e
 
 ##########################################################################
-#   Script description:
 #
-#       This script was not used in the analysis, since the necessary
-#       CRAM files were not available on a cluster.
+#   This script was not used in the primary analysis, since it was not
+#   feasible to download the necessary CRAM files, which totalled
+#   around 1.5 petabytes.
 #
-#       ad2vcf was run on AWS using the scripts in the SRA directory.
+#   ad2vcf was run on AWS, where the CRAM files were accessed using
+#   Fusera (now obsolete) using the scripts in the SRA directory.
+#   Sra-tools 1.10 or later should be able to access the CRAMs on AWS.
 #       
+#   All necessary tools are assumed to be in PATH.  If this is not
+#   the case, add whatever code is needed here to gain access.
+#   (Adding such code to your .bashrc or other startup script is
+#   generally a bad idea since it's too complicated to support
+#   every program with one environment.)
+#
 #   History:
 #   Date        Name        Modification
 #   2021-12-02  Jason Wayne BaconBegin
