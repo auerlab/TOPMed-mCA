@@ -44,6 +44,6 @@ for sample in $samples; do
     # Add only 1 copy of header
     (head chr1/chr1.$sample.vcf | grep '^#' && grep --no-filename -v '^#' $files) | xz > $combined
     bed=${combined%.vcf.xz}.bed
-    printf "$file -> $bed...\n"
-    xzcat $file | grep -v '^#' | mawk -f ../../extract-range.awk > ${bed}
+    printf "$combined -> $bed...\n"
+    xzcat $combined | grep -v '^#' | mawk -f ../../../extract-range.awk > ${bed}
 done
