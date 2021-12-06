@@ -19,11 +19,9 @@
 : ${SLURM_JOB_ID:=1}
 
 # Record software versions
-if [ $SLURM_ARRAY_TASK_ID = 1 ]; then
-    uname -a > Logs/1-vcf-split/os-version-compress-$SLURM_JOB_ID.txt 2>&1
-fi
-
-hostname
+uname -a
+which xz
+pwd
 
 cd Data/1-vcf-split
 

@@ -31,15 +31,15 @@
 : ${SLURM_JOB_ID:=1}
 
 # Document software versions used for publication
-if [ $SLURM_ARRAY_TASK_ID = 1 ]; then
-    uname -a > Logs/2-ad2vcf/os-version-$SLURM_JOB_ID.txt 2>&1
-    samtools --version > Logs/2-ad2vcf/samtools-version-$SLURM_JOB_ID.txt 2>&1
-    ad2vcf --version > Logs/2-ad2vcf/ad2vcf-version-$SLURM_JOB_ID.txt 2>&1
-fi
+uname -a
+which samtools ad2vcf
+samtools --version
+ad2vcf --version
+pwd
 
 # Make sure --array above matches the # of samples
 my_sample=$(./select-sample.sh $SLURM_ARRAY_TASK_ID)
-echo $my_sample
+printf "Processing $my_sample...\n"
 
 cd Data/2-ad2vcf
 hostname

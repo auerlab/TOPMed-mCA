@@ -19,11 +19,9 @@
 : ${SLURM_ARRAY_TASK_ID:=1}
 : ${SLURM_JOB_ID:=1}
 
-hostname
-
-if [ $SLURM_ARRAY_TASK_ID = 1 ]; then
-    uname -a > Logs/1-vcf-split/os-version-combine-$SLURM_JOB_ID.txt 2>&1
-fi
+uname -a
+which xzcat
+pwd
 
 my_sample=$(./select-sample.sh $SLURM_ARRAY_TASK_ID)
 

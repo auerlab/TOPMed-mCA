@@ -20,13 +20,11 @@
 #   2021-02-20  Jason Bacon Begin
 ##########################################################################
 
-hostname
+uname -a
 which bcftools vcf-split
-
-uname -a > Logs/3-filter/os-version-gsv-split.txt 2>&1
-bcftools --version > Logs/3-filter/bcftools-version-gsv-split.txt
-vcf-split --version > Logs/3-filter/vcf-split-version-gsv-split.txt
-ls Logs/3-filter
+bcftools --version
+vcf-split --version
+pwd
 
 # 79852-germline-structural-variants must contain the appopriate BCF files
 # matching the raw phased BCFs used in earlier steps.

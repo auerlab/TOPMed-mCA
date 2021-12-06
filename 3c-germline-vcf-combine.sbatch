@@ -19,13 +19,16 @@
 # Adjust the max jobs according to how much I/O your cluster can handle
 #SBATCH --array=1-138134%20
 #SBATCH --mem=500
-#SBATCH --output=Logs/3-filter/gsv-combine-%A.out
-#SBATCH --error=Logs/3-filter/gsv-combine-%A.err
+#SBATCH --output=Logs/3-filter/gsv-combine-%A_%a.out
+#SBATCH --error=Logs/3-filter/gsv-combine-%A_%a.err
 
 : ${SLURM_ARRAY_TASK_ID:=1}
 : ${SLURM_JOB_ID:=1}
 
-uname -a > Logs/3-filter/os-version-gsv-split-$SLURM_JOB_ID.txt 2>&1
+uname -a
+which bcftools
+bcftools --version
+pwd
 
 gsv_dir=Data/79852-germline-structural-variants/
 vcf_dir=Data/3-filter/GSV-split-vcfs
@@ -34,7 +37,7 @@ samples=$(bcftools view $gsv_dir/sv.freeze1.chr9.gt.only.bcf | grep -m 1 '^#CHRO
 printf "%s samples...\n" $(echo $samples | wc -w)
 
 my_sample=$(echo $samples | awk -v n=$SLURM_ARRAY_TASK_ID '{ print $n }')
-printf "Processing $my_sample on $(hostname)...\n"
+printf "Processing $my_sample...\n"
 
 cd $vcf_dir
 mkdir -p Combined

@@ -55,15 +55,11 @@
 : ${SLURM_JOB_ID:=1}
 
 # Document software versions used for publication
-if [ $SLURM_ARRAY_TASK_ID = 1 ]; then
-    uname -a > Logs/1-vcf-split/os-version-vcf-split-$SLURM_JOB_ID.txt 2>&1
-    bcftools --version > Logs/1-vcf-split/bcftools-version-$SLURM_JOB_ID.txt
-    vcf-split --version > Logs/1-vcf-split/vcf-split-version-$SLURM_JOB_ID.txt 2>&1
-fi
-
-hostname
-pwd
+uname -a
 which bcftools vcf-split
+bcftools --version
+vcf-split --version
+pwd
 
 # Make output file names sort lexically by chromosome number
 if [ $SLURM_ARRAY_TASK_ID = 23 ]; then
