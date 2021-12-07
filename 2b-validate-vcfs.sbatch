@@ -26,7 +26,6 @@
 ##########################################################################
 
 : ${SLURM_ARRAY_TASK_ID:=1}
-: ${SLURM_JOB_ID:=1}
 
 # Document software versions used for publication
 uname -a

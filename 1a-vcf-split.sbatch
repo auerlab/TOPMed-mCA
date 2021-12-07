@@ -52,7 +52,6 @@
 # Create a dummy task ID of 21 for single-sample testing on dev server.
 # 21 is the smallest of the chromosomes for which errors were reported
 : ${SLURM_ARRAY_TASK_ID:=21}
-: ${SLURM_JOB_ID:=1}
 
 # Document software versions used for publication
 uname -a

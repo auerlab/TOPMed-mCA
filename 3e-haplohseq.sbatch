@@ -57,7 +57,6 @@ esac
 
 # Dummy value for testing outside SLURM env
 : ${SLURM_ARRAY_TASK_ID:=1}
-: ${SLURM_JOB_ID:=1}
 
 cd $vcf_dir
 

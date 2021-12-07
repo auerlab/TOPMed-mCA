@@ -23,7 +23,6 @@
 #SBATCH --error=Logs/3-filter/gsv-combine-%A_%a.err
 
 : ${SLURM_ARRAY_TASK_ID:=1}
-: ${SLURM_JOB_ID:=1}
 
 uname -a
 which bcftools

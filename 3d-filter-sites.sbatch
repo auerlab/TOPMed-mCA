@@ -39,7 +39,6 @@ maf=$3
 separation=$4
 
 : ${SLURM_ARRAY_TASK_ID:=1}
-: ${SLURM_JOB_ID:=1}
 
 vcf_dir=AD-VCFs-$sample_group-MAPQ-$mapq_min
 vcf_list=VCF-list.txt   # In $vcf_dir

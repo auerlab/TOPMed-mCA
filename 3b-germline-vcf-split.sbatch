@@ -1,8 +1,9 @@
 #!/bin/sh -e
 
-#SBATCH --mem=500
-#SBATCH --output=Logs/3-filter/gsv-split-%A.out
-#SBATCH --error=Logs/3-filter/gsv-split-%A.err
+#SBATCH --array=1-22%11
+#SBATCH --mem=1000
+#SBATCH --output=Logs/3-filter/gsv-split-%A_%a.out
+#SBATCH --error=Logs/3-filter/gsv-split-%A_%a.err
 
 ##########################################################################
 #
@@ -26,23 +27,25 @@ bcftools --version
 vcf-split --version
 pwd
 
+: ${SLURM_ARRAY_TASK_ID:=1}
+
 # 79852-germline-structural-variants must contain the appopriate BCF files
 # matching the raw phased BCFs used in earlier steps.
 gsv_dir=Data/79852-germline-structural-variants
+sleep $SLURM_ARRAY_TASK_ID  # Offset reading of the BCF
 total_samples=$(bcftools view $gsv_dir/sv.freeze1.chr9.gt.only.bcf | grep -m 1 '^#CHROM' | awk '{ print NF-9 }')
 printf "Total samples = $total_samples\n"
 
-output_dir=Data/3-filter/GSV-split-vcfs
+chr=chr$SLURM_ARRAY_TASK_ID
+output_dir=Data/3-filter/GSV-split-vcfs/$chr
+file=$gsv_dir/sv.freeze1.$chr.gt.only.bcf
+
 mkdir -p $output_dir
-for file in $gsv_dir/sv.freeze1.*.gt.only.bcf; do
-    chr=$(echo $file | cut -d . -f 3)
-    mkdir -p $output_dir/$chr
-    for first_col in $(seq 1 10000 $total_samples); do
-	last_col=$(( first_col + 9999 ))
-	test $last_col -gt $total_samples && last_col=$total_samples
-	printf "Processing $file columns $first_col to $last_col...\n"
-	bcftools view $file \
-	    | vcf-split --alt-only --fields chrom,id,pos,format \
-		$output_dir/$chr/$chr. $first_col $last_col
-    done
+for first_col in $(seq 1 10000 $total_samples); do
+    last_col=$(( first_col + 9999 ))
+    test $last_col -gt $total_samples && last_col=$total_samples
+    printf "Processing $file columns $first_col to $last_col...\n"
+    bcftools view $file \
+	| vcf-split --alt-only --fields chrom,id,pos,format \
+	    $output_dir/$chr. $first_col $last_col
 done

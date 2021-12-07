@@ -17,7 +17,6 @@
 
 # Set a default value for testing outside the SLURM environment
 : ${SLURM_ARRAY_TASK_ID:=1}
-: ${SLURM_JOB_ID:=1}
 
 uname -a
 which xzcat

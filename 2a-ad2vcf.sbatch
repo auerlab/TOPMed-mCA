@@ -28,7 +28,6 @@
 #SBATCH --error=Logs/2-ad2vcf/ad2vcf-%A_%a.err
 
 : ${SLURM_ARRAY_TASK_ID:=12}
-: ${SLURM_JOB_ID:=1}
 
 # Document software versions used for publication
 uname -a
