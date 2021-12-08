@@ -16,10 +16,10 @@ usage()
 {
     cat << EOM
 
-Usage: $0 ad-vcf-dir event-prevalence event-megabases VCF-min-depth
-	estimate-parameters(=y|n) [extra sbatch flags]
+Usage: $0 event-prevalence event-megabases VCF-min-depth \\
+    estimate-parameters(=y|n) [extra sbatch flags]
 
-Example: $0 AD-VCFs-whi-MAPQ-0/MAF-0.05-1000nt-dgv 0.01 30 10 y [sbatch flags]
+Example: $0 0.01 30 10 y [sbatch flags]
 
 EOM
     exit 1
@@ -30,14 +30,13 @@ EOM
 #   Main
 ##########################################################################
 
-if [ $# -lt 1 ]; then
+if [ $# != 4 ]; then
     usage
 fi
-vcf_dir=$1
-ep=$2
-emb=$3
-vmd=$4
-est=$5
+ep=$1
+emb=$2
+vmd=$3
+est=$4
 case $est in
 y|n)
     ;;
@@ -45,12 +44,11 @@ y|n)
     usage
     ;;
 esac
-shift; shift; shift; shift; shift
+shift; shift; shift; shift
 
-ls $vcf_dir | grep '.*\.vcf\.xz' > $vcf_dir/VCF-list.txt
-sample_count=$(cat $vcf_dir/VCF-list.txt | wc -l)
-sample_count=$(printf "%d" $sample_count)   # Strip leading space
+sample_count=$(cat Data/1-vcf-split/sample-list-all | wc -l)
+sample_count=$(echo $sample_count)   # Strip leading space
+printf "Running haplohseq on %u samples...\n" $sample_count
 
 set -x
-sbatch --array=1-$sample_count%160 "$@" 3h-haplohseq.sbatch \
-    $vcf_dir $ep $emb $vmd $est
+sbatch --array=1-$sample_count%100 "$@" 4a-haplohseq.sbatch $ep $emb $vmd $est

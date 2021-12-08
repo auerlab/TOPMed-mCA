@@ -64,13 +64,20 @@ germline=Data/3-filter/GSV-split-vcfs/Combined/combined.$my_sample.bed
 
 # Assume samples with no structural variants should be tossed
 
+#xzcat $my_vcf | grep -v '^#' | head -5
+#xzcat $my_vcf | bedtools subtract -A -a stdin -b $germline|head -5
+#exit
+
 if [ -e $germline ]; then
     xzcat $my_vcf \
 	| bedtools subtract -A -a stdin -b $germline \
-	| awk -v separation=$separation -v maf=$maf -f 3d-filter-sites.awk \
+	| mawk -v separation=$separation -v maf=$maf -f 3d-filter-sites.awk \
 	| xz -3 > $outfile_sv
 else
     printf "Note: No structural variant file for sample $sample.\n"
+    xzcat $my_vcf | grep -v '^#' \
+	| mawk -v separation=$separation -v maf=$maf -f 3d-filter-sites.awk \
+	| xz -3 > $outfile_sv
 fi
 
 # Previous we filtered out sites in the DGV (database of genomic variants)
