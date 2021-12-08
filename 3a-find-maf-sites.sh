@@ -34,4 +34,4 @@ if [ $# != 1 ]; then
     usage
 fi
 maf=$1
-sbatch 3c-find-maf-sites.sbatch $maf
+sbatch 3a-find-maf-sites.sbatch $maf

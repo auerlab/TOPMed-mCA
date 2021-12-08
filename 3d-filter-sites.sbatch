@@ -16,12 +16,12 @@
 # 4 processes, but the xz bottleneck limits the total CPU to about 160%
 # even if we give it 4 cores
 #SBATCH --ntasks=2
-#SBATCH --output=SLURM-outputs/filter-sites-%A_%a.out
-#SBATCH --error=SLURM-outputs/filter-sites-%A_%a.err
+#SBATCH --output=Logs/3-filter/filter-sites-%A_%a.out
+#SBATCH --error=Logs/3-filter/filter-sites-%A_%a.err
 
 usage()
 {
-    printf "Usage: $0 sample-group (e.g. whi, bjm) MAPQ-min MAF min-separation\n"
+    printf "Usage: $0 MAPQ-min MAF min-separation\n"
     exit 1
 }
 
@@ -30,52 +30,49 @@ usage()
 #   Main
 ##########################################################################
 
-if [ $# != 4 ]; then
+if [ $# != 2 ]; then
     usage
 fi
-sample_group=$1
-mapq_min=$2
-maf=$3
-separation=$4
+maf=$1
+separation=$2
 
 : ${SLURM_ARRAY_TASK_ID:=1}
 
-vcf_dir=AD-VCFs-$sample_group-MAPQ-$mapq_min
-vcf_list=VCF-list.txt   # In $vcf_dir
-
-cd $vcf_dir
-my_vcf=$(mawk -v task=$SLURM_ARRAY_TASK_ID 'NR == task' $vcf_list)
-sample=$(echo $my_vcf | awk -F '[.-]' '{ print $2 }')
+uname -a
+which bedtools
+bedtools --version
 pwd
 
+my_sample=$(./select-sample.sh $SLURM_ARRAY_TASK_ID)
+echo $my_sample
+my_vcf=Data/2-ad2vcf/combined.$my_sample-ad.vcf.xz
+
 printf "Task $SLURM_ARRAY_TASK_ID processing $my_vcf on $(hostname)...\n"
-printf "Sample group: %s\nMAPQ min: %s\nMAF: %s\nSeparation: %s\n" \
-	$sample_group $mapq_min $maf $separation
+printf "MAF: %s\nSeparation: %s\n" $maf $separation
+
+filtered_dir=Data/3-filter/VCFs-MAF-$maf-${separation}nt-sv
+mkdir -p $filtered_dir
+
 base=$(basename $my_vcf)
-outfile_sv=MAF-$maf-${separation}nt-sv/$base
+outfile_sv=$filtered_dir/$base
 
 # TODO: Filter sites that overlap DGV.GS.hg38.gff3
 # Maybe add to filter-sites.awk?
-# bedtools needs a basic header to identify the file type
 
 printf "Filtering germline structural variants...\n"
-germline=../79852-germline-structural-variants/Split-vcfs/combined.$sample.bed
+germline=Data/3-filter/GSV-split-vcfs/Combined/combined.$my_sample.bed
 
 # Assume samples with no structural variants should be tossed
-pwd
+
 if [ -e $germline ]; then
-    (printf "##fileformat=VCFv4.2\n"; xzcat $my_vcf) \
+    xzcat $my_vcf \
 	| bedtools subtract -A -a stdin -b $germline \
-	| mawk -v separation=$separation -v maf=$maf -f ../3g-filter-sites.awk \
+	| awk -v separation=$separation -v maf=$maf -f 3d-filter-sites.awk \
 	| xz -3 > $outfile_sv
 else
     printf "Note: No structural variant file for sample $sample.\n"
-    printf "Applying MAF and distance filters anyway.\n"
-    xzcat $my_vcf \
-	| mawk -v separation=$separation -v maf=$maf -f ../3g-filter-sites.awk \
-	| xz -3 > $outfile_sv
 fi
-    
+
 # Previous we filtered out sites in the DGV (database of genomic variants)
 # This has been replaced by the dbGaP germline structural variants above
 # printf "Filtering with DGV...\n"

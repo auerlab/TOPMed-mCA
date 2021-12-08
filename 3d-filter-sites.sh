@@ -18,8 +18,8 @@
 
 usage()
 {
-    printf "Usage: $0 sample-group MAPQ-min min-allele-frequency min-separation\n"
-    printf "Example: $0 whi 0 0.01 1000\n"
+    printf "Usage: $0 min-allele-frequency min-separation\n"
+    printf "Example: $0 0.05 1000\n"
     exit 1
 }
 
@@ -28,17 +28,15 @@ usage()
 #   Main
 ##########################################################################
 
-if [ $# != 4 ]; then
+if [ $# != 2 ]; then
     usage
 fi
-sample_group=$1
-mapq_min=$2
-maf=$3              # Minimum allele frequency
-separation=$4       # Min distance between events
+maf=$1              # Minimum allele frequency
+separation=$2       # Min distance between events
 
-if [ ! -d MAF-$maf ]; then
-    printf "Missing MAF-$maf directory.\n"
-    printf "Run 3c-find-maf-sites.sbatch first or specify MAF correctly.\n"
+if [ ! -d Data/3-filter/MAF-sites-$maf ]; then
+    printf "Missing MAF-sites-$maf directory.\n"
+    printf "Run 3a-find-maf-sites.sbatch first or specify MAF correctly.\n"
     exit 1
 fi
 
@@ -48,7 +46,7 @@ fi
 #     curl -O http://dgv.tcag.ca/dgv/docs/$dgv_gff
 # fi
 
-vcf_dir=AD-VCFs-$sample_group-MAPQ-$mapq_min
+vcf_dir=Data/2-ad2vcf
 vcf_list=$vcf_dir/VCF-list.txt
 
 ls $vcf_dir | grep '.*-ad\.vcf\.xz' > $vcf_list
@@ -59,6 +57,6 @@ printf "Samples: $sample_count\n"
 # Only for comparison to see the effects of DGV filtering
 # mkdir -p $vcf_dir/MAF-$maf-${separation}nt
 
-mkdir -p $vcf_dir/MAF-$maf-${separation}nt-sv SLURM-outputs
-sbatch --array=1-$sample_count%80 \
-    3g-filter-sites.sbatch $sample_group $mapq_min $maf $separation
+mkdir -p $vcf_dir/MAF-$maf-${separation}nt-sv
+
+sbatch --array=1-$sample_count%20 3d-filter-sites.sbatch $maf $separation

@@ -21,7 +21,7 @@
 #   2021-12-02  Jason Wayne BaconBegin
 ##########################################################################
 
-#SBATCH --array=1-23%100
+#SBATCH --array=1-23
 #SBATCH --cpus-per-task=3
 #SBATCH --mem=1g
 #SBATCH --output=Logs/2-ad2vcf/ad2vcf-%A_%a.out
@@ -45,15 +45,20 @@ hostname
 pwd
 which ad2vcf
 
+mapq_min=10
 printf "Processing $my_sample...\n"
 # ad2vcf will place the augmented VCF in the same dir as the source
 ln -sf ../1-vcf-split/Combined/combined.$my_sample.vcf.xz .
 set -x
 # Filter out unmapped, secondary, qcfail, dup, and supplementary alignments
-# This was not done for the primary analysis
+# using --excl-flags.  This prevents ad2vcf from buffering too many
+# alignments for samples with many duplicates.  This is rare, but some
+# outlier samples may buffer nearly a million reads.
+# This was not done for the primary analysis, but should not change the
+# results much.
 samtools view -@ 2 \
     --input-fmt-option required_fields=0x218 \
     --excl-flags 0xF0C \
     ../Alignments/$my_sample.b38.irc.v1.cram \
-    | ad2vcf combined.$my_sample.vcf.xz 10
+    | ad2vcf combined.$my_sample.vcf.xz $mapq_min
 rm combined.$my_sample.vcf.xz

@@ -42,8 +42,8 @@ else
 fi
 printf "Processing chrom $chr...\n"
 
-filtered_dir=Data/3-filter/MAF-$maf
-mkdir -p $filtered_dir
+sites_dir=Data/3-filter/MAF-sites-$maf
+mkdir -p $sites_dir
 bcftools view -H -q ${maf}:minor \
     Data/Raw-bcfs/freeze.8.chr$chr.pass_only.phased.bcf \
-    | mawk '{ print $2 }' > $filtered_dir/chr$chr-maf-sites.txt
+    | mawk '{ print $2 }' > $sites_dir/chr$chr-maf-sites.txt
