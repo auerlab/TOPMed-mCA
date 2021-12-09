@@ -28,7 +28,7 @@ fi
 # export BCFTOOLS_PLUGINS="/directory/containin/mochatools.so"
 
 ## Make sure you have this directory
-## If you are on a networked filesystem, you make want to use local disk
+## If you are on a networked filesystem, you may want to use local disk
 tmpdir=.
 
 ## Replace this with a real sample ID

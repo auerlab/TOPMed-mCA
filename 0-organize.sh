@@ -2,7 +2,7 @@
 
 # Universal
 mkdir -p Data Logs
-for stage in 1-vcf-split 2-ad2vcf 3-filter 4-haplohseq; do
+for stage in 1-vcf-split 2-ad2vcf 3-filter 4-haplohseq 5-mocha; do
     mkdir -p Data/$stage Logs/$stage
 done
 

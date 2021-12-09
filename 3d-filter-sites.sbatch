@@ -69,14 +69,17 @@ germline=Data/3-filter/GSV-split-vcfs/Combined/combined.$my_sample.bed
 #exit
 
 if [ -e $germline ]; then
-    xzcat $my_vcf \
+    # Bedtools strips headers, so add it separately
+    (xzcat $my_vcf | head | grep '^#'; xzcat $my_vcf \
 	| bedtools subtract -A -a stdin -b $germline \
-	| mawk -v separation=$separation -v maf=$maf -f 3d-filter-sites.awk \
-	| xz -3 > $outfile_sv
+	| mawk -v separation=$separation -v maf=$maf -f 3d-filter-sites.awk ) \
+	| xz -3 >> $outfile_sv
 else
     printf "Note: No structural variant file for sample $sample.\n"
-    xzcat $my_vcf | grep -v '^#' \
-	| mawk -v separation=$separation -v maf=$maf -f 3d-filter-sites.awk \
+    # Bedtools strips headers, so add it separately
+    # No point handling it differently here than above
+    ( xzcat $my_vcf | head | grep '^#'; xzcat $my_vcf | grep -v '^#' \
+	| mawk -v separation=$separation -v maf=$maf -f 3d-filter-sites.awk ) \
 	| xz -3 > $outfile_sv
 fi
 
