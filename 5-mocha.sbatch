@@ -2,7 +2,9 @@
 
 ##########################################################################
 #
-#   Process filtered VCFs through MoCha       
+#   Process filtered VCFs through MoCha
+#
+#   Do not submit this script directly.  Run 5-mocha.sh.
 #       
 #   History:
 #   Date        Name        Modification
