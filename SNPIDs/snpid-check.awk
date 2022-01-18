@@ -7,21 +7,18 @@
 #
 #   History: 
 #   Date        Name        Modification
-#   2022-01-17  Jason Wayne BaconBegin
+#   2022-01-18  Jason Wayne BaconBegin
 #############################################################################
 
-BEGIN {
-    printf("ID strings: %s\n", id_str);
-    split(id_str, id_list, " ");
-    # print id_list[1];
+$1 == "#CHROM" {
+    for (c = 10; c <= NF; ++c) {
+	if ( $c == nwdid ) {
+	    printf("%s is in column %s.\n", $c, c);
+	    break;
+	}
+    }
 }
-{
-    #print $3;
-    #print id_str;
+$3 == snpid {
+    printf("Column %s for %s is %s.\n", c, snpid, $c);
+    exit;
 }
-id_str ~ $3 {
-    print $1, $2, $3;
-}
-END {
-}
-
