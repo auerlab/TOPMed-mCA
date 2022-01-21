@@ -39,7 +39,7 @@ if [ 0"$sure" = 0y ]; then
 fi
 
 if [ ${script##*.} = sbatch ]; then
-    echo sbatch $script
+    sbatch $script
 else
-    echo ./$script
+    ./$script
 fi
