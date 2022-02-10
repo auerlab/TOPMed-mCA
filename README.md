@@ -44,9 +44,9 @@ processing steps:
 
 1. 1a-vcf-split.sbatch
 
-Split the multi-sample, single-chromosome dbGaP BCF files into
-single-sample, single-chromosome VCF files and combine the results into
-single-sample, multi-chromosome VCFs.
+    Split the multi-sample, single-chromosome dbGaP BCF files into
+    single-sample, single-chromosome VCF files and combine the results into
+    single-sample, multi-chromosome VCFs.
 
     This step is extremely I/O-intensive, and
     existing tools for processing VCF data lacked the ability to do it
@@ -117,30 +117,30 @@ single-sample, multi-chromosome VCFs.
 
 3. 3d-filter-sites.sh, 3d-filter-sites.sbatch
 
-Filter VCF calls for minimum separation of calls (1000 bases for our
-analysis), minimum allele frequency (MAF), and structural variants (79852,
-freeze1).
-
-To reduce noise in the haplohseq and MoCha analyses the resulting AD-enhanced
-VCF files were filtered to keep only sites with a minimum allele frequency
-(MAF) of 0.05 and a minimum separation of 1000 nucleotides.  Other MAF values
-such as 0.01 were also tested and did not prove to have a significant impact
-on haplohseq results.  These filters were implemented by a simple awk
-script.
-
-Additionally, known germ line structural variants were removed in order to
-focus on acquired mutations.  Structural variants are provided by dbGaP
-in the form of BCF files.  We used "bedtools subtract" to remove these
-variants.
+    Filter VCF calls for minimum separation of calls (1000 bases for our
+    analysis), minimum allele frequency (MAF), and structural variants (79852,
+    freeze1).
+    
+    To reduce noise in the haplohseq and MoCha analyses the resulting AD-enhanced
+    VCF files were filtered to keep only sites with a minimum allele frequency
+    (MAF) of 0.05 and a minimum separation of 1000 nucleotides.  Other MAF values
+    such as 0.01 were also tested and did not prove to have a significant impact
+    on haplohseq results.  These filters were implemented by a simple awk
+    script.
+    
+    Additionally, known germ line structural variants were removed in order to
+    focus on acquired mutations.  Structural variants are provided by dbGaP
+    in the form of BCF files.  We used "bedtools subtract" to remove these
+    variants.
 
 4. go-haploh, 4a-haplohseq.sh, 4a-haplohseq.sbatch
 
-Run haplohseq on the filtered VCF files.
-
-The AD-enhanced, filtered VCF files were then processed through haploseq
-to detect mosaic chromosomal alteration events.  Haplohseq takes many
-parameters.  We experimented with several combinations of the following
-and settled on the values shown below:
+    Run haplohseq on the filtered VCF files.
+    
+    The AD-enhanced, filtered VCF files were then processed through haploseq
+    to detect mosaic chromosomal alteration events.  Haplohseq takes many
+    parameters.  We experimented with several combinations of the following
+    and settled on the values shown below:
 
     1. Event prevalence = 0.01
     2. Minimum event size = 30 megabases
@@ -148,12 +148,12 @@ and settled on the values shown below:
 
 5. 5-mocha.sh, 5-mocha.sbatch
 
-Run MoCha on the filtered VCF files.
-
-MoCha is another tool for detecting mosaic chromosomal alterations.  We
-ran MoCha on the same filtered VCF files in order to compare the
-sensitivities of the tools and determine the strengths and weaknesses of
-each.
+    Run MoCha on the filtered VCF files.
+    
+    MoCha is another tool for detecting mosaic chromosomal alterations.  We
+    ran MoCha on the same filtered VCF files in order to compare the
+    sensitivities of the tools and determine the strengths and weaknesses of
+    each.
 
 6. Examine results and analyze in GWAS (Genome Wide Association) pipeline
 to identify potentially related phenotypes.
