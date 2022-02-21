@@ -17,7 +17,12 @@
 # Set a default value for testing outside the SLURM environment
 : ${SLURM_ARRAY_TASK_ID:=1}
 
-# Record software versions
+# These scripts were developed on a FreeBSD cluster where all software is
+# installed via FreeBSD ports into the default PATH.  If you need to load
+# an environment module, activate a conda environent, etc. to gain access
+# to software used below, do it here.
+
+# Document software versions used for publication
 uname -a
 which xz
 pwd

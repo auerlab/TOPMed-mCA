@@ -41,21 +41,28 @@
 
 # 1 multi-sample file for each of 23 chromosomes.  Limit to 10 active jobs
 # (10 * $max_samples open files) to avoid overloading the file server.
-#SBATCH --array=1-23%10
+##SBATCH --array=1-23%10
+#SBATCH --array=1-23
 # 1 core for bcftools, 1 for vcf-split
 #SBATCH --cpus-per-task=2
 #SBATCH --mem=300
-#SBATCH --output=Logs/1-vcf-split/vcf-split-%A_%a.out
-#SBATCH --error=Logs/1-vcf-split/vcf-split-%A_%a.err
+#SBATCH --output=Logs/1a-vcf-split/vcf-split-%A_%a.out
+#SBATCH --error=Logs/1a-vcf-split/vcf-split-%A_%a.err
 
 # If running outside scheduler, SLURM_ARRAY_TASK_ID will not be set.
 # Create a dummy task ID of 21 for single-sample testing on dev server.
 # 21 is the smallest of the chromosomes for which errors were reported
 : ${SLURM_ARRAY_TASK_ID:=21}
 
+# These scripts were developed on a FreeBSD cluster where all software is
+# installed via FreeBSD ports into the default PATH.  If you need to load
+# an environment module, activate a conda environent, etc. to gain access
+# to software used below, do it here.
+
 # Document software versions used for publication
 uname -a
-which bcftools vcf-split
+which bcftools
+which vcf-split
 bcftools --version
 vcf-split --version
 pwd
@@ -73,9 +80,10 @@ bcf=freeze.8.chr$one_digit_chrom.pass_only.phased.bcf
 printf "Splitting VCF for chromosome $two_digit_chrom...\n"
 
 cd Data
+pwd
 
 # Organize by chromosome to reduce # of files in each dir
-output_dir=1-vcf-split/chr$two_digit_chrom
+output_dir=1a-vcf-split/chr$two_digit_chrom
 mkdir -p $output_dir
 sample_id_file=samples.txt
 # Limit total open files on file server to 10k.

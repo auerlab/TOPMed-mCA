@@ -32,6 +32,15 @@ maf=$2
 
 : ${SLURM_ARRAY_TASK_ID:=10}
 
+# These scripts were developed on a FreeBSD cluster where all software is
+# installed via FreeBSD ports into the default PATH.  If you need to load
+# an environment module, activate a conda environent, etc. to gain access
+# to software used below, do it here.
+
+# Document software versions used for publication
+uname -a
+which xzcat
+
 cd AD-VCFs-whi-MAPQ-0/MAF-$maf
 my_sample=$(awk -v my_index=$SLURM_ARRAY_TASK_ID 'NR == my_index { print $0 }' $sample_list)
 printf "Uncompressing $my_sample on $(hostname)...\n"
