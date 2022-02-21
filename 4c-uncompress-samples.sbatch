@@ -32,7 +32,7 @@ maf=$2
 
 : ${SLURM_ARRAY_TASK_ID:=10}
 
-# These scripts were developed on a FreeBSD cluster where all software is
+# These scripts were developed on a FreeBSD/SPCM cluster where all software is
 # installed via FreeBSD ports into the default PATH.  If you need to load
 # an environment module, activate a conda environent, etc. to gain access
 # to software used below, do it here.
