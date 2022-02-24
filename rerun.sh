@@ -11,7 +11,7 @@
 
 usage()
 {
-    printf "Usage: $0 script.sbatch\n"
+    printf "Usage: $0 script [script args]\n"
     exit 1
 }
 
@@ -20,12 +20,13 @@ usage()
 #   Main
 ##########################################################################
 
-if [ $# != 1 ]; then
+if [ $# -lt 1 ]; then
     usage
 fi
 script=$1
+shift
 
-base=${script%.sbatch}
+base=${script%.s*}
 printf "Remove results from Data/$base? y/[n] "
 read sure
 if [ 0"$sure" = 0y ]; then
@@ -39,7 +40,7 @@ if [ 0"$sure" = 0y ]; then
 fi
 
 if [ ${script##*.} = sbatch ]; then
-    sbatch $script
+    sbatch $script "$@"
 else
-    ./$script
+    ./$script "$@"
 fi

@@ -33,10 +33,11 @@ if [ $# != 1 ]; then
 fi
 max_jobs=$1
 
-cd Data/1-vcf-split
+cd Data/1c-combine
 pwd
 
 sample_list=sample-list-all
+
 # Make sure not to clobber the files being used by current jobs!
 if [ -e $sample_list ]; then
     cat << EOM
@@ -50,9 +51,8 @@ EOM
 fi
 
 # Generate samples list for this and subsequent steps
-mkdir -p Combined
 printf "Finding samples...\n"
-find chr01 -name '*.vcf.xz' | cut -d . -f 2 > $sample_list
+find ../1b-compress/chr01 -name '*.vcf.xz' | cut -d . -f 4 > $sample_list
 tj=$(cat $sample_list | wc -l)
 total_jobs=$(echo $tj)   # Get rid of leading whitespace from wc
 

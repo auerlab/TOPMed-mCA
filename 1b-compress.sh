@@ -41,7 +41,8 @@ max_jobs=$1
 
 # Generate VCF file list from which jobs will extract their filename by
 # position using $SLURM_ARRAY_TASK_ID
-cd Data/1-vcf-split
+cd Data/1b-compress
+mv ../1a-vcf-split/* . || true
 vcf_list=vcf-list-all
 
 # Be sure not to clobber the files being used by current jobs!

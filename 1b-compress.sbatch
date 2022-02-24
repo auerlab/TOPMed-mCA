@@ -11,8 +11,8 @@
 #   2021-11-29  Jason Wayne BaconBegin
 ##########################################################################
 
-#SBATCH --output=Logs/1-vcf-split/compress-%A_%a.out
-#SBATCH --error=Logs/1-vcf-split/compress-%A_%a.err
+#SBATCH --output=Logs/1b-compress/compress-%A_%a.out
+#SBATCH --error=Logs/1b-compress/compress-%A_%a.err
 
 # Set a default value for testing outside the SLURM environment
 : ${SLURM_ARRAY_TASK_ID:=1}
@@ -27,7 +27,7 @@ uname -a
 which xz
 pwd
 
-cd Data/1-vcf-split
+cd Data/1b-compress
 
 # Pick a sample from the list based on SLURM_ARRAY_TASK_ID
 split_file_num=$(( ($SLURM_ARRAY_TASK_ID - 1) / 1000 ))

@@ -25,7 +25,7 @@ if [ $# != 1 ]; then
 fi
 n=$1
 
-cd Data/1-vcf-split
+cd Data/1c-combine
 
 # Pick a sample from the list based on n
 max_lines=$(cat sample-list-0000 | wc -l)
