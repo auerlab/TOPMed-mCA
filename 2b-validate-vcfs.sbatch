@@ -12,14 +12,15 @@
 #   generally a bad idea since it's too complicated to support
 #   every program with one environment.)
 #
+#   Do not submit this script directly.  Use 2b-validate-vcf.sh.
+#
 #   History:
 #   Date        Name        Modification
 #   2020-09-13  Jason Bacon Begin
 ##########################################################################
 
-#SBATCH --array=1-23%100
-#SBATCH --output=Logs/2-ad2vcf/validate-vcfs-%A_%a.out
-#SBATCH --error=Logs/2-ad2vcf/validate-vcfs-%A_%a.err
+#SBATCH --output=Logs/2b-validate-vcfs/validate-vcfs-%A_%a.out
+#SBATCH --error=Logs/2b-validate-vcfs/validate-vcfs-%A_%a.err
 
 ##########################################################################
 #   Main
@@ -40,8 +41,8 @@ pwd
 my_sample=$(./select-sample.sh $SLURM_ARRAY_TASK_ID)
 printf "Processing $my_sample...\n"
 
-raw_vcf="Data/1-vcf-split/Combined/combined.$my_sample.vcf.xz"
-ad_vcf="Data/2-ad2vcf/combined.$my_sample-ad.vcf.xz"
+raw_vcf="Data/1c-combine/combined.$my_sample.vcf.xz"
+ad_vcf="Data/2a-ad2vcf/combined.$my_sample-ad.vcf.xz"
 
 last_line_ad=$(xzcat $ad_vcf | tail -n 1)
 
