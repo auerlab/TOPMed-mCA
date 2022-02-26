@@ -13,8 +13,8 @@
 
 #SBATCH --array=1-23
 #SBATCH --mem=200
-#SBATCH --output=Logs/3-filter/find-maf-sites-%A_%a.out
-#SBATCH --error=Logs/3-filter/find-maf-sites-%A_%a.err
+#SBATCH --output=Logs/3a-find-maf-sites/find-maf-sites-%A_%a.out
+#SBATCH --error=Logs/3a-find-maf-sites/find-maf-sites-%A_%a.err
 
 usage()
 {
@@ -47,7 +47,7 @@ else
 fi
 printf "Processing chrom $chr...\n"
 
-sites_dir=Data/3-filter/MAF-sites-$maf
+sites_dir=Data/3a-find-maf-sites/MAF-sites-$maf
 mkdir -p $sites_dir
 bcftools view -H -q ${maf}:minor \
     Data/Raw-bcfs/freeze.8.chr$chr.pass_only.phased.bcf \
