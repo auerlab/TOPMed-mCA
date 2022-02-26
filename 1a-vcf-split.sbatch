@@ -28,6 +28,10 @@
 #   Keep in mind that open files add up with parallel jobs accessing the same
 #   file server.
 #
+#   bcftools view human-chr2.bcf > /dev/null takes about 2 days.  Piping
+#   through vcf-split will take a little longer.  This should provide some
+#   idea how long the total job will take.
+#
 #   All necessary tools are assumed to be in PATH.  If this is not
 #   the case, add whatever code is needed here to gain access.
 #   (Adding such code to your .bashrc or other startup script is

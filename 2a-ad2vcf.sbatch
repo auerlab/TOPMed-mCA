@@ -10,6 +10,9 @@
 #   Fusera (now obsolete) using the scripts in the SRA directory.
 #   Sra-tools 1.10 or later should be able to access the CRAMs on AWS.
 #
+#   Each ad2vcf task took about 20 minutes on my workstation and about 30
+#   minutes on AWS using an AMD Epyc instance.
+#
 #   Do not submit this script directly.  Use 2a-ad2vcf.sh.
 #
 #   All necessary tools are assumed to be in PATH.  If this is not

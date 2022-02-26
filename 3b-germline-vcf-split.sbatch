@@ -1,9 +1,9 @@
 #!/bin/sh -e
 
-#SBATCH --array=1-22%11
+#SBATCH --array=1-22    # X chromosome
 #SBATCH --mem=1000
-#SBATCH --output=Logs/3-filter/gsv-split-%A_%a.out
-#SBATCH --error=Logs/3-filter/gsv-split-%A_%a.err
+#SBATCH --output=Logs/3b-germline-split/gsv-split-%A_%a.out
+#SBATCH --error=Logs/3b-germline-split/gsv-split-%A_%a.err
 
 ##########################################################################
 #
@@ -44,7 +44,7 @@ total_samples=$(bcftools view $gsv_dir/sv.freeze1.chr9.gt.only.bcf | grep -m 1 '
 printf "Total samples = $total_samples\n"
 
 chr=chr$SLURM_ARRAY_TASK_ID
-output_dir=Data/3-filter/GSV-split-vcfs/$chr
+output_dir=Data/3b-germline-split/GSV-split-vcfs/$chr
 file=$gsv_dir/sv.freeze1.$chr.gt.only.bcf
 
 mkdir -p $output_dir

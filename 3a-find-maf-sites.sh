@@ -8,6 +8,10 @@
 #   Only needs to be run once and the results can be used for all
 #   sample groups
 #
+#   This job should complete within several hours, since bcftools is
+#   skipping most records (only processing those that meet the minimum
+#   allele frequency).
+#
 #   All necessary tools are assumed to be in PATH.  If this is not
 #   the case, add whatever code is needed here to gain access.
 #   (Adding such code to your .bashrc or other startup script is
