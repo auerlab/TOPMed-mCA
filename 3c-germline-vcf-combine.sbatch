@@ -17,10 +17,10 @@
 ##########################################################################
 
 # Adjust the max jobs according to how much I/O your cluster can handle
-#SBATCH --array=1-138134%20
+#SBATCH --array=1-138134%16
 #SBATCH --mem=500
-#SBATCH --output=Logs/3-filter/gsv-combine-%A_%a.out
-#SBATCH --error=Logs/3-filter/gsv-combine-%A_%a.err
+#SBATCH --output=Logs/3c-germline-vcf-combine/gsv-combine-%A_%a.out
+#SBATCH --error=Logs/3c-germline-vcf-combine/gsv-combine-%A_%a.err
 
 : ${SLURM_ARRAY_TASK_ID:=1}
 
@@ -36,11 +36,10 @@ bcftools --version
 pwd
 
 gsv_dir=Data/79852-germline-structural-variants/
-vcf_dir=Data/3-filter/GSV-split-vcfs
-done=0
+vcf_dir=Data/3c-germline-vcf-combine
+split_dir=../3b-germline-vcf-split
 samples=$(bcftools view $gsv_dir/sv.freeze1.chr9.gt.only.bcf | grep -m 1 '^#CHROM' | cut -f 10-)
 printf "%s samples...\n" $(echo $samples | wc -w)
-
 my_sample=$(echo $samples | awk -v n=$SLURM_ARRAY_TASK_ID '{ print $n }')
 printf "Processing $my_sample...\n"
 
@@ -49,14 +48,14 @@ mkdir -p Combined
 files=""
 # No X chromosome in GSV data
 for chr in $(seq 1 22); do
-    files="$files chr$chr/chr$chr.$my_sample.vcf"
+    files="$files $split_dir/chr$chr/chr$chr.$my_sample.vcf"
     chr=$((chr + 1))
 done
-combined=Combined/combined.$my_sample.vcf.xz
-printf "===\n%u\nConcatenating $files to $combined...\n" $done
-done=$((done + 1))
+combined=combined.$my_sample.vcf.xz
+printf "===\n%u\nConcatenating $files to $combined...\n"
+
 # Add only 1 copy of header
-(head chr1/chr1.$my_sample.vcf | grep '^#' && grep --no-filename -v '^#' $files) | xz > $combined
+(head $split_dir/chr1/chr1.$my_sample.vcf | grep '^#' && grep --no-filename -v '^#' $files) | xz > $combined
 bed=${combined%.vcf.xz}.bed
 printf "$combined -> $bed...\n"
-xzcat $combined | grep -v '^#' | mawk -f ../../../extract-range.awk > ${bed}
+xzcat $combined | grep -v '^#' | mawk -f ../../extract-range.awk > ${bed}
