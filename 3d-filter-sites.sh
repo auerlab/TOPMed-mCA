@@ -34,7 +34,7 @@ fi
 maf=$1              # Minimum allele frequency
 separation=$2       # Min distance between events
 
-if [ ! -d Data/3-filter/MAF-sites-$maf ]; then
+if [ ! -d Data/3a-find-maf-sites/MAF-sites-$maf ]; then
     printf "Missing MAF-sites-$maf directory.\n"
     printf "Run 3a-find-maf-sites.sbatch first or specify MAF correctly.\n"
     exit 1
@@ -46,7 +46,8 @@ fi
 #     curl -O http://dgv.tcag.ca/dgv/docs/$dgv_gff
 # fi
 
-vcf_dir=Data/2-ad2vcf
+vcf_dir=Data/2a-ad2vcf
+filtered_dir=Data/3d-filter-sites/VCFs-MAF-$maf-${separation}nt-sv
 vcf_list=$vcf_dir/VCF-list.txt
 
 ls $vcf_dir | grep '.*-ad\.vcf\.xz' > $vcf_list
@@ -57,6 +58,6 @@ printf "Samples: $sample_count\n"
 # Only for comparison to see the effects of DGV filtering
 # mkdir -p $vcf_dir/MAF-$maf-${separation}nt
 
-mkdir -p $vcf_dir/MAF-$maf-${separation}nt-sv
+mkdir -p $filtered_dir
 
 sbatch --array=1-$sample_count%20 3d-filter-sites.sbatch $maf $separation

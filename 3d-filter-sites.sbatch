@@ -16,12 +16,12 @@
 # 4 processes, but the xz bottleneck limits the total CPU to about 160%
 # even if we give it 4 cores
 #SBATCH --ntasks=2
-#SBATCH --output=Logs/3-filter/filter-sites-%A_%a.out
-#SBATCH --error=Logs/3-filter/filter-sites-%A_%a.err
+#SBATCH --output=Logs/3d-filter-sites/filter-sites-%A_%a.out
+#SBATCH --error=Logs/3d-filter-sites/filter-sites-%A_%a.err
 
 usage()
 {
-    printf "Usage: $0 MAPQ-min MAF min-separation\n"
+    printf "Usage: $0 MAF min-separation\n"
     exit 1
 }
 
@@ -51,12 +51,12 @@ pwd
 
 my_sample=$(./select-sample.sh $SLURM_ARRAY_TASK_ID)
 echo $my_sample
-my_vcf=Data/2-ad2vcf/combined.$my_sample-ad.vcf.xz
+my_vcf=Data/2a-ad2vcf/combined.$my_sample-ad.vcf.xz
 
 printf "Task $SLURM_ARRAY_TASK_ID processing $my_vcf on $(hostname)...\n"
 printf "MAF: %s\nSeparation: %s\n" $maf $separation
 
-filtered_dir=Data/3-filter/VCFs-MAF-$maf-${separation}nt-sv
+filtered_dir=Data/3d-filter-sites/VCFs-MAF-$maf-${separation}nt-sv
 mkdir -p $filtered_dir
 
 base=$(basename $my_vcf)
@@ -66,7 +66,7 @@ outfile_sv=$filtered_dir/$base
 # Maybe add to filter-sites.awk?
 
 printf "Filtering germline structural variants...\n"
-germline=Data/3-filter/GSV-split-vcfs/Combined/combined.$my_sample.bed
+germline=Data/3c-germline-vcf-combine/combined.$my_sample.bed
 
 # Assume samples with no structural variants should be tossed
 
