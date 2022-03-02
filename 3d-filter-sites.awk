@@ -28,7 +28,7 @@ BEGIN {
 	chr = $1;
 	
 	# File with positions where MAF meets criteria
-	maf_file = "Data/3-filter/MAF-sites-" maf "/" chr "-maf-sites.txt"
+	maf_file = "Data/3a-find-maf-sites/MAF-sites-" maf "/" chr "-maf-sites.txt"
 	
 	# Ensure that next_ok_maf_pos < $2 when starting new chromosome
 	next_ok_maf_pos = -1;

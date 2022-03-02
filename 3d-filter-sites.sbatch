@@ -68,10 +68,12 @@ outfile_sv=$filtered_dir/$base
 printf "Filtering germline structural variants...\n"
 germline=Data/3c-germline-vcf-combine/combined.$my_sample.bed
 
-# Assume samples with no structural variants should be tossed
-
-#xzcat $my_vcf | grep -v '^#' | head -5
-#xzcat $my_vcf | bedtools subtract -A -a stdin -b $germline|head -5
+# Debug
+#xzcat $my_vcf | head -2
+#head -2 $germline
+#xzcat $my_vcf \
+#        | bedtools subtract -A -a stdin -b $germline \
+#        | mawk -v separation=$separation -v maf=$maf -f 3d-filter-sites.awk
 #exit
 
 if [ -e $germline ]; then
