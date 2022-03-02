@@ -15,6 +15,12 @@
 #SBATCH --output=Logs/5-mocha/mocha-%A_%a.out
 #SBATCH --error=Logs/5-mocha/mocha-%A_%a.err
 
+ref=GCA_000001405.15_GRCh38_no_alt_analysis_set.fna
+if [ ! -e Data/5-mocha/$ref ]; then
+    printf "Run ./5-mocha.sh rather than submitting this sbatch script.\n"
+    exit 1
+fi
+
 : ${SLURM_ARRAY_TASK_ID:=1}
 
 # These scripts were developed on a FreeBSD/SPCM cluster where all software is
@@ -55,7 +61,7 @@ echo "## prepare bcf input"
 # added to maximize info extracted during expensive ad2vcf runs on AWS.
 # Also strip depth from both format and sample data.
 (cat MoCha/head.txt | sed -e "s|SAMPLE|$my_sample|g"; \
-xzcat Data/3-filter/VCFs-MAF-0.05-1000nt-sv/$vcf \
+xzcat Data/3d-filter-sites/VCFs-MAF-0.05-1000nt-sv/$vcf \
     | grep -v '^#' | sed -E "s/,[[:digit:]]*:[[:digit:]]*$//g" \
     | sed -E "s/:DP//g" ) | bcftools view -i 'MIN(FMT/AD)>=5' \
     | bcftools norm --no-version -Ob -o $bcf -d none -f $ref
