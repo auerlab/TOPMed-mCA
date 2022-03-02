@@ -46,7 +46,7 @@ y|n)
 esac
 shift; shift; shift; shift
 
-sample_count=$(cat Data/1-vcf-split/sample-list-all | wc -l)
+sample_count=$(cat Data/1c-combine/sample-list-all | wc -l)
 sample_count=$(echo $sample_count)   # Strip leading space
 printf "Running haplohseq on %u samples...\n" $sample_count
 

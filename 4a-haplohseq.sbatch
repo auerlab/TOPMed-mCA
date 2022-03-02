@@ -12,8 +12,8 @@
 ##########################################################################
 
 #SBATCH --mem=1g
-#SBATCH --output=Logs/4-haplohseq/haplohseq-%A_%a.out
-#SBATCH --error=Logs/4-haplohseq/haplohseq-%A_%a.err
+#SBATCH --output=Logs/4a-haplohseq/haplohseq-%A_%a.out
+#SBATCH --error=Logs/4a-haplohseq/haplohseq-%A_%a.err
 
 usage()
 {
@@ -68,7 +68,8 @@ vcf2hap --version
 haplohseq --version
 pwd
 
-vcf_dir=Data/3-filter/VCFs-MAF-0.05-1000nt-sv
+# FIXME: Respect parameters from 3d-filter-sites rather than hard-code
+vcf_dir=Data/3d-filter-sites/VCFs-MAF-0.05-1000nt-sv
 
 # Generate a static list VCF-list.txt in the calling script and use it here.
 my_sample=$(./select-sample.sh $SLURM_ARRAY_TASK_ID)
@@ -79,7 +80,7 @@ xzcat $vcf_dir/$my_vcf | head
 # Use local disk for uncompressed files to offload NFS.
 uncompressed=/tmp/${my_vcf%.xz}
 my_vcf_prefix=`echo $my_vcf | cut -d - -f 1`
-output_dir=Data/4-haplohseq/EP-$ep-EMB-$emb-VMD-$vmd-Est-$est
+output_dir=Data/4a-haplohseq/EP-$ep-EMB-$emb-VMD-$vmd-Est-$est
 sample=${my_vcf_prefix##*.}
 printf "TASK ID:        $SLURM_ARRAY_TASK_ID\n"
 printf "VCF:            $my_vcf\n"
@@ -104,6 +105,8 @@ printf "\nSTEP 1: GENERATING HAPLOTYPE FILES...\n"
 printf "Generating .hap file...\n"
 
 mkdir -p $output_dir
+#echo $sample
+#head -5 $uncompressed
 vcf2hap $sample < $uncompressed > $output_dir/$my_vcf_prefix-ad.hap
 
 ########################################################################
