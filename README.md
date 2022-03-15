@@ -162,7 +162,7 @@ to identify potentially related phenotypes.
 
 Most computational analysis was performed on a [FreeBSD](https://FreeBSD.org)
 HPC cluster managed by [SPCM](https://github.com/outpaddling/SPCM) and
-running the [slurm](https:https://slurm.schedmd.com/) resource manager.
+running the [SLURM](https:https://slurm.schedmd.com/) resource manager.
 
 Code development and testing was performed on a FreeBSD workstation
 configured with
