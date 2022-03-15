@@ -209,3 +209,6 @@ a minor impact on overall analysis time as awk is generally not a bottleneck.
 Most FreeBSD ports are also available in dports on Dragonfly BSD, and many
 are available in pkgsrc, a package manager with stringent quality assurance
 that supports virtually any POSIX platform.
+
+For more information on package managers, see the
+[Repology website](https://repology.org).
