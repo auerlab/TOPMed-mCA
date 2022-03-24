@@ -48,7 +48,7 @@ processing steps:
     single-sample, single-chromosome VCF files and combine the results into
     single-sample, multi-chromosome VCFs.
 
-    This step is extremely I/O-intensive.  Decodding the BCF files (using bcftools)
+    This step is extremely I/O-intensive.  Decoding the BCF files (using bcftools)
     is also CPU-limited. The largest of the multi-sample BCF files (for chromosome 2)
     is 83 gigabytes and takes approximately 2 days just to read using
     [bcftools](https://github.com/samtools/bcftools).
@@ -176,21 +176,23 @@ using the OpenZFS
 file system with lz4 compression.  The compression capabilities of ZFS
 significantly reduce disk usage and read/write time for uncompressed
 temporary files such as raw VCFs.  This is especially helpful when splitting
-the multisample VCFs, since we cannot pipe thousands of VCF streams through
-xz processes simultaneously.  We must write raw VCFs and compress them
-afterward using reasonable parallelism.
+the multisample VCFs, since we cannot simultaneously pipe the thousands of
+VCF streams written by vcf-split through a compressor such as gzip, bzip2, or
+xz.  We must write raw VCFs and compress them afterward, limiting parallelism
+to the number of available CPUs.
 
 All long-term output files were subsequently compressed with xz, which
 provides significantly better compression ratios than lz4, gzip, or bzip2.
 (Typically about 40% smaller than gzip).
 
 Filtering reads based on MAPQ in ad2vcf resulted in no noticeable improvement
-to the haplohseq results.  Reads for whi, bjm, group3, and group4 were
-filtered only for unmapped reads.
+to the haplohseq results.  Reads for the 4 groups of CRAMs processed
+(whi, bjm, group3, and group4) were filtered only for unmapped reads.
 
 ## Repository Organization
 
-- Scripts in the top-level directory are part of the primary analysis pipeline.
+- Scripts in the top-level directory are part of the primary analysis
+  pipeline.
 - Scripts used for exploration are found under Utils.
 - Primary data are stored under Data.
 - Analysis logs are under Logs.
