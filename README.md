@@ -123,11 +123,11 @@ processing steps:
 3. 3d-filter-sites.sh, 3d-filter-sites.sbatch
 
     Filter VCF calls for minimum separation of calls (1000 bases for our
-    analysis), minimum allele frequency (MAF), and structural variants (79852,
+    analysis), minor allele frequency (MAF), and structural variants (79852,
     freeze1).
     
     To reduce noise in the haplohseq and MoCha analyses the resulting AD-enhanced
-    VCF files were filtered to keep only sites with a minimum allele frequency
+    VCF files were filtered to keep only sites with a minor allele frequency
     (MAF) of 0.05 and a minimum separation of 1000 nucleotides.  Other MAF values
     such as 0.01 were also tested and did not prove to have a significant impact
     on haplohseq results.  These filters were implemented by a simple awk

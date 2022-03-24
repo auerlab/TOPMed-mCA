@@ -2,7 +2,7 @@
 
 ##########################################################################
 #
-#   Filter sites for minimum allele frew (MAF) and minimum distance
+#   Filter sites for minor allele frequency (MAF) and minimum distance
 #   from each other
 #       
 #   All necessary tools are assumed to be in PATH.  If this is not
@@ -31,7 +31,7 @@ usage()
 if [ $# != 2 ]; then
     usage
 fi
-maf=$1              # Minimum allele frequency
+maf=$1              # Minor allele frequency
 separation=$2       # Min distance between events
 
 if [ ! -d Data/3a-find-maf-sites/MAF-sites-$maf ]; then

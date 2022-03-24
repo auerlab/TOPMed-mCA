@@ -2,8 +2,8 @@
 
 ##########################################################################
 #   Script description:
-#       Filter sites for minimum allele frew (MAF) and minimum distance
-#       from each other
+#       Filter sites for minor allele frequency (MAF) and minimum
+#       distance from each other
 #       
 #   History:
 #   Date        Name        Modification
@@ -27,7 +27,7 @@ if [ $# != 3 ]; then
 fi
 sample_group=$1
 mapq_min=$2
-maf=$3              # Minimum allele frequency
+maf=$3              # Minor allele frequency
 
 if [ ! -d MAF-$maf ]; then
     printf "Missing MAF-$maf directory.\n"
