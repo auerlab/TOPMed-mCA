@@ -48,24 +48,29 @@ processing steps:
     single-sample, single-chromosome VCF files and combine the results into
     single-sample, multi-chromosome VCFs.
 
-    This step is extremely I/O-intensive, and
-    existing tools for processing VCF data lacked the ability to do it
-    efficiently.  The largest of the multi-sample BCF files (for chromosome 2)
+    This step is extremely I/O-intensive.  Decodding the BCF files (using bcftools)
+    is also CPU-limited. The largest of the multi-sample BCF files (for chromosome 2)
     is 83 gigabytes and takes approximately 2 days just to read using
-    [bcftools](https://github.com/samtools/bcftools).  Extracting the 137,977
+    [bcftools](https://github.com/samtools/bcftools).
+    
+    ```
+    bcftools view freeze.8.chr2.pass_only.phased.bcf > /dev/null
+    ```
+    
+    Extracting the 137,977
     samples one at a time would therefore take approximately 2 * 137,977 days
     = 750 years.  To solve this issue, we developed
     [vcf-split](https://github.com/auerlab/vcf-split), which can extract
     several thousand samples from a multi-sample VCF stream simultaneously,
     while also performing some filtering functions.  We found that some
-    bcftools filtering options speed up the program while others slow it down,
+    bcftools filtering options increase throughput while others slow it down,
     so filtering tasks are divided between bcftools and vcf-split.
     By balancing the workload between bcftools for decoding
     the BCF files and some of the filtering, and vcf-split to extract samples
     and perform the remaining filtering, we were able to generate all of the
-    single-sample files in a few weeks.
+    single-sample files in a few weeks on a small HPC cluster.
     
-    Combining the single-sample, single-chromosome VCF files into
+    Combining the resulting single-sample, single-chromosome VCF files into
     single-sample, multiple chromosome files is a simple matter of
     concatenating the single-chromosome files in the correct order.
 
