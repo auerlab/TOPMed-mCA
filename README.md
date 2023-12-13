@@ -4,7 +4,8 @@
 
 This repository houses the tools for Mosaic Chromosomal Alteration (mCA)
 analysis of TOPMed whole genome sequence data presented in
-"Mosaic chromosomal alterations in blood across ancestries via whole-genome sequencing".
+"Mosaic chromosomal alterations in blood across ancestries via whole-genome sequencing",
+https://doi.org/10.1038/s41588-023-01553-1.
 
 The project is a collaboration among the following institutions:
 
