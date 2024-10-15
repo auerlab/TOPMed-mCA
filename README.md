@@ -215,9 +215,14 @@ base installation.  Mawk outperforms BSD and GNU awk and may be used as
 a drop-in replacement to speed up some scripts, though this will have only
 a minor impact on overall analysis time as awk is generally not a bottleneck.
 
-Most FreeBSD ports are also available in dports on Dragonfly BSD, and many
-are available in pkgsrc, a package manager with stringent quality assurance
-that supports virtually any POSIX platform.
+Users of other Unix-like systems such as Linux and macOS can deploy all of
+the necessary tools using [pkgsrc](https://pkgsrc.org), a package manager
+with stringent quality assurance
+that supports virtually any POSIX platform..  The auto-pkgsrc-setup
+script at [https://NetBSD.org/~bacon](https://NetBSD.org/~bacon) will help
+you get started.
+
+Most FreeBSD ports are also available in dports on Dragonfly BSD.
 
 For more information on package managers, see the
 [Repology website](https://repology.org).
