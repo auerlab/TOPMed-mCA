@@ -223,7 +223,7 @@ script at [https://NetBSD.org/~bacon](https://NetBSD.org/~bacon) will help
 you get started.  Installing pkgsrc using auto-pkgsrc-setup takes
 about 10 minutes, and provides easy installation of about 20,000 software
 packages, including nearly 1,000 scientific programs.  Installing the
-bioogy/mca-calling meta-package will install all of the above-mentioned
+biology/mca-calling meta-package will install all of the above-mentioned
 tools.
 
 Most FreeBSD ports are also available in dports on Dragonfly BSD.
