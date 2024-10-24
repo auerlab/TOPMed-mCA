@@ -206,9 +206,11 @@ All software required for this analysis can be installed on FreeBSD with
 the following command:
 
 ```
-pkg install sra-tools bcftools vcf-split samtools mawk bedtools \
-    vcf2hap ad2vcf haplohseq bio-mocha
+pkg install mca-calling
 ```
+Mca-calling is a "metaport" which does not install any files of its own,
+but installs other ports/packages (e.g. bcftools, haplohseq, vcf-split,
+ad2vcf, mawk, etc.) as dependencies.
 
 General tools such as awk, sed, sort, xz, etc. are included in the FreeBSD
 base installation.  Mawk outperforms BSD and GNU awk and may be used as
